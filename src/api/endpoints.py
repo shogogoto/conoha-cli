@@ -1,5 +1,6 @@
-from enum import Enum
 import os
+from enum import Enum
+
 
 # ref: https://www.conoha.jp/docs/?btn_id=docs--sidebar_docs
 class Endpoints(Enum):
@@ -13,7 +14,7 @@ class Endpoints(Enum):
     IDENTITY = ("identity",         "v2.0")
     NETWORK  = ("networking",       "v2.0")
 
-    def __init__(self, prefix:str, version:str):
+    def __init__(self, prefix:str, version:str) -> None:
         self.prefix  = prefix
         self.version = version
 

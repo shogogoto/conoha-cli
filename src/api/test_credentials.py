@@ -1,13 +1,15 @@
-import pytest
-from unittest.mock import patch
 import os
+
+import pytest
+
 from . import credentials as C
+
 
 @pytest.mark.parametrize(
     "env_attr", [
         "OS_USERNAME",
         "OS_PASSWORD",
-        "OS_TENANT_ID"
+        "OS_TENANT_ID",
     ])
 def test_invalid_env_credentials(monkeypatch, env_attr):
     if env_attr in os.environ:
