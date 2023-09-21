@@ -2,12 +2,16 @@
 from __future__ import annotations
 
 from enum import Enum
-from pathlib import Path
+from urllib.parse import urljoin
+
+from .environments import env_region
 
 
-# ref: https://www.conoha.jp/docs/?btn_id=docs--sidebar_docs
 class Endpoints(Enum):
-    """Conoha APIのエンドポイントとバージョン情報のペア."""
+    """Conoha APIのエンドポイントとバージョン情報のペア.
+
+    ref: https://www.conoha.jp/docs/?btn_id=docs--sidebar_docs
+    """
 
     ACCOUNT  = ("account",          "v1")
     COMPUTE  = ("compute",          "v2")
@@ -24,9 +28,10 @@ class Endpoints(Enum):
         self.prefix  = prefix
         self.version = version
 
-    def url(self, region:str, suffixes:list[str])->str:
+    def url(self, relative:str)->str:
         """エンドポイントを組み立てる."""
         p = self.prefix
+        r = env_region()
         v = self.version
-        base = f"https://{p}.{region}.conoha.io/{v}"
-        return Path.joinpath(base, *suffixes)
+        base = f"https://{p}.{r}.conoha.io/{v}/"
+        return urljoin(base, relative)
