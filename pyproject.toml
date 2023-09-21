@@ -16,6 +16,7 @@ pytest-watch = "^4.2.0"
 jedi-language-server = "^0.41.0"
 neovim = "^0.3.1"
 ruff = "^0.0.290"
+taskipy = "^1.12.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -23,3 +24,6 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
 select = ["ALL"]
+
+[tool.taskipy.tasks]
+test = "pytest -s"
