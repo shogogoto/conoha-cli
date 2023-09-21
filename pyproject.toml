@@ -17,6 +17,7 @@ jedi-language-server = "^0.41.0"
 neovim = "^0.3.1"
 ruff = "^0.0.290"
 taskipy = "^1.12.0"
+ruff-lsp = "^0.0.39"
 
 [build-system]
 requires = ["poetry-core"]
@@ -25,8 +26,17 @@ build-backend = "poetry.core.masonry.api"
 [tool.ruff]
 select = ["ALL"]
 
+ignore = [
+  "ANN101" # selfの型注釈いれろ
+  ]
+
+exclude = [
+  "test_*"
+  ]
+
+
 [tool.taskipy.tasks]
 test = "pytest -s -v"
 tw   = "pytest-watch -- -v -s --durations=0 --ff"
 lint = "ruff check ."
-lintfix = "ruff check . --fix"
+lintfix = "ruff . --fix"

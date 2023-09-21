@@ -1534,6 +1534,26 @@ files = [
 ]
 
 [[package]]
+name = "ruff-lsp"
+version = "0.0.39"
+description = "A Language Server Protocol implementation for Ruff."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "ruff_lsp-0.0.39-py3-none-any.whl", hash = "sha256:60f7dbe1c34e3ed9729d72bc42c0b6227d45a9808977f511fa29af8820984817"},
+    {file = "ruff_lsp-0.0.39.tar.gz", hash = "sha256:faab8b836040df6ded8b1e3eca11a11ab7b7108b14e2f5d5deff8cc131676881"},
+]
+
+[package.dependencies]
+lsprotocol = ">=2023.0.0a1"
+pygls = ">=1.0.1"
+ruff = ">=0.0.274"
+typing-extensions = "*"
+
+[package.extras]
+dev = ["mypy (==1.4.1)", "pip-tools (>=6.13.0,<7.0.0)", "pytest (>=7.3.1,<8.0.0)", "pytest-asyncio (==0.21.1)", "python-lsp-jsonrpc (==1.0.0)"]
+
+[[package]]
 name = "simplejson"
 version = "3.19.1"
 description = "Simple, fast, extensible JSON encoder/decoder for Python"
@@ -1889,4 +1909,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "2a314316e544f52c24b5c0d3598b33a6bedbd44e98ef2eb8606b5f64ad2e2629"
+content-hash = "c82976872b03528916e24d515c6e5671eb80fc0f4ae68ac6da6be54f66a6ebae"
