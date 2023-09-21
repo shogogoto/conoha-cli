@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "conoha-cli"
+version = "0.1.0"
+description = ""
+authors = ["Shogo Goto <gotoadmn0605@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+python-openstackclient = "^6.2.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.2"
+pytest-watch = "^4.2.0"
+jedi-language-server = "^0.41.0"
+neovim = "^0.3.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
