@@ -40,3 +40,8 @@ jobs:
       - name: Test
         run:
           poetry run task test
+
+      - name: Run linter
+        run:
+          poetry run task lint
+

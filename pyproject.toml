@@ -26,4 +26,7 @@ build-backend = "poetry.core.masonry.api"
 select = ["ALL"]
 
 [tool.taskipy.tasks]
-test = "pytest -s"
+test = "pytest -s -v"
+tw   = "pytest-watch -- -v -s --durations=0 --ff"
+lint = "ruff check ."
+lintfix = "ruff check . --fix"
