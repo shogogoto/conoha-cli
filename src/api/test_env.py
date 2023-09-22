@@ -1,20 +1,22 @@
-import pytest
-from unittest.mock import patch
 import os
-from . import credentials as C
+
+import pytest
+
+from . import environments as E
+
 
 @pytest.mark.parametrize(
     "env_attr", [
         "OS_USERNAME",
         "OS_PASSWORD",
-        "OS_TENANT_ID"
+        "OS_TENANT_ID",
     ])
 def test_invalid_env_credentials(monkeypatch, env_attr):
     if env_attr in os.environ:
         monkeypatch.delenv(env_attr)
 
     with pytest.raises(KeyError):
-        C.env_credentials()
+        E.env_credentials()
 
 
 def test_invalid_env_region(monkeypatch):
@@ -24,9 +26,9 @@ def test_invalid_env_region(monkeypatch):
         monkeypatch.delenv(env_attr)
 
     with pytest.raises(KeyError):
-        C.env_region()
+        E.env_region()
 
     monkeypatch.setenv(env_attr, "NaN")
     with pytest.raises(ValueError):
-        C.env_region()
+        E.env_region()
 
