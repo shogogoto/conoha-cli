@@ -29,7 +29,10 @@ class Endpoints(Enum):
         self.version = version
 
     def url(self, relative:str)->str:
-        """エンドポイントを組み立てる."""
+        """エンドポイントを組み立てる.
+
+        :param relative: baseURL以降の文字列
+        """
         p = self.prefix
         r = env_region()
         v = self.version
