@@ -39,15 +39,6 @@ class VPSOrder:
         )
 
 
-# @cache
-# def list_orders():
-#     """サーバー設定一覧を取得する."""
-
-
-
-#     for order in vps_orders:
-
-
 def detail_order(order_id: str) -> VPSOrder:
     """サーバー設定一覧を取得する."""
     res = Endpoints.ACCOUNT.get(f"order-items/{order_id}").json()

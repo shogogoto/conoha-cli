@@ -54,5 +54,3 @@ def search_flavor(flavor_id: UUID) -> Flavor:
 
     result = filter(pred, list_flavors())
     return next(result)
-
-
