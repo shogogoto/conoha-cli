@@ -12,6 +12,7 @@ from pytz import timezone
 
 from .endpoints import Endpoints
 from .environments import env_tenant_id
+from .flavor import Flavor, search_flavor
 from .token import token_headers
 
 
@@ -36,7 +37,7 @@ class Server:
     :param updated_at: 更新日時(JST)
     :param status: \[ACTIVE|SHUTOFF|REBOOT\]
     :param image_id: イメージID
-    :param flavor_id: コア数などの設定ID
+    :param flavor: コア数などの設定情報
     """
 
     ipv4: str
@@ -44,7 +45,7 @@ class Server:
     updated_at: datetime
     status: Status
     image_id: UUID
-    flavor_id: UUID
+    flavor: Flavor
 
     def elapsed_from_created(self) -> timedelta:
         """作成時からの経過時間を秒以下を省いて計算する."""
@@ -58,13 +59,14 @@ class Server:
 
         :param one: json["servers"]: list[dict]の要素
         """
+        flavor_id = UUID(one["flavor"]["id"])
         return Server(
             ipv4 = one["name"].replace("-", "."),
             status = Status[one["status"]],
             created_at = utc2jst(one["created"]),
             updated_at = utc2jst(one["updated"]),
             image_id = UUID(one["image"]["id"]),
-            flavor_id = UUID(one["flavor"]["id"]),
+            flavor = search_flavor(flavor_id),
         )
 
 
