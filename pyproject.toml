@@ -37,7 +37,8 @@ exclude = [
 
 
 [tool.taskipy.tasks]
-test = "pytest -s -v"
-tw   = "pytest-watch -- -v -s --durations=0 --ff"
-lint = "ruff check ."
-lintfix = "ruff . --fix"
+test       = "pytest -s -v"
+test-watch = "pytest-watch -- -v -s --durations=0 --ff"
+lint       = "ruff check ."
+lintfix    = "ruff . --fix"
+pre-commit = "pre-commit install"
