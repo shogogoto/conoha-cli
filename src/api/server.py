@@ -13,6 +13,7 @@ from pytz import timezone
 from .endpoints import Endpoints
 from .environments import env_tenant_id
 from .flavor import Flavor, search_flavor
+from .image import Image, search_image
 from .token import token_headers
 
 
@@ -36,7 +37,7 @@ class Server:
     :param created_at: 作成日時(JST)
     :param updated_at: 更新日時(JST)
     :param status: \[ACTIVE|SHUTOFF|REBOOT\]
-    :param image_id: イメージID
+    :param image: イメージ情報
     :param flavor: コア数などの設定情報
     """
 
@@ -44,7 +45,7 @@ class Server:
     created_at: datetime
     updated_at: datetime
     status: Status
-    image_id: UUID
+    image: Image
     flavor: Flavor
 
     def elapsed_from_created(self) -> timedelta:
@@ -59,14 +60,16 @@ class Server:
 
         :param one: json["servers"]: list[dict]の要素
         """
+        image_id  = UUID(one["image"]["id"])
         flavor_id = UUID(one["flavor"]["id"])
         return Server(
-            ipv4 = one["name"].replace("-", "."),
-            status = Status[one["status"]],
+            ipv4       = one["name"].replace("-", "."),
+            status     = Status[one["status"]],
             created_at = utc2jst(one["created"]),
             updated_at = utc2jst(one["updated"]),
-            image_id = UUID(one["image"]["id"]),
-            flavor = search_flavor(flavor_id),
+            image      = search_image(image_id),
+            flavor     = search_flavor(flavor_id),
+
         )
 
 

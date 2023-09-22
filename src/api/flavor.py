@@ -51,7 +51,6 @@ def list_flavors() -> list[Flavor]:
     return [Flavor.parse(e) for e in res["flavors"]]
 
 
-@cache
 def search_flavor(flavor_id: UUID) -> Flavor:
     """IDからフレーバーを返す.
 
