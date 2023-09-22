@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True)
 class VPSOrder:
-    """aaa."""
+    """VPS請求情報."""
 
     order_id: UUID
     product_name: str
@@ -40,6 +40,6 @@ class VPSOrder:
 
 
 def detail_order(order_id: str) -> VPSOrder:
-    """サーバー設定一覧を取得する."""
+    """請求情報詳細を取得する."""
     res = Endpoints.ACCOUNT.get(f"order-items/{order_id}").json()
     return VPSOrder.parse(res["order_item"])
