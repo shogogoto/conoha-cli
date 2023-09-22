@@ -29,7 +29,8 @@ build-backend = "poetry.core.masonry.api"
 select = ["ALL"]
 
 ignore = [
-  "ANN101" # selfの型注釈いれろ
+  "ANN101", # selfの型注釈いれろ
+  "ANN102"  # clsの型注釈いれろ
   ]
 
 exclude = [
