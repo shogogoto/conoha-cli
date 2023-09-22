@@ -6,12 +6,13 @@ from datetime import datetime, timedelta
 from enum import Enum, auto
 from uuid import UUID
 
-from dateutil import parser
 from pytz import timezone
 
+from .billing import VPSOrder, detail_order
 from .endpoints import Endpoints
 from .flavor import Flavor, search_flavor
 from .image import Image, search_image
+from .util import utc2jst
 
 
 class Status(Enum):
@@ -38,7 +39,7 @@ class Server:
     :param flavor: コア数などの設定情報
     """
 
-    server_id: UUID
+    order: VPSOrder
     ipv4: str
     created_at: datetime
     updated_at: datetime
@@ -58,10 +59,11 @@ class Server:
 
         :param one: json["servers"]: list[dict]の要素
         """
+        server_id = UUID(one["id"])
         image_id  = UUID(one["image"]["id"])
         flavor_id = UUID(one["flavor"]["id"])
         return Server(
-            server_id = UUID(one["id"]),
+            order      = detail_order(server_id),
             ipv4       = one["name"].replace("-", "."),
             status     = Status[one["status"]],
             created_at = utc2jst(one["created"]),
@@ -69,13 +71,6 @@ class Server:
             image      = search_image(image_id),
             flavor     = search_flavor(flavor_id),
         )
-
-
-def utc2jst(utc_str: str) -> datetime:
-    """UTC文字列をJST Datetimeへ変換."""
-    tz = timezone("Asia/Tokyo")
-    return parser.parse(utc_str) \
-            .astimezone(tz)
 
 
 def list_servers() -> list[Server]:
