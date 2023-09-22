@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum, auto
+from uuid import UUID
 
 import requests
 from dateutil import parser
@@ -42,14 +43,29 @@ class Server:
     created_at: datetime
     updated_at: datetime
     status: Status
-    image_id: str
-    flavor_id: str
+    image_id: UUID
+    flavor_id: UUID
 
     def elapsed_from_created(self) -> timedelta:
         """作成時からの経過時間を秒以下を省いて計算する."""
         tz = timezone("Asia/Tokyo")
         n = datetime.now(tz).replace(second=0, microsecond=0)
         return n - self.created_at
+
+    @classmethod
+    def parse(cls, one: dict)-> Server:
+        """HTTPレスポンスからサーバー情報へ変換.
+
+        :param one: json["servers"]: list[dict]の要素
+        """
+        return Server(
+            ipv4 = one["name"].replace("-", "."),
+            status = Status[one["status"]],
+            created_at = utc2jst(one["created"]),
+            updated_at = utc2jst(one["updated"]),
+            image_id = UUID(one["image"]["id"]),
+            flavor_id = UUID(one["flavor"]["id"]),
+        )
 
 
 def utc2jst(utc_str: str) -> datetime:
@@ -59,24 +75,10 @@ def utc2jst(utc_str: str) -> datetime:
             .astimezone(tz)
 
 
-def json2server(one: dict) -> Server:
-    """HTTPレスポンスからサーバー情報へ変換.
-
-    :param one: json["servers"]: list[dict]の要素
-    """
-    return Server(
-        ipv4 = one["name"].replace("-", "."),
-        status = Status[one["status"]],
-        created_at = utc2jst(one["created"]),
-        updated_at = utc2jst(one["updated"]),
-        image_id = one["image"]["id"],
-        flavor_id = one["flavor"]["id"],
-    )
-
-
 def list_servers() -> list[Server]:
     """契約中のサーバー情報一覧を取得する."""
     tid = env_tenant_id()
     url = Endpoints.COMPUTE.url(f"{tid}/servers/detail")
-    res = requests.get(url, headers=token_headers(), timeout=3.0)
-    return [json2server(s) for s in res.json()["servers"]]
+    res = requests.get(url, headers=token_headers(), timeout=3.0) \
+            .json()
+    return [Server.parse(e) for e in res["servers"]]
