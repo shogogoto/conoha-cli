@@ -6,15 +6,12 @@ from datetime import datetime, timedelta
 from enum import Enum, auto
 from uuid import UUID
 
-import requests
 from dateutil import parser
 from pytz import timezone
 
 from .endpoints import Endpoints
-from .environments import env_tenant_id
 from .flavor import Flavor, search_flavor
 from .image import Image, search_image
-from .token import token_headers
 
 
 class Status(Enum):
@@ -41,6 +38,7 @@ class Server:
     :param flavor: コア数などの設定情報
     """
 
+    server_id: UUID
     ipv4: str
     created_at: datetime
     updated_at: datetime
@@ -63,13 +61,13 @@ class Server:
         image_id  = UUID(one["image"]["id"])
         flavor_id = UUID(one["flavor"]["id"])
         return Server(
+            server_id = UUID(one["id"]),
             ipv4       = one["name"].replace("-", "."),
             status     = Status[one["status"]],
             created_at = utc2jst(one["created"]),
             updated_at = utc2jst(one["updated"]),
             image      = search_image(image_id),
             flavor     = search_flavor(flavor_id),
-
         )
 
 
@@ -82,8 +80,5 @@ def utc2jst(utc_str: str) -> datetime:
 
 def list_servers() -> list[Server]:
     """契約中のサーバー情報一覧を取得する."""
-    tid = env_tenant_id()
-    url = Endpoints.COMPUTE.url(f"{tid}/servers/detail")
-    res = requests.get(url, headers=token_headers(), timeout=3.0) \
-            .json()
+    res = Endpoints.COMPUTE.get("servers/detail").json()
     return [Server.parse(e) for e in res["servers"]]

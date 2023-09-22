@@ -5,11 +5,7 @@ from dataclasses import dataclass
 from functools import cache
 from uuid import UUID
 
-import requests
-
 from .endpoints import Endpoints
-from .environments import env_tenant_id
-from .token import token_headers
 
 
 @dataclass(frozen=True)
@@ -42,10 +38,7 @@ class Image:
 @cache
 def list_images() -> list[Image]:
     """イメージ一覧を取得する."""
-    tid = env_tenant_id()
-    url = Endpoints.COMPUTE.url(f"{tid}/images/detail")
-    res = requests.get(url, headers=token_headers(), timeout=3.0) \
-            .json()
+    res = Endpoints.COMPUTE.get("images/detail").json()
     return [Image.parse(e) for e in res["images"]]
 
 

@@ -5,11 +5,7 @@ from dataclasses import dataclass
 from functools import cache
 from uuid import UUID
 
-import requests
-
 from .endpoints import Endpoints
-from .environments import env_tenant_id
-from .token import token_headers
 
 
 @dataclass(frozen=True)
@@ -44,10 +40,7 @@ class Flavor:
 @cache
 def list_flavors() -> list[Flavor]:
     """サーバー設定一覧を取得する."""
-    tid = env_tenant_id()
-    url = Endpoints.COMPUTE.url(f"{tid}/flavors/detail")
-    res = requests.get(url, headers=token_headers(), timeout=3.0) \
-            .json()
+    res = Endpoints.COMPUTE.get("flavors/detail").json()
     return [Flavor.parse(e) for e in res["flavors"]]
 
 
