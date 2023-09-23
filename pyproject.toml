@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "conoha-cli"
+name = "conoha-client"
 version = "0.1.0"
 description = ""
 authors = ["Shogo Goto <gotoadmn0605@gmail.com>"]
