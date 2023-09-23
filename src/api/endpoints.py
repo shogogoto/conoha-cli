@@ -42,14 +42,19 @@ class Endpoints(Enum):
         base = f"https://{p}.{r}.conoha.io/{v}/"
         return urljoin(base, relative)
 
-    def get(self, relative:str) -> requests.Response:
+    def get(self,
+        relative:str,
+        params:dict|None=None,
+        ) -> requests.Response:
         """HTTPリクエストGETを呼ぶ.
 
         :param relative: テナントID以降の文字列
+        :param params: (optional) クエリパラメータ
         """
         base = self.url(env_tenant_id()) + "/"
         url  = urljoin(base, relative)
         return requests.get(
             url,
             headers=token_headers(),
-            timeout=3.0)
+            timeout=3.0,
+            params=params)
