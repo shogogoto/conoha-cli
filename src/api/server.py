@@ -2,17 +2,18 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta
 from enum import Enum, auto
+from typing import TYPE_CHECKING
 from uuid import UUID
-
-from pytz import timezone
 
 from .billing import VPSOrder, detail_order
 from .endpoints import Endpoints
 from .flavor import Flavor, search_flavor
 from .image import Image, search_image
-from .util import utc2jst
+from .util import now_jst, utc2jst
+
+if TYPE_CHECKING:
+    from datetime import datetime, timedelta
 
 
 class Status(Enum):
@@ -49,9 +50,7 @@ class Server:
 
     def elapsed_from_created(self) -> timedelta:
         """作成時からの経過時間を秒以下を省いて計算する."""
-        tz = timezone("Asia/Tokyo")
-        n = datetime.now(tz).replace(second=0, microsecond=0)
-        return n - self.created_at
+        return now_jst() - self.created_at
 
     @classmethod
     def parse(cls, one: dict)-> Server:
