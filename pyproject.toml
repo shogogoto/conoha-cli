@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "conoha-client"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["Shogo Goto <gotoadmn0605@gmail.com>"]
 readme = "README.md"
