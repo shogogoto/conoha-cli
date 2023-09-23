@@ -4,7 +4,10 @@ from __future__ import annotations
 from enum import Enum
 from urllib.parse import urljoin
 
-from .environments import env_region
+import requests
+
+from .environments import env_region, env_tenant_id
+from .token import token_headers
 
 
 class Endpoints(Enum):
@@ -29,9 +32,29 @@ class Endpoints(Enum):
         self.version = version
 
     def url(self, relative:str)->str:
-        """エンドポイントを組み立てる."""
+        """エンドポイントを組み立てる.
+
+        :param relative: baseURL以降の文字列
+        """
         p = self.prefix
         r = env_region()
         v = self.version
         base = f"https://{p}.{r}.conoha.io/{v}/"
         return urljoin(base, relative)
+
+    def get(self,
+        relative:str,
+        params:dict|None=None,
+        ) -> requests.Response:
+        """HTTPリクエストGETを呼ぶ.
+
+        :param relative: テナントID以降の文字列
+        :param params: (optional) クエリパラメータ
+        """
+        base = self.url(env_tenant_id()) + "/"
+        url  = urljoin(base, relative)
+        return requests.get(
+            url,
+            headers=token_headers(),
+            timeout=3.0,
+            params=params)
