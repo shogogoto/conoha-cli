@@ -6,8 +6,7 @@ from uuid import UUID
 
 from pydantic.dataclasses import dataclass
 
-from .endpoints import Endpoints
-from .util import utc2jst
+from conoha_client.features.share import Endpoints, utc2jst
 
 
 @dataclass(frozen=True)

@@ -7,11 +7,11 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
+from conoha_client.features.share import Endpoints, now_jst, utc2jst
+
 from .billing import VPSOrder, detail_order
-from .endpoints import Endpoints
 from .flavor import Flavor, search_flavor
 from .image import Image, search_image
-from .util import now_jst, utc2jst
 
 
 class Status(Enum):

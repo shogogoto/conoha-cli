@@ -5,7 +5,7 @@ from click_shell import shell
 from flatten_dict import flatten
 from tabulate import tabulate
 
-from .api import server as s_api
+from .features.list_servers import list_servers
 
 
 # @click.group()
@@ -30,8 +30,8 @@ def _list() -> None:
     """契約中サーバー一覧取得コマンド."""
     import json
 
-    res = [flatten(json.loads(s.json()), reducer="dot") for s in s_api.list_servers()]
-    for s in s_api.list_servers():
+    res = [flatten(json.loads(s.json()), reducer="dot") for s in list_servers()]
+    for s in list_servers():
         print(s.model_dump_json(indent=2)) # noqa: T201
     print(tabulate(res, headers="keys", showindex=True)) #noqa: T201
 
