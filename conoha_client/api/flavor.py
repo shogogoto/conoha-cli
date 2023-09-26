@@ -1,9 +1,10 @@
 """サーバー設定情報."""
 from __future__ import annotations
 
-from dataclasses import dataclass
 from functools import cache
 from uuid import UUID
+
+from pydantic.dataclasses import dataclass
 
 from .endpoints import Endpoints
 

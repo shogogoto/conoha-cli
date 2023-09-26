@@ -1,19 +1,17 @@
 """契約中サーバー情報."""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from datetime import datetime, timedelta
 from enum import Enum, auto
-from typing import TYPE_CHECKING
 from uuid import UUID
+
+from pydantic.dataclasses import dataclass
 
 from .billing import VPSOrder, detail_order
 from .endpoints import Endpoints
 from .flavor import Flavor, search_flavor
 from .image import Image, search_image
 from .util import now_jst, utc2jst
-
-if TYPE_CHECKING:
-    from datetime import datetime, timedelta
 
 
 class Status(Enum):
@@ -26,7 +24,6 @@ class Status(Enum):
     def is_shutoff(self) -> bool:
         """シャットダウン済みか否か."""
         return self == Status.SHUTOFF
-
 
 @dataclass(frozen=True)
 class Server:
@@ -75,4 +72,5 @@ class Server:
 def list_servers() -> list[Server]:
     """契約中のサーバー情報一覧を取得する."""
     res = Endpoints.COMPUTE.get("servers/detail").json()
-    return [Server.parse(e) for e in res["servers"]]
+    servers: list[Server] = [Server.parse(e) for e in res["servers"]]
+    return servers

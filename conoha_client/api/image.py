@@ -1,9 +1,10 @@
 """イメージ一覧取得."""
 from __future__ import annotations
 
-from dataclasses import dataclass
 from functools import cache
 from uuid import UUID
+
+from pydantic.dataclasses import dataclass
 
 from .endpoints import Endpoints
 
@@ -18,7 +19,7 @@ class Image:
     """
 
     image_id: UUID
-    app: str
+    app: str|None
     os: str
 
     @classmethod
