@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "conoha-cli"
-version = "0.1.0"
+name = "conoha-client"
+version = "0.1.1"
 description = ""
 authors = ["Shogo Goto <gotoadmn0605@gmail.com>"]
 readme = "README.md"
@@ -9,6 +9,11 @@ readme = "README.md"
 python = "^3.10"
 python-openstackclient = "^6.2.0"
 python-dateutil = "^2.8.2"
+click = "^8.1.7"
+tabulate = "^0.9.0"
+click-shell = "^2.1"
+pydantic = "^2.4.0"
+flatten-dict = "^0.4.2"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -21,6 +26,9 @@ taskipy = "^1.12.0"
 ruff-lsp = "^0.0.39"
 pre-commit = "^3.4.0"
 
+[tool.poetry.scripts]
+conoha-client = "conoha_client.pra:main"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
@@ -30,7 +38,8 @@ select = ["ALL"]
 
 ignore = [
   "ANN101", # selfの型注釈いれろ
-  "ANN102"  # clsの型注釈いれろ
+  "ANN102", # clsの型注釈いれろ
+  "TCH003"  # なんか from datetime がtype_checking blockに入れられる
   ]
 
 exclude = [

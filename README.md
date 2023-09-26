@@ -2,7 +2,7 @@
 
 ## リポジトリのインストール
 ```bash
-git clone https://github.com/shogogoto/conoha-cli.git
+git clone https://github.com/shogogoto/conoha-client.git
 ```
 
 ## パッケージのインストール

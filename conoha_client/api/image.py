@@ -1,15 +1,15 @@
 """イメージ一覧取得."""
 from __future__ import annotations
 
-from dataclasses import dataclass
 from functools import cache
 from uuid import UUID
+
+from pydantic import BaseModel
 
 from .endpoints import Endpoints
 
 
-@dataclass(frozen=True)
-class Image:
+class Image(BaseModel, frozen=True):
     """VPSイメージ.
 
     :param image_id: イメージID
@@ -18,7 +18,7 @@ class Image:
     """
 
     image_id: UUID
-    app: str
+    app: str|None
     os: str
 
     @classmethod
