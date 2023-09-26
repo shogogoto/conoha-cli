@@ -4,13 +4,12 @@ from __future__ import annotations
 from functools import cache
 from uuid import UUID
 
-from pydantic.dataclasses import dataclass
+from pydantic import BaseModel
 
 from .endpoints import Endpoints
 
 
-@dataclass(frozen=True)
-class Flavor:
+class Flavor(BaseModel, frozen=True):
     """サーバー設定情報.
 
     :param flavor_id: フレーバーID

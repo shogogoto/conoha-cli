@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from enum import Enum, auto
 from uuid import UUID
 
-from pydantic.dataclasses import dataclass
+from pydantic import BaseModel
 
 from .billing import VPSOrder, detail_order
 from .endpoints import Endpoints
@@ -25,8 +25,7 @@ class Status(Enum):
         """シャットダウン済みか否か."""
         return self == Status.SHUTOFF
 
-@dataclass(frozen=True)
-class Server:
+class Server(BaseModel, frozen=True):
     r"""契約中のサーバー.
 
     :param ipv4: 固定IPアドレス
