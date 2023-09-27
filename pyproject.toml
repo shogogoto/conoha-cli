@@ -41,11 +41,6 @@ ignore = [
   "TCH003"  # なんか from datetime がtype_checking blockに入れられる
   ]
 
-exclude = [
-  "test_*"
-  ]
-
-
 [tool.taskipy.tasks]
 test       = "pytest -s -v"
 test-watch = "pytest-watch -- -v -s --durations=0 --ff"
