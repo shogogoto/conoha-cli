@@ -42,6 +42,14 @@ class Endpoints(Enum):
         base = f"https://{p}.{r}.conoha.io/{v}/"
         return urljoin(base, relative)
 
+    def tenant_id_url(self, relative: str) -> str:
+        """Tenant id付きエンドポイントを組み立てる.
+
+        :param relative: baseURL以降の文字列
+        """
+        url = self.url(env_tenant_id())
+        return urljoin(f"{url}/", relative)
+
     def get(
         self,
         relative: str,
@@ -52,10 +60,8 @@ class Endpoints(Enum):
         :param relative: テナントID以降の文字列
         :param params: (optional) クエリパラメータ
         """
-        base = self.url(env_tenant_id()) + "/"
-        url = urljoin(base, relative)
+        url = self.tenant_id_url(relative)
         return requests.get(url, headers=token_headers(), timeout=3.0, params=params)
 
     # def post(self, relative:str) -> requests.Response
     #     """HTTPリクエストPOSTを呼ぶ."""
-

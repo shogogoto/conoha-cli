@@ -24,7 +24,7 @@ class Flavor(BaseModel, frozen=True):
     disk_gb: int
 
     @classmethod
-    def parse(cls, one: dict)-> Flavor:
+    def parse(cls, one: dict) -> Flavor:
         """HTTPレスポンスからフレーバー情報へ変換.
 
         :param one: json["flavors"]: list[dict]の要素
@@ -49,7 +49,8 @@ def search_flavor(flavor_id: UUID) -> Flavor:
 
     :param flavor_id: フレーバーID
     """
-    def pred(e:Flavor) -> bool:
+
+    def pred(e: Flavor) -> bool:
         return e.flavor_id == flavor_id
 
     result = filter(pred, list_flavors())
