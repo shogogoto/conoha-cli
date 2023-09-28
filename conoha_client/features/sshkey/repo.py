@@ -5,7 +5,7 @@ from http import HTTPStatus
 
 from conoha_client.features._shared import Endpoints
 
-from .domain import KeyPair, KeyPairAlreadyExistsError
+from .domain import KeyPair, KeyPairAlreadyExistsError, KeyPairNotFoundError
 
 
 def find_all() -> list[KeyPair]:
@@ -34,3 +34,14 @@ def create_keypair() -> KeyPair:
         raise KeyPairAlreadyExistsError(msg)
 
     return KeyPair.model_validate(res.json()["keypair"])
+
+
+def remove_keypair(name: str) -> None:
+    """sshキー削除.
+
+    :param name: 削除したいキーペア名
+    """
+    res = Endpoints.COMPUTE.delete(f"os-keypairs/{name}")
+    if res.status_code == HTTPStatus.NOT_FOUND:
+        msg = f"{name}キーペアが存在しないため、削除できませんでした"
+        raise KeyPairNotFoundError(msg)

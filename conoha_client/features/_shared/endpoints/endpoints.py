@@ -78,3 +78,11 @@ class Endpoints(Enum):
         """
         url = self.tenant_id_url(relative)
         return requests.post(url, headers=token_headers(), timeout=TIMEOUT, json=json)
+
+    def delete(self, relative: str) -> requests.Response:
+        """HTTP DELETEリクエスト.
+
+        :param relative: テナントID以降の文字列
+        """
+        url = self.tenant_id_url(relative)
+        return requests.delete(url, headers=token_headers(), timeout=TIMEOUT)

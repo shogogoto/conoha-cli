@@ -40,3 +40,7 @@ class KeyPair(BaseModel):
 
 class KeyPairAlreadyExistsError(Exception):
     """既に同一名のssh公開鍵が登録されている."""
+
+
+class KeyPairNotFoundError(Exception):
+    """sshキーペアが見つからない."""
