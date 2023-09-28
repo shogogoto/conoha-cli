@@ -1,13 +1,10 @@
 """ssh鍵CLI."""
 
-from http import HTTPStatus
-from pathlib import Path
+from pprint import pprint
 
 import click
 
-from conoha_client.features._shared import Endpoints, now_jst
-
-from .repo import find_all
+from .repo import create_keypair, find_all
 
 
 @click.group(name="sshkey")
@@ -18,24 +15,16 @@ def sshkey_cli() -> None:
 @sshkey_cli.command(name="list")
 def _list() -> None:
     """キーペア一覧."""
-    click.echo(find_all())
-
-
-class KeyPairAlreadyExistsError(Exception):
-    """既に同一名のssh公開鍵が登録されている."""
+    pprint(find_all())  # noqa: T203
 
 
 @sshkey_cli.command()
 def create() -> None:
     """秘密鍵生成."""
-    stamp = now_jst().strftime("%Y-%m-%d-%H-%M")
-    body = {"keypair": {"name": f"conoha-client-{stamp}"}}
-    res = Endpoints.COMPUTE.post("os-keypairs", json=body)
-    if res.status_code == HTTPStatus.CONFLICT:
-        raise KeyPairAlreadyExistsError
-    p = Path(f"id_rsa-{stamp}")
-    click.echo(res.json())
-    p.write_text(res.json()["keypair"]["private_key"])
+    kp = create_keypair()
+    kp.write()
+    msg = f"{kp.name}の公開鍵を登録し、秘密鍵をファイル出力しました"
+    click.echo(msg)
 
 
 @sshkey_cli.command()
