@@ -1,4 +1,4 @@
 """cli表示."""
-from .domain import view
+from .domain import view_options
 
-__all__ = ["view"]
+__all__ = ["view_options"]

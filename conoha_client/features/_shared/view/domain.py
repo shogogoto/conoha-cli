@@ -1,21 +1,23 @@
 """CLI表示用モデル変換."""
 from __future__ import annotations
 
+import functools
 import json
-from typing import TYPE_CHECKING, Callable, Literal, ParamSpec, TypeVar
+from typing import Callable, Literal, ParamSpec, TypeVar
 
 import click
+from pydantic import BaseModel
 from tabulate import tabulate
-
-if TYPE_CHECKING:
-    from pydantic import BaseModel
 
 
 class ExtraKeyError(Exception):
     """View表示keysにモデルプロパィにない値が指定された."""
 
 
-def model_filter(model: BaseModel, keys: set[str] | None = None) -> dict:
+R = TypeVar("R", bound=BaseModel)
+
+
+def model_filter(model: R, keys: set[str] | None = None) -> dict:
     """モデルから特定のプロパティのみのjsonへ変換.
 
     :param model: (BaseModel)ドメインモデル
@@ -27,16 +29,21 @@ def model_filter(model: BaseModel, keys: set[str] | None = None) -> dict:
         keys = all_keys
     extra = keys - all_keys
     if len(extra) > 0:
-        exkeys = ",".join(extra)
-        msg = f"{exkeys}は{model.__class__}に含まれていないプロパティです"
+        msg = (
+            f"{extra}は{model.__class__}に含まれていないキーです."
+            f"{all_keys}に含まれるキーのみを入力してください"
+        )
         raise ExtraKeyError(msg)
     return model.model_dump(mode="json", include=keys)
 
 
+Style = Literal["json", "table"]
+
+
 def view(
-    models: list[BaseModel],
+    models: list[R],
     keys: set[str] | None,
-    style: Literal["json", "table"] = "table",
+    style: Style = "table",
 ) -> None:
     """Print models.
 
@@ -53,13 +60,25 @@ def view(
 
 
 P = ParamSpec("P")
-R = TypeVar("R")
 
 
-def list_options(func: Callable[P, R]) -> Callable[P, R]:
-    """一覧表示系の共通オプション."""
+def view_options(func: Callable[P, list[R]]) -> Callable[P, None]:
+    """一覧表示系の共通オプション.
 
-    def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
-        return func(*args, **kwargs)
+    参考: https://qiita.com/ainamori/items/5e68ec8dde4a46da104d
+    """
+
+    @click.option("--style", type=click.Choice(["table", "json"]), default="table")
+    @click.argument("keys", nargs=-1)
+    @functools.wraps(func)
+    def wrapper(
+        keys: set[str],
+        style: Style,
+        *args: P.args,
+        **kwargs: P.kwargs,
+    ) -> None:
+        models = func(*args, **kwargs)
+        _keys = set(keys) if len(keys) > 0 else None
+        view(models, _keys, style)
 
     return wrapper

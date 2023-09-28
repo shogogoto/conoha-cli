@@ -1,11 +1,16 @@
 """ssh鍵CLI."""
+from __future__ import annotations
 
+from typing import TYPE_CHECKING
 
 import click
 
-from conoha_client.features._shared.view import view
+from conoha_client.features._shared.view.domain import view_options
 
 from .repo import create_keypair, find_all
+
+if TYPE_CHECKING:
+    from conoha_client.features.sshkey.domain import KeyPair
 
 
 @click.group(name="sshkey")
@@ -14,10 +19,13 @@ def sshkey_cli() -> None:
 
 
 @sshkey_cli.command(name="ls")
-def _list() -> None:
+@view_options
+def _list() -> list[KeyPair]:
     """キーペア一覧."""
-    view(find_all(), keys=None, style="json")
-    view(find_all(), keys={"name"}, style="table")
+    return find_all()
+    # view(models, keys=None, style="json")
+    # view(models, keys={"name"}, style="table")
+    # return None
 
 
 @sshkey_cli.command()
