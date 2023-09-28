@@ -3,7 +3,7 @@
 
 from _pytest.monkeypatch import MonkeyPatch
 
-from conoha_client.features.share.endpoints import Endpoints
+from .endpoints import Endpoints
 
 
 def test_url(monkeypatch: MonkeyPatch) -> None:

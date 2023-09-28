@@ -5,7 +5,7 @@ import os
 import pytest
 from _pytest.monkeypatch import MonkeyPatch
 
-from conoha_client.features.share import environments
+from . import environments
 
 
 @pytest.mark.parametrize(
