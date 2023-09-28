@@ -41,7 +41,8 @@ ignore = [
   "ANN102", # clsの型注釈いれろ
   "TCH003", # なんか from datetime がtype_checking blockに入れられる
   "ERA001", # commented-out codeを残す
-  "S101"    # assertを許可したい
+  "S101",   # assertを許可したい
+  "FBT001"  # 関数の引数にboolを禁止するのはやりすぎだと思う
   ]
 
 [tool.taskipy.tasks]

@@ -40,26 +40,18 @@ def model_filter(model: R, keys: set[str] | None = None) -> dict:
 Style = Literal["json", "table"]
 
 
-def view(
-    models: list[R],
-    keys: set[str] | None,
-    style: Style = "table",
-) -> None:
-    """Print models.
-
-    :param models: domain model list
-    :param keys: property names for filter
-    :param style: print style: json or table
-    """
-    js = [model_filter(m, keys) for m in models]
-    if style == "json":
-        txt = json.dumps(js, indent=2)
-    elif style == "table":
-        txt = tabulate(js, headers="keys", showindex=True)
-    click.echo(txt)
-
-
 P = ParamSpec("P")
+
+
+def _tabulate(js: list[dict], pass_command: bool) -> str:
+    """jsonリストをテーブル形式文字列へ変換.
+
+    :param js: jsoable list
+    :param pass_command: disable decoration of table view for passing stdout by pipeline
+    """
+    if pass_command:
+        return tabulate(js, headers=(), tablefmt="plain", showindex=False)
+    return tabulate(js, headers="keys", showindex=True)
 
 
 def view_options(func: Callable[P, list[R]]) -> Callable[P, None]:
@@ -68,17 +60,37 @@ def view_options(func: Callable[P, list[R]]) -> Callable[P, None]:
     参考: https://qiita.com/ainamori/items/5e68ec8dde4a46da104d
     """
 
-    @click.option("--style", type=click.Choice(["table", "json"]), default="table")
     @click.argument("keys", nargs=-1)
+    @click.option(
+        "--style",
+        "-s",
+        type=click.Choice(["table", "json"]),
+        default="table",
+        help="print style",
+    )
+    @click.option(
+        "--pass-command",
+        "-p",
+        is_flag=True,
+        default=False,
+        help="他のコマンドに渡しやすいようにtable viewの装飾をなくす",
+    )
     @functools.wraps(func)
     def wrapper(
         keys: set[str],
         style: Style,
+        pass_command: bool,
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> None:
-        models = func(*args, **kwargs)
         _keys = set(keys) if len(keys) > 0 else None
-        view(models, _keys, style)
+        models = func(*args, **kwargs)
+        js = [model_filter(m, _keys) for m in models]
+
+        if style == "json":
+            txt = json.dumps(js, indent=2)
+        elif style == "table":
+            txt = _tabulate(js, pass_command)
+        click.echo(txt)
 
     return wrapper
