@@ -6,7 +6,7 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
-from conoha_client.features.share import Endpoints
+from conoha_client.features._shared import Endpoints
 
 
 class Image(BaseModel, frozen=True):
@@ -18,11 +18,11 @@ class Image(BaseModel, frozen=True):
     """
 
     image_id: UUID
-    app: str|None
+    app: str | None
     os: str
 
     @classmethod
-    def parse(cls, one: dict)-> Image:
+    def parse(cls, one: dict) -> Image:
         """HTTPレスポンスからイメージ情報へ変換.
 
         :param one: json["images"]: list[dict]の要素
@@ -47,7 +47,8 @@ def search_image(image_id: UUID) -> Image:
 
     :param image_id: フレーバーID
     """
-    def pred(e:Image) -> bool:
+
+    def pred(e: Image) -> bool:
         return e.image_id == image_id
 
     result = filter(pred, list_images())

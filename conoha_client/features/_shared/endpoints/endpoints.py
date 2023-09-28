@@ -9,6 +9,8 @@ import requests
 from .environments import env_region, env_tenant_id
 from .token import token_headers
 
+TIMEOUT = 3.0
+
 
 class Endpoints(Enum):
     """Conoha APIのエンドポイントとバージョン情報のペア.
@@ -55,13 +57,24 @@ class Endpoints(Enum):
         relative: str,
         params: dict | None = None,
     ) -> requests.Response:
-        """HTTPリクエストGETを呼ぶ.
+        """HTTP GETリクエスト.
 
         :param relative: テナントID以降の文字列
         :param params: (optional) クエリパラメータ
         """
         url = self.tenant_id_url(relative)
-        return requests.get(url, headers=token_headers(), timeout=3.0, params=params)
+        return requests.get(
+            url,
+            headers=token_headers(),
+            timeout=TIMEOUT,
+            params=params,
+        )
 
-    # def post(self, relative:str) -> requests.Response
-    #     """HTTPリクエストPOSTを呼ぶ."""
+    def post(self, relative: str, json: object) -> requests.Response:
+        """HTTP POSTリクエスト.
+
+        :param relative: テナントID以降の文字列
+        :param json: リクエストボディ(jsonable object)
+        """
+        url = self.tenant_id_url(relative)
+        return requests.post(url, headers=token_headers(), timeout=TIMEOUT, json=json)

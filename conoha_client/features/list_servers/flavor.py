@@ -6,7 +6,7 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
-from conoha_client.features.share import Endpoints
+from conoha_client.features._shared import Endpoints
 
 
 class Flavor(BaseModel, frozen=True):

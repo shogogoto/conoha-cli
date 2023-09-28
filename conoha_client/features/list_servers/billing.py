@@ -6,7 +6,7 @@ from uuid import UUID
 
 from pydantic.dataclasses import dataclass
 
-from conoha_client.features.share import Endpoints, utc2jst
+from conoha_client.features._shared import Endpoints, utc2jst
 
 
 @dataclass(frozen=True)
@@ -21,13 +21,13 @@ class VPSOrder:
     status: str
 
     @classmethod
-    def parse(cls, one:dict) -> VPSOrder:
+    def parse(cls, one: dict) -> VPSOrder:
         """HTTPレスポンスから請求情報へ変換.
 
         :param one: json["order_items"]: list[dict]の要素
         """
         return VPSOrder(
-            order_id = UUID(one["uu_id"]),
+            order_id=UUID(one["uu_id"]),
             product_name=one["product_name"],
             service_name=one["service_name"],
             billing_at=utc2jst(one["bill_start_date"]),
@@ -38,9 +38,7 @@ class VPSOrder:
 
 def detail_order(order_id: str) -> VPSOrder:
     """請求情報詳細を取得する."""
-    res = Endpoints.ACCOUNT \
-            .get(f"order-items/{order_id}") \
-            .json()
+    res = Endpoints.ACCOUNT.get(f"order-items/{order_id}").json()
     return VPSOrder.parse(res["order_item"])
 
 
@@ -52,9 +50,7 @@ def payment_history() -> dict:
         "money_type",
         "received_data"}]
     """
-    return Endpoints.ACCOUNT \
-            .get("payment-history") \
-            .json()["payment_history"]
+    return Endpoints.ACCOUNT.get("payment-history").json()["payment_history"]
 
 
 def payment_total() -> dict:
@@ -62,14 +58,10 @@ def payment_total() -> dict:
 
     :return: {"total_deposit_amount"}
     """
-    return Endpoints.ACCOUNT \
-            .get("payment-summary") \
-            .json()["payment_summary"]
+    return Endpoints.ACCOUNT.get("payment-summary").json()["payment_summary"]
 
 
-def billing_invoices(
-    offset:int|None=0,
-    limit:int|None=1000) -> dict:
+def billing_invoices(offset: int | None = 0, limit: int | None = 1000) -> dict:
     r"""課金一覧.
 
     https://www.conoha.jp/docs/account-billing-invoices-list.php
@@ -83,12 +75,10 @@ def billing_invoices(
           "payment_method_type"\: "Charge"}]
     """
     params = {
-        "offset":offset,
-        "limit":limit,
+        "offset": offset,
+        "limit": limit,
     }
-    return Endpoints.ACCOUNT \
-            .get("billing-invoices", params) \
-            .json()["billing_invoices"]
+    return Endpoints.ACCOUNT.get("billing-invoices", params).json()["billing_invoices"]
 
 
 def detail_invoice(invoice_id: str) -> dict:
@@ -113,6 +103,6 @@ def detail_invoice(invoice_id: str) -> dict:
                     'unit_price': 1}],
          'payment_method_type': 'Charge'}
     """
-    return Endpoints.ACCOUNT \
-            .get(f"billing-invoices/{invoice_id}") \
-            .json()["billing_invoice"]
+    return Endpoints.ACCOUNT.get(f"billing-invoices/{invoice_id}").json()[
+        "billing_invoice"
+    ]

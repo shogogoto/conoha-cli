@@ -7,7 +7,7 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
-from conoha_client.features.share import Endpoints, now_jst, utc2jst
+from conoha_client.features._shared import Endpoints, now_jst, utc2jst
 
 from .billing import VPSOrder, detail_order
 from .flavor import Flavor, search_flavor
@@ -17,13 +17,14 @@ from .image import Image, search_image
 class Status(Enum):
     """契約中Serverの状態."""
 
-    ACTIVE  = auto()
+    ACTIVE = auto()
     SHUTOFF = auto()
-    REBOOT  = auto()
+    REBOOT = auto()
 
     def is_shutoff(self) -> bool:
         """シャットダウン済みか否か."""
         return self == Status.SHUTOFF
+
 
 class Server(BaseModel, frozen=True):
     r"""契約中のサーバー.
@@ -49,22 +50,22 @@ class Server(BaseModel, frozen=True):
         return now_jst() - self.created_at
 
     @classmethod
-    def parse(cls, one: dict)-> Server:
+    def parse(cls, one: dict) -> Server:
         """HTTPレスポンスからサーバー情報へ変換.
 
         :param one: json["servers"]: list[dict]の要素
         """
         server_id = UUID(one["id"])
-        image_id  = UUID(one["image"]["id"])
+        image_id = UUID(one["image"]["id"])
         flavor_id = UUID(one["flavor"]["id"])
         return Server(
-            order      = detail_order(server_id),
-            ipv4       = one["name"].replace("-", "."),
-            status     = Status[one["status"]],
-            created_at = utc2jst(one["created"]),
-            updated_at = utc2jst(one["updated"]),
-            image      = search_image(image_id),
-            flavor     = search_flavor(flavor_id),
+            order=detail_order(server_id),
+            ipv4=one["name"].replace("-", "."),
+            status=Status[one["status"]],
+            created_at=utc2jst(one["created"]),
+            updated_at=utc2jst(one["updated"]),
+            image=search_image(image_id),
+            flavor=search_flavor(flavor_id),
         )
 
 
