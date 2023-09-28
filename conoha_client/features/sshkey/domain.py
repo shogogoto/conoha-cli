@@ -18,24 +18,19 @@ class KeyPair(BaseModel):
     private_key: str | None = None
 
     @property
-    def stamp(self) -> str:
+    def timestamp(self) -> str:
         """キーペア名のタイムスタンプ部分を返す."""
         return self.name.replace(f"{NAME_PREFIX}-", "")
-
-    @staticmethod
-    def stamp_now() -> str:
-        """JST現在時刻スタンプ."""
-        return now_jst().strftime("%Y-%m-%d-%H-%M")
 
     @classmethod
     def publish_name(cls) -> str:
         """新規登録用キーペア名を作成."""
-        s = cls.stamp_now()
+        s = now_jst().strftime("%Y-%m-%d-%H-%M")
         return f"{NAME_PREFIX}-{s}"
 
     def write(self, path: str = "./") -> None:
         """キーペアをファイル出力する."""
-        pri = Path(path) / f"id_rsa-{self.stamp}"
+        pri = Path(path) / f"id_rsa-{self.timestamp}"
         pub = pri.with_suffix(".pub")
         pub.write_text(self.public_key)
 
