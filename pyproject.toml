@@ -39,7 +39,8 @@ select = ["ALL"]
 ignore = [
   "ANN101", # selfの型注釈いれろ
   "ANN102", # clsの型注釈いれろ
-  "TCH003"  # なんか from datetime がtype_checking blockに入れられる
+  "TCH003", # なんか from datetime がtype_checking blockに入れられる
+  "ERA001"  # commented-out codeを残す
   ]
 
 [tool.taskipy.tasks]
