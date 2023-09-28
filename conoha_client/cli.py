@@ -5,7 +5,7 @@ from click_shell import shell
 from flatten_dict import flatten
 from tabulate import tabulate
 
-from conoha_client.features.keypars import tmp
+from conoha_client.features import sshkey_cli
 
 from .features.list_servers import list_servers
 
@@ -25,11 +25,11 @@ def greet(greet: str, to: str) -> None:
 
 
 @click.group()
-def server() -> None:
-    """server関連."""
+def vm_cli() -> None:
+    """VM関連."""
 
 
-@server.command(name="list")
+@vm_cli.command(name="list")
 def _list() -> None:
     """契約中サーバー一覧取得コマンド."""
     import json
@@ -49,6 +49,6 @@ def main() -> None:
     """CLI設定用."""
     cli.add_command(greet)
     cli.add_command(billing)
-    cli.add_command(server)
-    cli.add_command(tmp)
+    cli.add_command(vm_cli)
+    cli.add_command(sshkey_cli)
     cli()
