@@ -3,8 +3,8 @@
 ref: https://www.conoha.jp/docs/?btn_id=docs--sidebar_docs
 """
 
-from .server import list_servers
+from .cli import vm_cli
 
 __all__ = [
-    "list_servers",
+    "vm_cli",
 ]
