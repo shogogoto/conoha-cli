@@ -1,11 +1,12 @@
 """ssh鍵CLI."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import sys
+from typing import TYPE_CHECKING, TextIO
 
 import click
 
-from conoha_client.features._shared.view.domain import view_options
+from conoha_client.features._shared import view_options
 
 from .repo import create_keypair, find_all
 
@@ -38,9 +39,9 @@ def create(out_dir: str) -> None:
     click.echo(msg)
 
 
-@sshkey_cli.command()
-def remove() -> None:
+@sshkey_cli.command(name="rm")
+@click.argument("file", type=click.File("r"), default=sys.stdin)
+def remove(file: TextIO) -> None:
     """登録済み公開鍵削除."""
-    body = click.get_text_stream("stdin").read()
-    click.echo("###############")
-    click.echo(body)
+    for line in file:
+        click.echo(line)
