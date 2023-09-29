@@ -3,8 +3,8 @@
 ref: https://www.conoha.jp/docs/?btn_id=docs--sidebar_docs
 """
 
-from .cli import vm_cli
+from .cli import list_vm_cli
 
 __all__ = [
-    "vm_cli",
+    "list_vm_cli",
 ]

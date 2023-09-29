@@ -13,13 +13,8 @@ if TYPE_CHECKING:
     from .domain import Server
 
 
-@click.group(name="vm")
-def vm_cli() -> None:
-    """VM関連."""
-
-
-@vm_cli.command(name="ls")
+@click.command(name="ls")
 @view_options
-def _list() -> list[Server]:
+def list_vm_cli() -> list[Server]:
     """契約中サーバー一覧取得コマンド."""
     return list_servers()
