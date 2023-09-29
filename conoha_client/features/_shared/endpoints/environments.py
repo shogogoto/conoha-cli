@@ -42,6 +42,7 @@ def env_region() -> str:
 
     return f"tyo{no_str}"
 
+
 def env_tenant_id() -> str:
     """ConoHa VPSのテナントIDを環境変数から取得する."""
     try:
