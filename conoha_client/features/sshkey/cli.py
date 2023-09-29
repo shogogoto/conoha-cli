@@ -44,7 +44,13 @@ def add(out_dir: str) -> None:
 
 @sshkey_cli.command(name="rm")
 @click.argument("names", nargs=-1)
-@click.option("--file", "-f", type=click.File("r"), default=sys.stdin)
+@click.option(
+    "--file",
+    "-f",
+    type=click.File("r"),
+    default=sys.stdin,
+    help="defaultで標準入力をnamesに追加する",
+)
 def remove(names: tuple[str], file: TextIO) -> None:
     """登録済み公開鍵削除."""
     _names = list(names)
