@@ -4,6 +4,7 @@ import click
 from click_shell import shell
 
 from conoha_client.features import sshkey_cli, vm_cli
+from conoha_client.features.billing.cli import billing_cli
 from conoha_client.features.vm_image.cli import vm_image_cli
 from conoha_client.features.vm_plan.cli import vm_plan_cli
 
@@ -29,4 +30,5 @@ def main() -> None:
     vm_cli.add_command(vm_image_cli)
     cli.add_command(vm_cli)
     cli.add_command(sshkey_cli)
+    cli.add_command(billing_cli)
     cli()
