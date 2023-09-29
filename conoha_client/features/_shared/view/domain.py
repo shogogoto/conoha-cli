@@ -37,12 +37,6 @@ def model_filter(model: R, keys: set[str] | None = None) -> dict:
     return model.model_dump(mode="json", include=keys)
 
 
-Style = Literal["json", "table"]
-
-
-P = ParamSpec("P")
-
-
 def _tabulate(js: list[dict], pass_command: bool) -> str:
     """jsonリストをテーブル形式文字列へ変換.
 
@@ -52,6 +46,28 @@ def _tabulate(js: list[dict], pass_command: bool) -> str:
     if pass_command:
         return tabulate(js, headers=(), tablefmt="plain", showindex=False)
     return tabulate(js, headers="keys", showindex=True)
+
+
+def view(
+    models: list[R],
+    keys: set[str],
+    style: Style,
+    pass_command: bool,
+) -> None:
+    _keys = set(keys) if len(keys) > 0 else None
+    js = [model_filter(m, _keys) for m in models]
+
+    if style == "json":
+        txt = json.dumps(js, indent=2)
+    elif style == "table":
+        txt = _tabulate(js, pass_command)
+    click.echo(txt)
+
+
+Style = Literal["json", "table"]
+
+
+P = ParamSpec("P")
 
 
 def view_options(func: Callable[P, list[R]]) -> Callable[P, None]:
@@ -83,14 +99,7 @@ def view_options(func: Callable[P, list[R]]) -> Callable[P, None]:
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> None:
-        _keys = set(keys) if len(keys) > 0 else None
         models = func(*args, **kwargs)
-        js = [model_filter(m, _keys) for m in models]
-
-        if style == "json":
-            txt = json.dumps(js, indent=2)
-        elif style == "table":
-            txt = _tabulate(js, pass_command)
-        click.echo(txt)
+        view(models, keys, style, pass_command)
 
     return wrapper
