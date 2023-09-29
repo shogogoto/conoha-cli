@@ -5,8 +5,8 @@ from click_shell import shell
 
 from conoha_client.features import sshkey_cli, vm_cli
 from conoha_client.features.billing.cli import billing_cli
-from conoha_client.features.vm_image.cli import vm_image_cli
-from conoha_client.features.vm_plan.cli import vm_plan_cli
+from conoha_client.features.image.cli import vm_image_cli
+from conoha_client.features.plan.cli import vm_plan_cli
 
 
 # @click.group()
