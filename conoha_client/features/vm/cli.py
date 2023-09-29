@@ -1,12 +1,16 @@
 """VM関連 CLI定義."""
+from __future__ import annotations
 
-import json
+from typing import TYPE_CHECKING
 
 import click
-from flatten_dict import flatten
-from tabulate import tabulate
 
-from .server import list_servers
+from conoha_client.features._shared import view_options
+
+from .repo import list_servers
+
+if TYPE_CHECKING:
+    from .domain import Server
 
 
 @click.group(name="vm")
@@ -14,10 +18,8 @@ def vm_cli() -> None:
     """VM関連."""
 
 
-@vm_cli.command(name="list")
-def _list() -> None:
+@vm_cli.command(name="ls")
+@view_options
+def _list() -> list[Server]:
     """契約中サーバー一覧取得コマンド."""
-    res = [flatten(json.loads(s.json()), reducer="dot") for s in list_servers()]
-    for s in list_servers():
-        print(s.model_dump_json(indent=2))  # noqa: T201
-    print(tabulate(res, headers="keys", showindex=True))  # noqa: T201
+    return list_servers()
