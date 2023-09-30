@@ -6,7 +6,7 @@ from uuid import UUID, uuid4
 import click
 import pytest
 from click.testing import CliRunner
-from pydantic import BaseModel
+from pydantic import AliasPath, BaseModel, Field
 
 from .domain import ExtraKeyError, model_filter, view_options
 
@@ -16,6 +16,7 @@ class TestModel(BaseModel):
 
     x: str
     y: UUID
+    dist: str = Field("", alias=AliasPath("metadata", "dst"))
 
 
 def test_model_filter() -> None:
@@ -23,7 +24,7 @@ def test_model_filter() -> None:
     m = TestModel(x="x", y=uuid4())
     assert model_filter(m, {"x"}) == {"x": "x"}
     assert model_filter(m, {"y"}) == {"y": str(m.y)}
-    assert model_filter(m) == {"x": "x", "y": str(m.y)}
+    assert model_filter(m) == {"x": "x", "y": str(m.y), "dist": ""}
 
 
 def test_invalid_model_filter() -> None:
