@@ -4,7 +4,8 @@ from __future__ import annotations
 from functools import cache
 
 from conoha_client.features import Endpoints
-from conoha_client.features._shared.domain import find_by_included_prop
+from conoha_client.features._shared.domain import filter_model_by
+from conoha_client.features._shared.view.domain import check_include_keys
 
 from .domain import VMPlan
 
@@ -18,4 +19,9 @@ def list_vmplans() -> list[VMPlan]:
 
 def find_vmplan_by(attr_name: str, value: any) -> VMPlan | None:
     """key-valueにマッチしたプラン情報を返す."""
-    return find_by_included_prop(list_vmplans(), attr_name, value)
+
+    def pred(e: VMPlan) -> bool:
+        check_include_keys(e, {attr_name})
+        return value in str(getattr(e, attr_name))
+
+    return filter_model_by(list_vmplans(), pred)
