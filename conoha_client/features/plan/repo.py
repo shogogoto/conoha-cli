@@ -3,22 +3,19 @@ from __future__ import annotations
 
 from functools import cache
 
-from conoha_client.features.add_vm.repo import Endpoints
+from conoha_client.features import Endpoints
+from conoha_client.features._shared.domain import find_by_included_prop
 
-from .domain import Flavor
+from .domain import VMPlan
 
 
 @cache
-def list_flavors() -> list[Flavor]:
+def list_vmplans() -> list[VMPlan]:
     """MVプラン一覧を取得する."""
     res = Endpoints.COMPUTE.get("flavors/detail").json()
-    return [Flavor.model_validate(e) for e in res["flavors"]]
+    return [VMPlan.model_validate(e) for e in res["flavors"]]
 
 
-def find_id_by(attr_name: str, value: any) -> list[Flavor]:
+def find_vmplan_by(attr_name: str, value: any) -> VMPlan | None:
     """key-valueにマッチしたプラン情報を返す."""
-
-    def pred(e: Flavor) -> bool:
-        return str(getattr(e, attr_name)) == value
-
-    return list(filter(pred, list_flavors()))
+    return find_by_included_prop(list_vmplans(), attr_name, value)

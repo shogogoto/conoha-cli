@@ -1,11 +1,16 @@
 """VM Image CLI."""
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import click
 
-from conoha_client.features._shared import view_options
+from conoha_client.features import view_options
 
-from .repo import Image, find_id_by, list_images
+from .repo import find_image_by, list_images
+
+if TYPE_CHECKING:
+    from .domain import Image
 
 
 @click.group(name="image")
@@ -24,4 +29,7 @@ def _list() -> list[Image]:
 @click.argument("value")
 @view_options
 def _find(attr_name: str, value: str) -> list[Image]:
-    return find_id_by(attr_name, value)
+    img = find_image_by(attr_name, value)
+    if img is None:
+        return []
+    return [img]

@@ -3,7 +3,8 @@ from __future__ import annotations
 
 from functools import cache
 
-from conoha_client.features.add_vm.repo import Endpoints
+from conoha_client.features import Endpoints
+from conoha_client.features._shared.domain import find_by_included_prop
 
 from .domain import Image
 
@@ -15,10 +16,6 @@ def list_images() -> list[Image]:
     return [Image.model_validate(e) for e in res["images"]]
 
 
-def find_id_by(attr_name: str, value: any) -> list[Image]:
+def find_image_by(attr_name: str, value: any) -> Image | None:
     """key-valueにマッチしたプラン情報を返す."""
-
-    def pred(e: Image) -> bool:
-        return value in str(getattr(e, attr_name))
-
-    return list(filter(pred, list_images()))
+    return find_by_included_prop(list_images(), attr_name, value)

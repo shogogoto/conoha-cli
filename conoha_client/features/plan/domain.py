@@ -6,7 +6,7 @@ from uuid import UUID
 from pydantic import BaseModel, Field
 
 
-class Flavor(BaseModel, frozen=True):
+class VMPlan(BaseModel, frozen=True):
     """サーバー設定(VMプラン)情報."""
 
     name: str

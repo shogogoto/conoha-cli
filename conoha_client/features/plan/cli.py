@@ -5,12 +5,12 @@ from typing import TYPE_CHECKING
 
 import click
 
-from conoha_client.features._shared import view_options
+from conoha_client.features import view_options
 
-from .repo import find_id_by, list_flavors
+from .repo import find_vmplan_by, list_vmplans
 
 if TYPE_CHECKING:
-    from .domain import Flavor
+    from .domain import VMPlan
 
 
 @click.group(name="plan")
@@ -20,13 +20,13 @@ def vm_plan_cli() -> None:
 
 @vm_plan_cli.command(name="ls")
 @view_options
-def _list() -> list[Flavor]:
-    return list_flavors()
+def _list() -> list[VMPlan]:
+    return list_vmplans()
 
 
 @vm_plan_cli.command(name="find")
 @click.argument("attr_name")
 @click.argument("value")
 @view_options
-def _find(attr_name: str, value: str) -> list[Flavor]:
-    return find_id_by(attr_name, value)
+def _find(attr_name: str, value: str) -> list[VMPlan]:
+    return [find_vmplan_by(attr_name, value)]
