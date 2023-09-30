@@ -17,13 +17,8 @@ class ExtraKeyError(Exception):
 R = TypeVar("R", bound=BaseModel)
 
 
-def model_filter(model: R, keys: set[str] | None = None) -> dict:
-    """モデルから特定のプロパティのみのjsonへ変換.
-
-    :param model: (BaseModel)ドメインモデル
-    :param keys: 抽出したいプロパティ名のリスト
-    :return: JSONable object
-    """
+def check_include_keys(model: R, keys: set[str]) -> None:
+    """キーがmodelに含まれていなければエラー."""
     all_keys = set(model.__class__.__fields__)
     if keys is None:
         keys = all_keys
@@ -34,6 +29,16 @@ def model_filter(model: R, keys: set[str] | None = None) -> dict:
             f"{all_keys}に含まれるキーのみを入力してください"
         )
         raise ExtraKeyError(msg)
+
+
+def model_filter(model: R, keys: set[str] | None = None) -> dict:
+    """モデルから特定のプロパティのみのjsonへ変換.
+
+    :param model: (BaseModel)ドメインモデル
+    :param keys: 抽出したいプロパティ名のリスト
+    :return: JSONable object
+    """
+    check_include_keys(model, keys)
     return model.model_dump(mode="json", include=keys)
 
 
