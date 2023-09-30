@@ -24,7 +24,7 @@ def model_filter(model: R, keys: set[str] | None = None) -> dict:
     :param keys: 抽出したいプロパティ名のリスト
     :return: JSONable object
     """
-    all_keys = model.model_fields_set
+    all_keys = set(model.__class__.__fields__)
     if keys is None:
         keys = all_keys
     extra = keys - all_keys
@@ -76,7 +76,7 @@ def view_options(func: Callable[P, list[R]]) -> Callable[P, None]:
     参考: https://qiita.com/ainamori/items/5e68ec8dde4a46da104d
     """
 
-    @click.argument("keys", nargs=-1)
+    @click.argument("keys", nargs=-1, default=None)
     @click.option(
         "--style",
         "-s",
