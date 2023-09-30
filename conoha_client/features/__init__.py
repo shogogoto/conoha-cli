@@ -4,7 +4,6 @@ _sharedだけは例外で、機能ごとに共通の機能のパッケージ
 """
 
 from conoha_client.features._shared import *  # noqa: F403
-from conoha_client.features.add_vm import *  # noqa: F403
 from conoha_client.features.billing import *  # noqa: F403
 from conoha_client.features.image import *  # noqa: F403
 from conoha_client.features.list_vm import *  # noqa: F403

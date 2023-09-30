@@ -4,13 +4,14 @@ import click
 from click_shell import shell
 
 from conoha_client.features import (
-    add_vm_cli,
     billing_cli,
     list_vm_cli,
     sshkey_cli,
     vm_image_cli,
     vm_plan_cli,
 )
+
+from .add_vm import add_vm_cli
 
 
 # @click.group()
