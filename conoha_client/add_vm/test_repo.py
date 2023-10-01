@@ -1,6 +1,8 @@
 """VM add repo test."""
 from __future__ import annotations
 
+from conoha_client.add_vm.domain.domain import Application
+
 from .domain import OS, Memory, Version
 from .repo import (
     find_available_os_latest_version,
@@ -35,13 +37,24 @@ def test_find_available_os_latest() -> None:
 
 def test_list_available_apps() -> None:
     """Test for regression."""
-    list_available_apps(
+    apps = list_available_apps(
         Memory.MG512,
         OS.ALMA,
         Version(value="9.2"),
         mock_names,
     )
-    # print(apps)
+    assert apps == [Application.none()]
+
+
+def test_list_available_apps_by_latest() -> None:
+    """Test for regression."""
+    apps = list_available_apps(
+        Memory.MG512,
+        OS.UBUNTU,
+        Version(value="latest"),
+        mock_names,
+    )
+    assert apps == [Application.none()]
 
 
 IMAGE_NAME_SNAPSHOT_20230930 = [

@@ -64,6 +64,8 @@ def list_available_apps(
 ) -> list[Application]:
     """引数のOS,versionで利用可能なアプリ,バージョン一覧."""
     os_versions = list_available_os_versions(memory, os, image_names)
+    if os_version.is_latest():
+        os_version = find_available_os_latest_version(memory, os, image_names)
     if os_version not in os_versions:
         msg = (
             f"{os}のバージョン{os_version.value}は利用できません."
@@ -72,26 +74,23 @@ def list_available_apps(
         raise NotFoundVersionError(msg)
     mem_names = filter(memory.is_match, image_names())
     os_names = filter(os.is_match, mem_names)
-    # print(list(os_names))
     ver_names = filter(os_version.is_match, os_names)
     appsv = [os.app_with_version(n) for n in ver_names]
     return sorted(appsv, key=operator.attrgetter("name"))
-    # vers = list_available_os_versions(memory, os)
-    # print(vers)
-    # os.app_with_version()
-    # pass
 
 
-# def add_vm(mem: Memory, os: OS, app: str) -> None:
-#     """新規VM追加."""
-#     find_vmplan_by("name", mem.expression)
-#     # def pred(img: Image) -> bool:
-#     #     in_os = os_.value in img.name
-#     #     in_app = app.value in img.app
-#     #     return in_os and in_app
+def add_vm(mem: Memory, os: OS, app: Application) -> None:
+    """新規VM追加."""
+    print(mem, os, app)  # noqa: T201
+    # plan = find_vmplan_by("name", mem.expression)
 
-#     # image = filter_model_by(list_images(), pred)
-#     # print(image)
-#     # js = {"flavorRef": plan.flavor_id, "imageRef": image.image_id}
-#     # print(js)
-#     # Endpoints.COMPUTE.post("servers", json=js)
+    # def pred(img: Image) -> bool:
+    #     in_os = os_.value in img.name
+    #     in_app = app.value in img.app
+    #     return in_os and in_app
+
+    # image = filter_model_by(list_images(), pred)
+    # print(image)
+    # js = {"flavorRef": plan.flavor_id, "imageRef": image.image_id}
+    # print(js)
+    # Endpoints.COMPUTE.post("servers", json=js)

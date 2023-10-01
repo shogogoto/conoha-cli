@@ -137,6 +137,10 @@ class Version(BaseModel, frozen=True):
         """イメージ名に{value}が含まれているか."""
         return self.value in img_name
 
+    def is_latest(self) -> bool:
+        """最新バージョン指定かどうか."""
+        return self.value == "latest"
+
 
 class Application(BaseModel, frozen=True):
     """App for VM Image."""
@@ -153,6 +157,10 @@ class Application(BaseModel, frozen=True):
         """空情報."""
         v = "NONE"
         return cls(name=v, version=v)
+
+    def is_none(self) -> bool:
+        """アプリケーション指定がないかどうか."""
+        return self == self.none()
 
 
 class ImageNames(BaseModel, frozen=True):

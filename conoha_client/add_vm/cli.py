@@ -1,10 +1,9 @@
 """add VM CLI."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import click
 
+from conoha_client.add_vm.domain.domain import Application
 from conoha_client.add_vm.repo import (
     find_available_os_latest_version,
     list_available_apps,
@@ -15,35 +14,49 @@ from conoha_client.features._shared.view.domain import view_options
 
 from .domain import OS, Memory, Version
 
-if TYPE_CHECKING:
-    from conoha_client.add_vm.domain.domain import Application
-
 
 @click.group("add", invoke_without_command=True)
 @click.option("--memory", "-m", type=click.Choice(Memory))
-@click.option("--os", "-o", type=click.Choice(OS), default=OS.UBUNTU)
-@click.option("--os-version", "-ov", default="latest")
-# @click.option("--app", "-a", default="")
-# @click.option("--app-version", "-av", default="")
+@click.option("--os", "-o", type=click.Choice(OS), default=OS.UBUNTU, show_default=True)
+@click.option(
+    "--os-version",
+    "-ov",
+    default="latest",
+    help="latestの場合最新バージョンが指定される",
+    show_default=True,
+)
+@click.option(
+    "--app",
+    "-a",
+    default="NONE",
+    help="アプリ名.NONEは指定なし",
+    show_default=True,
+)
+@click.option(
+    "--app-version",
+    "-av",
+    default="NONE",
+    help="アプリのバージョン.NONEは指定なし",
+    show_default=True,
+)
 @click.pass_context
-def add_vm_cli(
+def add_vm_cli(  # noqa: PLR0913
     ctx: click.Context,
     memory: Memory,
     os: OS,
     os_version: Version,
-    # app: str,
-    # app_version: Version,
+    app: str,
+    app_version: str,
 ) -> None:
     """Add VM CLI."""
     ctx.ensure_object(dict)
     ctx.obj["memory"] = memory
     ctx.obj["os"] = os
     ctx.obj["os_version"] = Version(value=os_version)
-    # ctx.obj["app"] = app
-    # ctx.obj["app_version"] = app_version
-    # add_vm(memory, os, app)
-    # print(memory.expression, memory.is_smallest(), os, app)
-    # add_vm(memory)
+    ctx.obj["app"] = Application(name=app, version=app_version)
+    if ctx.invoked_subcommand is None:
+        pass
+        # add_vm
 
 
 @add_vm_cli.command(name="os-vers")
@@ -82,20 +95,3 @@ def find_apps(obj: object) -> list[Application]:
         os_version=obj["os_version"],
         image_names=list_image_names,
     )
-
-
-# addコマンドを実行する流れ
-# 1. memoryを選択する osやapp選択に先行させないと利用可能なos,appが確定しない
-# 2. 利用可能なimageを検索する
-
-#    os選択
-#    利用可能バージョン選択
-#    利用可能アプリ選択
-#    アプリバージョン選択
-# 3. パスワード設定
-# 4. ssh-key設定
-# 5. server名設定 ssh configに使う
-
-# VM起動
-# VMのipアドレスを取得
-# ssh configファイルが出力される
