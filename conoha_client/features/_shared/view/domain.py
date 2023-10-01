@@ -19,7 +19,7 @@ R = TypeVar("R", bound=BaseModel)
 
 def check_include_keys(model: R, keys: set[str]) -> None:
     """キーがmodelに含まれていなければエラー."""
-    all_keys = set(model.__class__.__fields__)
+    all_keys = set(model.__class__.model_fields)
     if keys is None:
         keys = all_keys
     extra = keys - all_keys
