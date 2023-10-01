@@ -10,7 +10,6 @@ from pydantic import BaseModel
 from conoha_client.add_vm.domain.errors import (
     ApplicationUnexpectedError,
     ApplicationWithoutVersionError,
-    ImageIdMappingMismatchWarning,
     OSVersionExtractError,
 )
 
@@ -115,12 +114,12 @@ class OS(str, Enum):
         if len(tpl) == 2:  # noqa: PLR2004
             return Application(
                 name=tpl[0],
-                version=Version(value=tpl[1]),
+                version=tpl[1],
             )
         if len(tpl) > 2:  # noqa: PLR2004
             return Application(
                 name="-".join(tpl[:-1]),
-                version=Version(value=tpl[-1]),
+                version=tpl[-1],
             )
         raise ApplicationUnexpectedError
 
@@ -143,7 +142,7 @@ class Application(BaseModel, frozen=True):
     """App for VM Image."""
 
     name: str
-    version: Version
+    version: str
 
     def is_match(self, img_name: str) -> bool:
         """イメージ名にname,versionがともに含まれているか."""
@@ -152,7 +151,8 @@ class Application(BaseModel, frozen=True):
     @classmethod
     def none(cls) -> Application:
         """空情報."""
-        return cls(name="", version=Version(value=""))
+        v = "NONE"
+        return cls(name=v, version=v)
 
 
 class ImageNames(BaseModel, frozen=True):
@@ -169,23 +169,7 @@ class ImageNames(BaseModel, frozen=True):
     def available_apps(self, os: OS) -> set[str]:
         """OS versionに対応したアプリケーション."""
         s = set(filter(os.is_match, self.values))
-        # models = []
         versions = self.available_os_versions(os)
         for v in versions:
             self.available_apps_per_os_version(os, v)
         return s
-
-    def check_direct_sum(self) -> None:
-        """OS.is_matchよってイメージ名が直和分割されるかチェック.
-
-        OS名で利用可能なVMイメージを正しく絞るためには、
-        OS名によるVMイメージのグルーピングがMECEになるべし
-        dev Imageのみ例外
-        """
-        n = len(self.values) - 1  # Image.name == dev を除外
-        cnt = 0
-        for os in OS:
-            cnt += len([im for im in self.values if os.is_match(im)])
-        if n != cnt:
-            msg = "マッピングできないimage idがありました"
-            raise ImageIdMappingMismatchWarning(msg)

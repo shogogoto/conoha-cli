@@ -39,7 +39,7 @@ def test_invalid_get_os_version() -> None:
 def test_get_app_with_version() -> None:
     """OSに紐づいたアプリ名とバージョンを取得する."""
     av1 = OS.UBUNTU.app_with_version("vmi-rust-latest-ubuntu-20.04-amd64-100gb")
-    assert av1 == Application(name="rust", version=Version(value="latest"))
+    assert av1 == Application(name="rust", version="latest")
     av3 = OS.DEBIAN.app_with_version("vmi-debian-12.0-amd64-100gb")
     assert av3 == Application.none()
     av4 = OS.CENTOS.app_with_version(
@@ -48,7 +48,7 @@ def test_get_app_with_version() -> None:
 
     assert av4 == Application(
         name="cacti-nagios",
-        version=Version(value="1.2.17.4.4.6"),
+        version="1.2.17.4.4.6",
     )
 
 

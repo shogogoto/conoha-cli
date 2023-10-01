@@ -1,14 +1,19 @@
 """VM Create API."""
 from __future__ import annotations
 
-from typing import Callable
+import operator
+from typing import TYPE_CHECKING, Callable
 from uuid import UUID
 
+from conoha_client.add_vm.domain.domain import ImageNames
 from conoha_client.features.image.repo import list_images
 from conoha_client.features.plan import find_vmplan_by
 
-from .domain import OS, ImageNames, Memory, NotFoundFlavorIdError, Version
+from .domain import OS, Memory, NotFoundFlavorIdError, Version
 from .domain.errors import NotFoundVersionError
+
+if TYPE_CHECKING:
+    from conoha_client.add_vm.domain.domain import Application
 
 
 def find_plan_id(mem: Memory) -> UUID:
@@ -51,32 +56,30 @@ def find_available_os_latest_version(
     return vers[-1]
 
 
-# def list_available_apps(
-#     memory: Memory,
-#     os: OS,
-#     os_version: Version,
-# ):
-#     """引数のOS,versionで利用可能なアプリ,バージョン一覧."""
-#     all_names = [img.name for img in list_images()]
-#     mem_names = filter(memory.is_match, all_names)
-#     print(list(mem_names))
-#     os_names = filter(os.is_match, mem_names)
-#     print(os)
-#     print(os)
-#     print(os)
-#     print(os)
-#     print(list(os_names))
-#     ver_names = filter(os_version.is_match, os_names)
-#     names = ImageNames(values=list(ver_names))
-#     print(names)
-#     print(names)
-#     print(names)
-#     print(names)
-#     return names.available_apps(os)
-#     # vers = list_available_os_versions(memory, os)
-#     # print(vers)
-#     # os.app_with_version()
-#     # pass
+def list_available_apps(
+    memory: Memory,
+    os: OS,
+    os_version: Version,
+    image_names: Callback,
+) -> list[Application]:
+    """引数のOS,versionで利用可能なアプリ,バージョン一覧."""
+    os_versions = list_available_os_versions(memory, os, image_names)
+    if os_version not in os_versions:
+        msg = (
+            f"{os}のバージョン{os_version.value}は利用できません."
+            f"利用可能なバージョンは{[v.value for v in os_versions]}です"
+        )
+        raise NotFoundVersionError(msg)
+    mem_names = filter(memory.is_match, image_names())
+    os_names = filter(os.is_match, mem_names)
+    # print(list(os_names))
+    ver_names = filter(os_version.is_match, os_names)
+    appsv = [os.app_with_version(n) for n in ver_names]
+    return sorted(appsv, key=operator.attrgetter("name"))
+    # vers = list_available_os_versions(memory, os)
+    # print(vers)
+    # os.app_with_version()
+    # pass
 
 
 # def add_vm(mem: Memory, os: OS, app: str) -> None:

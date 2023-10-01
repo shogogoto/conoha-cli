@@ -2,7 +2,11 @@
 from __future__ import annotations
 
 from .domain import OS, Memory, Version
-from .repo import list_available_os_versions
+from .repo import (
+    find_available_os_latest_version,
+    list_available_apps,
+    list_available_os_versions,
+)
 
 
 def mock_names() -> list[str]:
@@ -21,6 +25,23 @@ def test_list_available_os_versions() -> None:
         Version(value=v) for v in ["16.04", "18.04", "20.04", "20.04.2", "22.04"]
     ]
     assert uv2 == expected2
+
+
+def test_find_available_os_latest() -> None:
+    """Test for regression."""
+    v = find_available_os_latest_version(Memory.MG512, OS.UBUNTU, mock_names)
+    assert v == Version(value="22.04")
+
+
+def test_list_available_apps() -> None:
+    """Test for regression."""
+    list_available_apps(
+        Memory.MG512,
+        OS.ALMA,
+        Version(value="9.2"),
+        mock_names,
+    )
+    # print(apps)
 
 
 IMAGE_NAME_SNAPSHOT_20230930 = [

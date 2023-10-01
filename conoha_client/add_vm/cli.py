@@ -1,16 +1,22 @@
 """add VM CLI."""
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import click
 
 from conoha_client.add_vm.repo import (
     find_available_os_latest_version,
+    list_available_apps,
     list_available_os_versions,
     list_image_names,
 )
 from conoha_client.features._shared.view.domain import view_options
 
 from .domain import OS, Memory, Version
+
+if TYPE_CHECKING:
+    from conoha_client.add_vm.domain.domain import Application
 
 
 @click.group("add", invoke_without_command=True)
@@ -65,16 +71,17 @@ def find_latest_os_version(obj: object) -> list[Version]:
     return [v]
 
 
-# @add_vm_cli.command(name="apps")
-# @click.pass_obj
-# def list_apps(obj: object) -> list[Version]:
-#     """利用可能なアプリケーションを検索する."""
-#     a = list_available_apps(
-#         memory=obj["memory"],
-#         os=obj["os"],
-#         os_version=obj["os_version"],
-#     )
-#     print(a)
+@add_vm_cli.command(name="apps")
+@view_options
+@click.pass_obj
+def find_apps(obj: object) -> list[Application]:
+    """利用可能なアプリケーションを検索する."""
+    return list_available_apps(
+        memory=obj["memory"],
+        os=obj["os"],
+        os_version=obj["os_version"],
+        image_names=list_image_names,
+    )
 
 
 # addコマンドを実行する流れ
