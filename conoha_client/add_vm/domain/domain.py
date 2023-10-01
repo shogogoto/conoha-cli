@@ -7,7 +7,12 @@ from enum import Enum
 
 from pydantic import BaseModel
 
-from conoha_client.add_vm.domain.errors import ImageIdMappingMismatchWarning
+from conoha_client.add_vm.domain.errors import (
+    ApplicationUnexpectedError,
+    ApplicationWithoutVersionError,
+    ImageIdMappingMismatchWarning,
+    OSVersionExtractError,
+)
 
 
 # 数字始まりの変数名にできなのでアンダースコア
@@ -69,36 +74,63 @@ class OS(str, Enum):
         result = self._regex.findall(img_name)
         return len(result) > 0
 
+    def _check_match(self, img_name: str) -> None:
+        """OS名がなければエラー."""
+        if not self.is_match(img_name):
+            msg = f"引数の文字列にOS名{self.value}が含まれていません.:{img_name}"
+            raise OSVersionExtractError(msg)
+
     def version(self, img_name: str) -> Version:
         """VM Image名からバージョンを取得する."""
+        self._check_match(img_name)
+
         sp = img_name.split("-")
         for_search = self.value.replace(".*", "")
-        for_idx = next(filter(lambda x: for_search in x, sp))
+        try:
+            for_idx = next(filter(lambda x: for_search in x, sp))
+        except StopIteration as e:
+            msg = f"{self.value}のバージョンが引数の文字列に含まれいません:{img_name}"
+            raise OSVersionExtractError(msg) from e
         i = sp.index(for_idx)
         value = sp[i + 1]
         if self == OS.WINDOWS:
             value = "-".join(sp[i : i + 2])
         return Version(value=value)
 
-    def app_with_version(self, img_name: str) -> tuple[str, str]:
+    def app_with_version(self, img_name: str) -> Application:
         """VM Image名のvmi-{x}-{value}のxを返す."""
+        self._check_match(img_name)
         res = self._regex.search(img_name)
         if res is None:
-            return ("", "")
+            return Application.none()
         s = res.start()
         sp = img_name[:s].split("-")  # 空文字ならNone
         tpl = tuple([e for e in sp if e != "vmi"])
 
         if len(tpl) == 0:
-            return ("", "")
-        multi = 2
-        if len(tpl) > multi:
-            return ("-".join(tpl[:-1]), tpl[-1])
-        return tpl  # 基本len == 2になる想定
+            return Application.none()
+        if len(tpl) == 1:
+            msg = f"アプリバージョンが含まれていません: {img_name}"
+            raise ApplicationWithoutVersionError(msg)
+        if len(tpl) == 2:  # noqa: PLR2004
+            return Application(
+                name=tpl[0],
+                version=Version(value=tpl[1]),
+            )
+        if len(tpl) > 2:  # noqa: PLR2004
+            return Application(
+                name="-".join(tpl[:-1]),
+                version=Version(value=tpl[-1]),
+            )
+        raise ApplicationUnexpectedError
 
 
 class Version(BaseModel, frozen=True):
-    """VM Image OS or App Version."""
+    """VM Image OS or App Version.
+
+    RootModelにしないのは,
+    view_optionsでlist[dict[str,str]]にパースできる必要があるため
+    """
 
     value: str
 
@@ -111,7 +143,16 @@ class Application(BaseModel, frozen=True):
     """App for VM Image."""
 
     name: str
-    version: str
+    version: Version
+
+    def is_match(self, img_name: str) -> bool:
+        """イメージ名にname,versionがともに含まれているか."""
+        return self.name in img_name and self.version.is_match(img_name)
+
+    @classmethod
+    def none(cls) -> Application:
+        """空情報."""
+        return cls(name="", version=Version(value=""))
 
 
 class ImageNames(BaseModel, frozen=True):
