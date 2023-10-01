@@ -27,8 +27,8 @@ def vm_cli() -> None:
 
 def main() -> None:
     """CLI設定用."""
-    vm_cli.add_command(vm_plan_cli)
-    vm_cli.add_command(vm_image_cli)
+    cli.add_command(vm_plan_cli)
+    cli.add_command(vm_image_cli)
     vm_cli.add_command(list_vm_cli)
     vm_cli.add_command(add_vm_cli)
     cli.add_command(vm_cli)
