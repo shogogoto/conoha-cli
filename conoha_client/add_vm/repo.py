@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import operator
+from functools import cache
 from typing import TYPE_CHECKING, Callable
 from uuid import UUID
 
@@ -22,6 +23,7 @@ if TYPE_CHECKING:
     from conoha_client.features.image.domain import Image
 
 
+@cache
 def list_image_names() -> list[str]:
     """VM Image名一覧."""
     return [img.name for img in list_images()]
@@ -90,8 +92,15 @@ def find_image_id(
     os: OS,
     os_version: OSVersion,
     app: Application,
+    list_images: Callable[[], list[Image]] = list_images,
 ) -> UUID:
     """指定条件からimage idを一意に検索する."""
+
+    @cache
+    def list_image_names() -> list[str]:
+        """VM Image名一覧."""
+        return [img.name for img in list_images()]
+
     if os_version.is_latest():
         os_version = find_available_os_latest_version(memory, os, list_image_names)
     if os_version not in list_available_os_versions(memory, os, list_image_names):

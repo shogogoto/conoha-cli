@@ -2,9 +2,12 @@
 from __future__ import annotations
 
 import itertools
+import json
 from functools import cache
+from pathlib import Path
 
 from conoha_client.add_vm.domain.domain import Application
+from conoha_client.features.image.domain import Image
 
 from .domain import OS, Memory, OSVersion
 from .repo import (
@@ -67,12 +70,31 @@ def test_list_available_apps_by_latest() -> None:
 
 def test_find_image_id() -> None:
     """一意にimage idを見つける. 一番大事."""
+    p = Path(__file__).resolve().parent / "fixture20231002.json"
+
+    @cache
+    def mock_list_images() -> list[Image]:
+        return [
+            Image.model_validate(
+                {
+                    "id": j["image_id"],
+                    "name": j["name"],
+                    "metadata": {
+                        "dst": j["dist"],
+                        "app": j["app"],
+                        "os_type": j["os"],
+                    },
+                },
+            )
+            for j in json.loads(p.read_text())
+        ]
+
     cnt = 0
     imgids = set()
     for mem, _os in itertools.product(Memory, OS):
         for os_v in list_available_os_versions(mem, _os, mock_names):
             for _app in list_available_apps(mem, _os, os_v, mock_names):
-                im = find_image_id(mem, _os, os_v, _app)
+                im = find_image_id(mem, _os, os_v, _app, mock_list_images)
                 imgids.add(im)
                 cnt += 1
 
