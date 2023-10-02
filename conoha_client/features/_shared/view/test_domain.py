@@ -6,44 +6,45 @@ from uuid import UUID, uuid4
 import click
 import pytest
 from click.testing import CliRunner
-from pydantic import BaseModel
+from pydantic import AliasPath, BaseModel, Field
 
 from .domain import ExtraKeyError, model_filter, view_options
 
 
-class TestModel(BaseModel):
+class ExampleModel(BaseModel):
     """for test."""
 
     x: str
     y: UUID
+    dist: str = Field("", alias=AliasPath("metadata", "dst"))
 
 
 def test_model_filter() -> None:
     """Valid test."""
-    m = TestModel(x="x", y=uuid4())
+    m = ExampleModel(x="x", y=uuid4())
     assert model_filter(m, {"x"}) == {"x": "x"}
     assert model_filter(m, {"y"}) == {"y": str(m.y)}
-    assert model_filter(m) == {"x": "x", "y": str(m.y)}
+    assert model_filter(m) == {"x": "x", "y": str(m.y), "dist": ""}
 
 
 def test_invalid_model_filter() -> None:
     """Invalid test."""
-    m = TestModel(x="x", y=uuid4())
+    m = ExampleModel(x="x", y=uuid4())
     with pytest.raises(ExtraKeyError):
         model_filter(m, {"extra"})
     with pytest.raises(ExtraKeyError):
         model_filter(m, {"x", "extra"})
 
 
-t1 = TestModel(x="name1", y=uuid4())
-t2 = TestModel(x="name2", y=uuid4())
-t3 = TestModel(x="name3", y=uuid4())
+t1 = ExampleModel(x="name1", y=uuid4())
+t2 = ExampleModel(x="name2", y=uuid4())
+t3 = ExampleModel(x="name3", y=uuid4())
 tm = [t1, t2, t3]
 
 
 @click.command()
 @view_options
-def cli() -> list[TestModel]:
+def cli() -> list[ExampleModel]:
     return tm
 
 

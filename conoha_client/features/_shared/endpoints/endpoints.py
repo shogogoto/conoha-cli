@@ -77,7 +77,10 @@ class Endpoints(Enum):
         :param json: リクエストボディ(jsonable object)
         """
         url = self.tenant_id_url(relative)
-        return requests.post(url, headers=token_headers(), timeout=TIMEOUT, json=json)
+        # VM addでタイムアウトしたから延長
+        return requests.post(
+            url, headers=token_headers(), timeout=TIMEOUT * 2, json=json,
+        )
 
     def delete(self, relative: str) -> requests.Response:
         """HTTP DELETEリクエスト.

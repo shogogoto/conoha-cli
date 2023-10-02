@@ -17,14 +17,9 @@ class ExtraKeyError(Exception):
 R = TypeVar("R", bound=BaseModel)
 
 
-def model_filter(model: R, keys: set[str] | None = None) -> dict:
-    """モデルから特定のプロパティのみのjsonへ変換.
-
-    :param model: (BaseModel)ドメインモデル
-    :param keys: 抽出したいプロパティ名のリスト
-    :return: JSONable object
-    """
-    all_keys = model.model_fields_set
+def check_include_keys(model: R, keys: set[str]) -> None:
+    """キーがmodelに含まれていなければエラー."""
+    all_keys = set(model.__class__.model_fields)
     if keys is None:
         keys = all_keys
     extra = keys - all_keys
@@ -34,13 +29,17 @@ def model_filter(model: R, keys: set[str] | None = None) -> dict:
             f"{all_keys}に含まれるキーのみを入力してください"
         )
         raise ExtraKeyError(msg)
+
+
+def model_filter(model: R, keys: set[str] | None = None) -> dict:
+    """モデルから特定のプロパティのみのjsonへ変換.
+
+    :param model: (BaseModel)ドメインモデル
+    :param keys: 抽出したいプロパティ名のリスト
+    :return: JSONable object
+    """
+    check_include_keys(model, keys)
     return model.model_dump(mode="json", include=keys)
-
-
-Style = Literal["json", "table"]
-
-
-P = ParamSpec("P")
 
 
 def _tabulate(js: list[dict], pass_command: bool) -> str:
@@ -54,13 +53,35 @@ def _tabulate(js: list[dict], pass_command: bool) -> str:
     return tabulate(js, headers="keys", showindex=True)
 
 
+def view(
+    models: list[R],
+    keys: set[str],
+    style: Style,
+    pass_command: bool,
+) -> None:
+    _keys = set(keys) if len(keys) > 0 else None
+    js = [model_filter(m, _keys) for m in models]
+
+    if style == "json":
+        txt = json.dumps(js, indent=2)
+    elif style == "table":
+        txt = _tabulate(js, pass_command)
+    click.echo(txt)
+
+
+Style = Literal["json", "table"]
+
+
+P = ParamSpec("P")
+
+
 def view_options(func: Callable[P, list[R]]) -> Callable[P, None]:
     """一覧表示系の共通オプション.
 
     参考: https://qiita.com/ainamori/items/5e68ec8dde4a46da104d
     """
 
-    @click.argument("keys", nargs=-1)
+    @click.argument("keys", nargs=-1, default=None)
     @click.option(
         "--style",
         "-s",
@@ -83,14 +104,7 @@ def view_options(func: Callable[P, list[R]]) -> Callable[P, None]:
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> None:
-        _keys = set(keys) if len(keys) > 0 else None
         models = func(*args, **kwargs)
-        js = [model_filter(m, _keys) for m in models]
-
-        if style == "json":
-            txt = json.dumps(js, indent=2)
-        elif style == "table":
-            txt = _tabulate(js, pass_command)
-        click.echo(txt)
+        view(models, keys, style, pass_command)
 
     return wrapper
