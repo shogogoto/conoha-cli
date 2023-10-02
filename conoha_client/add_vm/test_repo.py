@@ -2,17 +2,20 @@
 from __future__ import annotations
 
 import itertools
+from functools import cache
 
 from conoha_client.add_vm.domain.domain import Application
 
 from .domain import OS, Memory, OSVersion
 from .repo import (
     find_available_os_latest_version,
+    find_image_id,
     list_available_apps,
     list_available_os_versions,
 )
 
 
+@cache
 def mock_names() -> list[str]:
     """Mock."""
     return IMAGE_NAME_SNAPSHOT_20230930
@@ -64,11 +67,18 @@ def test_list_available_apps_by_latest() -> None:
 
 def test_find_image_id() -> None:
     """一意にimage idを見つける. 一番大事."""
+    cnt = 0
+    imgids = set()
     for mem, _os in itertools.product(Memory, OS):
         for os_v in list_available_os_versions(mem, _os, mock_names):
             for _app in list_available_apps(mem, _os, os_v, mock_names):
-                pass
-                # find_image_id(mem, _os, os_v, app)
+                im = find_image_id(mem, _os, os_v, _app)
+                imgids.add(im)
+                cnt += 1
+
+    # windowsの分を除外 -10
+    # devを除外 -1
+    assert len(imgids) == len(IMAGE_NAME_SNAPSHOT_20230930) - 10 - 1
 
 
 IMAGE_NAME_SNAPSHOT_20230930 = [

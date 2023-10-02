@@ -62,12 +62,16 @@ class OS(str, Enum):
     ARCH = "arch"
     NETBSD = "netbsd"
     OPENBSD = "openbsd"
-    WINDOWS = "win.*"
+    WINDOWS = "windows"
 
     @property
     def _regex(self) -> re.Pattern:
         """ハイフンで挟んでいるのはarchとarchiveを区別するため."""
-        return re.compile(rf"\-{self.value}-")
+        v = self.value
+        if self == OS.WINDOWS:
+            v = "win.*"
+
+        return re.compile(rf"\-{v}-")
 
     def is_match(self, img_name: str) -> bool:
         """valueがイメージ名に含まれているか."""
@@ -85,7 +89,10 @@ class OS(str, Enum):
         self._check_match(img_name)
 
         sp = img_name.split("-")
-        for_search = self.value.replace(".*", "")
+        for_search = self.value
+        if self == OS.WINDOWS:
+            for_search = "win"
+
         try:
             for_idx = next(filter(lambda x: for_search in x, sp))
         except StopIteration as e:
@@ -95,6 +102,10 @@ class OS(str, Enum):
         value = sp[i + 1]
         if self == OS.WINDOWS:
             value = "-".join(sp[i : i + 2])
+        if "zfs" in img_name:
+            value += "-zfs"
+        if "ufs" in img_name:
+            value += "-ufs"
         return OSVersion(value=value, os=self)
 
     def app_with_version(self, img_name: str) -> Application:
@@ -137,7 +148,8 @@ class OSVersion(BaseModel, frozen=True):
 
     def is_match(self, img_name: str) -> bool:
         """イメージ名に{value}が含まれているか."""
-        return self.value in img_name
+        v = f"-{self.os.value}-{self.value}-"
+        return v in img_name
 
     def is_latest(self) -> bool:
         """最新バージョン指定かどうか."""
@@ -150,16 +162,18 @@ class Application(BaseModel, frozen=True):
     name: str
     version: str
 
-    def is_match(self, img_name: str) -> bool:
+    def is_match(self, img_name: str, os: OS) -> bool:
         """イメージ名にname,versionがともに含まれているか."""
         n = self.name
         v = self.version
-        if n == "NONE":
-            n = ""
-        if v == "NONE":
-            v = ""
-
-        return n in img_name and v in img_name
+        app = ["vmi"]
+        if n != "NONE":
+            app.append(n)
+        if v != "NONE":
+            app.append(v)
+        app.append(os.value)
+        nv = "-".join(app)
+        return nv in img_name
 
     @classmethod
     @cache

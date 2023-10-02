@@ -107,12 +107,11 @@ def find_image_id(
             memory.is_match(n)
             and os.is_match(n)
             and os_version.is_match(n)
-            and app.is_match(n)
+            and app.is_match(n, os)
         )
 
     res = list(filter(pred, list_images()))
     if len(res) != 1:
-        # print(memory, os, os_version, app)
         view(res, keys={}, style="table", pass_command=False)
         raise ImageIdMappingMismatchWarning
 
