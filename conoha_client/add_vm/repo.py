@@ -6,7 +6,6 @@ from functools import cache
 from typing import TYPE_CHECKING, Callable
 from uuid import UUID
 
-from conoha_client.add_vm.domain.domain import ImageNames
 from conoha_client.features._shared import view
 from conoha_client.features.image.repo import list_images
 from conoha_client.features.plan import first_vmplan_by
@@ -39,8 +38,8 @@ def list_available_os_versions(
 ) -> list[OSVersion]:
     """利用可能なOSバージョンを取得."""
     mem_names = filter(memory.is_match, image_names())
-    names = ImageNames(values=list(mem_names))
-    return names.available_os_versions(os)
+    s = set(filter(os.is_match, mem_names))
+    return sorted({os.version(n) for n in s}, key=operator.attrgetter("value"))
 
 
 def find_available_os_latest_version(

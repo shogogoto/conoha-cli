@@ -1,7 +1,6 @@
 """add vm domain."""
 from __future__ import annotations
 
-import operator
 import re
 from enum import Enum
 from functools import cache
@@ -185,23 +184,3 @@ class Application(BaseModel, frozen=True):
     def is_none(self) -> bool:
         """アプリケーション指定がないかどうか."""
         return self == self.none()
-
-
-class ImageNames(BaseModel, frozen=True):
-    """VM Image名一覧."""
-
-    values: list[str]
-
-    def available_os_versions(self, os: OS) -> list[OSVersion]:
-        """対応バージョン一覧を取得する."""
-        s = set(filter(os.is_match, self.values))
-        versions = {os.version(n) for n in s}
-        return sorted(versions, key=operator.attrgetter("value"))
-
-    def available_apps(self, os: OS) -> set[str]:
-        """OS versionに対応したアプリケーション."""
-        s = set(filter(os.is_match, self.values))
-        versions = self.available_os_versions(os)
-        for v in versions:
-            self.available_apps_per_os_version(os, v)
-        return s
