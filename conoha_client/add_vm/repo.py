@@ -40,7 +40,7 @@ class ImageInfoRepo(BaseModel, frozen=True):
 
     memory: Memory
     os: OS
-    # list_image: Callback = list_images
+    list_image: Callback = list_images
 
     @cached_property
     def image_names(self) -> list[str]:
