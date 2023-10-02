@@ -35,13 +35,17 @@ def mock_list_images() -> list[Image]:
 
 def test_list_available_os_versions() -> None:
     """Test for regression."""
-    repo = ImageInfoRepo(memory=Memory.MG512, os=OS.UBUNTU, list_image=mock_list_images)
+    repo = ImageInfoRepo(
+        memory=Memory.MG512, os=OS.UBUNTU, list_images=mock_list_images,
+    )
     expected = [
         OSVersion(value=v, os=OS.UBUNTU) for v in ["16.04", "20.04", "20.04.2", "22.04"]
     ]
     assert repo.available_os_versions == expected
 
-    repo2 = ImageInfoRepo(memory=Memory.GB64, os=OS.UBUNTU, list_image=mock_list_images)
+    repo2 = ImageInfoRepo(
+        memory=Memory.GB64, os=OS.UBUNTU, list_images=mock_list_images,
+    )
     expected2 = [
         OSVersion(value=v, os=OS.UBUNTU)
         for v in ["16.04", "18.04", "20.04", "20.04.2", "22.04"]
@@ -51,21 +55,23 @@ def test_list_available_os_versions() -> None:
 
 def test_find_available_os_latest() -> None:
     """Test for regression."""
-    repo = ImageInfoRepo(memory=Memory.MG512, os=OS.UBUNTU, list_image=mock_list_images)
+    repo = ImageInfoRepo(
+        memory=Memory.MG512, os=OS.UBUNTU, list_images=mock_list_images,
+    )
     assert repo.available_os_latest_version == OSVersion(value="22.04", os=OS.UBUNTU)
 
 
 def test_list_available_apps() -> None:
     """Test for regression."""
     v = OSVersion(value="9.2", os=OS.ALMA)
-    repo = ImageInfoRepo(memory=Memory.MG512, os=OS.ALMA, list_image=mock_list_images)
+    repo = ImageInfoRepo(memory=Memory.MG512, os=OS.ALMA, list_images=mock_list_images)
     assert repo.list_available_apps(v) == [Application.none()]
 
 
 def test_list_available_apps_by_latest() -> None:
     """Test for regression."""
     v = OSVersion(value="latest", os=OS.ALMA)
-    repo = ImageInfoRepo(memory=Memory.MG512, os=OS.ALMA, list_image=mock_list_images)
+    repo = ImageInfoRepo(memory=Memory.MG512, os=OS.ALMA, list_images=mock_list_images)
     assert repo.list_available_apps(v) == [Application.none()]
 
 
@@ -74,7 +80,7 @@ def test_find_image_id() -> None:
     cnt = 0
     imgids = set()
     for mem, _os in itertools.product(Memory, OS):
-        repo = ImageInfoRepo(memory=mem, os=_os, list_image=mock_list_images)
+        repo = ImageInfoRepo(memory=mem, os=_os, list_images=mock_list_images)
         for os_v in repo.available_os_versions:
             for _app in repo.list_available_apps(os_v):
                 im = repo.find_image_id(os_v, _app)

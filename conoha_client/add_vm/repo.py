@@ -40,12 +40,12 @@ class ImageInfoRepo(BaseModel, frozen=True):
 
     memory: Memory
     os: OS
-    list_image: Callback = list_images
+    list_images: Callback = list_images
 
     @cached_property
     def image_names(self) -> list[str]:
         """イメージ名一覧."""
-        return [img.name for img in list_images()]
+        return [img.name for img in self.list_images()]
 
     @cached_property
     def available_os_versions(self) -> list[OSVersion]:
@@ -99,7 +99,7 @@ class ImageInfoRepo(BaseModel, frozen=True):
                 and app.is_match(n, self.os)
             )
 
-        res = list(filter(pred, list_images()))
+        res = list(filter(pred, self.list_images()))
         if len(res) != 1:
             view(res, keys={}, style="table", pass_command=False)
             raise ImageIdMappingMismatchWarning
