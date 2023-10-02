@@ -10,12 +10,27 @@ from conoha_client.add_vm.domain.domain import Application
 from conoha_client.features.image.domain import Image
 
 from .domain import OS, Memory, OSVersion
-from .repo import (
-    find_available_os_latest_version,
-    find_image_id,
-    list_available_apps,
-    list_available_os_versions,
-)
+from .repo import ImageInfoRepo
+
+
+@cache
+def mock_list_images() -> list[Image]:
+    """list_imageのモック."""
+    p = Path(__file__).resolve().parent / "fixture20231002.json"
+    return [
+        Image.model_validate(
+            {
+                "id": j["image_id"],
+                "name": j["name"],
+                "metadata": {
+                    "dst": j["dist"],
+                    "app": j["app"],
+                    "os_type": j["os"],
+                },
+            },
+        )
+        for j in json.loads(p.read_text())
+    ]
 
 
 @cache
@@ -26,75 +41,51 @@ def mock_names() -> list[str]:
 
 def test_list_available_os_versions() -> None:
     """Test for regression."""
-    uv = list_available_os_versions(Memory.MG512, OS.UBUNTU, mock_names)
+    # list_available_os_versions(Memory.MG512, OS.UBUNTU, mock_names)
+    repo = ImageInfoRepo(memory=Memory.MG512, os=OS.UBUNTU, list_image=mock_list_images)
     expected = [
         OSVersion(value=v, os=OS.UBUNTU) for v in ["16.04", "20.04", "20.04.2", "22.04"]
     ]
-    assert uv == expected
+    assert repo.available_os_versions == expected
 
-    uv2 = list_available_os_versions(Memory.GB64, OS.UBUNTU, mock_names)
+    # list_available_os_versions(Memory.GB64, OS.UBUNTU, mock_names)
+    repo2 = ImageInfoRepo(memory=Memory.GB64, os=OS.UBUNTU, list_image=mock_list_images)
     expected2 = [
         OSVersion(value=v, os=OS.UBUNTU)
         for v in ["16.04", "18.04", "20.04", "20.04.2", "22.04"]
     ]
-    assert uv2 == expected2
+    assert repo2.available_os_versions == expected2
 
 
 def test_find_available_os_latest() -> None:
     """Test for regression."""
-    v = find_available_os_latest_version(Memory.MG512, OS.UBUNTU, mock_names)
-    assert v == OSVersion(value="22.04", os=OS.UBUNTU)
+    repo = ImageInfoRepo(memory=Memory.MG512, os=OS.UBUNTU, list_image=mock_list_images)
+    assert repo.available_os_latest_version == OSVersion(value="22.04", os=OS.UBUNTU)
 
 
 def test_list_available_apps() -> None:
     """Test for regression."""
-    apps = list_available_apps(
-        Memory.MG512,
-        OS.ALMA,
-        OSVersion(value="9.2", os=OS.ALMA),
-        mock_names,
-    )
-    assert apps == [Application.none()]
+    v = OSVersion(value="9.2", os=OS.ALMA)
+    repo = ImageInfoRepo(memory=Memory.MG512, os=OS.ALMA, list_image=mock_names)
+    assert repo.list_available_apps(v) == [Application.none()]
 
 
 def test_list_available_apps_by_latest() -> None:
     """Test for regression."""
-    apps = list_available_apps(
-        Memory.MG512,
-        OS.UBUNTU,
-        OSVersion(value="latest", os=OS.UBUNTU),
-        mock_names,
-    )
-    assert apps == [Application.none()]
+    v = OSVersion(value="latest", os=OS.ALMA)
+    repo = ImageInfoRepo(memory=Memory.MG512, os=OS.ALMA, list_image=mock_names)
+    assert repo.list_available_apps(v) == [Application.none()]
 
 
 def test_find_image_id() -> None:
     """一意にimage idを見つける. 一番大事."""
-    p = Path(__file__).resolve().parent / "fixture20231002.json"
-
-    @cache
-    def mock_list_images() -> list[Image]:
-        return [
-            Image.model_validate(
-                {
-                    "id": j["image_id"],
-                    "name": j["name"],
-                    "metadata": {
-                        "dst": j["dist"],
-                        "app": j["app"],
-                        "os_type": j["os"],
-                    },
-                },
-            )
-            for j in json.loads(p.read_text())
-        ]
-
     cnt = 0
     imgids = set()
     for mem, _os in itertools.product(Memory, OS):
-        for os_v in list_available_os_versions(mem, _os, mock_names):
-            for _app in list_available_apps(mem, _os, os_v, mock_names):
-                im = find_image_id(mem, _os, os_v, _app, mock_list_images)
+        repo = ImageInfoRepo(memory=mem, os=_os, list_image=mock_list_images)
+        for os_v in repo.available_os_versions:
+            for _app in repo.list_available_apps(os_v):
+                im = repo.find_image_id(os_v, _app)
                 imgids.add(im)
                 cnt += 1
 
