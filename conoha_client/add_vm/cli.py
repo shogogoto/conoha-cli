@@ -6,6 +6,8 @@ import click
 from conoha_client.add_vm.domain.domain import Application
 from conoha_client.add_vm.repo import (
     ImageInfoRepo,
+    add_vm,
+    find_plan_id,
 )
 from conoha_client.features._shared.view.domain import view_options
 
@@ -47,11 +49,21 @@ def add_vm_cli(  # noqa: PLR0913
 ) -> None:
     """Add VM CLI."""
     ctx.ensure_object(dict)
-    ctx.obj["repo"] = ImageInfoRepo(memory=memory, os=os)
-    ctx.obj["os_version"] = OSVersion(value=os_version, os=os)
-    ctx.obj["app"] = Application(name=app, version=app_version)
+    repo = ImageInfoRepo(memory=memory, os=os)
+    ctx.obj["repo"] = repo
+    osv = OSVersion(value=os_version, os=os)
+    appv = Application(name=app, version=app_version)
+    ctx.obj["os_version"] = osv
+    ctx.obj["app"] = appv
+
     if ctx.invoked_subcommand is None:
-        pass
+        image_id = repo.find_image_id(osv, appv)
+        flavor_id = find_plan_id(memory)
+
+        msg = "VMのroot userのパスワードを入力してくだいさい"
+        password = click.prompt(msg, hide_input=True, confirmation_prompt=True)
+        res = add_vm(flavor_id, image_id, admin_pass=password)
+        click.echo(res)
 
 
 @add_vm_cli.command(name="os-vers")

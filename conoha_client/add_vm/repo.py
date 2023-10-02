@@ -2,13 +2,14 @@
 from __future__ import annotations
 
 import operator
-from functools import cache, cached_property
+from functools import cached_property
 from typing import TYPE_CHECKING, Callable
 from uuid import UUID
 
 from pydantic import BaseModel
 
 from conoha_client.features._shared import view
+from conoha_client.features._shared.endpoints.endpoints import Endpoints
 from conoha_client.features.image.repo import list_images
 from conoha_client.features.plan.repo import first_vmplan_by
 
@@ -26,21 +27,12 @@ if TYPE_CHECKING:
 from .domain import OS, Memory, OSVersion  # noqa: TCH001
 
 
-@cache
-def list_image_names() -> list[str]:
-    """VM Image名一覧."""
-    return [img.name for img in list_images()]
-
-
-Callback = Callable[[], list[str]]  # list_image_names関数の型
-
-
 class ImageInfoRepo(BaseModel, frozen=True):
     """VM Imageに関するリポジトリ."""
 
     memory: Memory
     os: OS
-    list_images: Callback = list_images
+    list_images: Callable[[], list[str]] = list_images
 
     @cached_property
     def image_names(self) -> list[str]:
@@ -116,19 +108,18 @@ def find_plan_id(memory: Memory) -> UUID:
     return flavor.flavor_id
 
 
-def add_vm(mem: Memory, os: OS, app: Application) -> None:
+def add_vm(
+    flavor_id: UUID,
+    image_id: UUID,
+    admin_pass: str,
+) -> dict:
     """新規VM追加."""
-    print(mem, os, app)  # noqa: T201
-    # print(find_image_id(mem, os, app))
-    # plan = find_vmplan_by("name", mem.expression)
-
-    # def pred(img: Image) -> bool:
-    #     in_os = os_.value in img.name
-    #     in_app = app.value in img.app
-    #     return in_os and in_app
-
-    # image = filter_model_by(list_images(), pred)
-    # print(image)
-    # js = {"flavorRef": plan.flavor_id, "imageRef": image.image_id}
-    # print(js)
-    # Endpoints.COMPUTE.post("servers", json=js)
+    js = {
+        "server": {
+            "flavorRef": str(flavor_id),
+            "imageRef": str(image_id),
+            "adminPass": admin_pass,
+        },
+    }
+    res = Endpoints.COMPUTE.post("servers", json=js)
+    return res.json()
