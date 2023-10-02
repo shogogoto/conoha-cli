@@ -12,11 +12,11 @@ from conoha_client.add_vm.repo import (
 )
 from conoha_client.features._shared.view.domain import view_options
 
-from .domain import OS, Memory, Version
+from .domain import OS, Memory, OSVersion
 
 
 @click.group("add", invoke_without_command=True)
-@click.option("--memory", "-m", type=click.Choice(Memory))
+@click.option("--memory", "-m", type=click.Choice(Memory), required=True)
 @click.option("--os", "-o", type=click.Choice(OS), default=OS.UBUNTU, show_default=True)
 @click.option(
     "--os-version",
@@ -44,7 +44,7 @@ def add_vm_cli(  # noqa: PLR0913
     ctx: click.Context,
     memory: Memory,
     os: OS,
-    os_version: Version,
+    os_version: OSVersion,
     app: str,
     app_version: str,
 ) -> None:
@@ -52,17 +52,23 @@ def add_vm_cli(  # noqa: PLR0913
     ctx.ensure_object(dict)
     ctx.obj["memory"] = memory
     ctx.obj["os"] = os
-    ctx.obj["os_version"] = Version(value=os_version)
-    ctx.obj["app"] = Application(name=app, version=app_version)
+    ov = OSVersion(value=os_version, os=os)
+
+    ctx.obj["os_version"] = ov
+    _app = Application(name=app, version=app_version)
+    ctx.obj["app"] = _app
     if ctx.invoked_subcommand is None:
         pass
-        # add_vm
+        # find_image_id(memory, os, ov, _app)
+        # print(image_id)
+        # print(image_id)
+        # print(image_id)
 
 
 @add_vm_cli.command(name="os-vers")
 @view_options
 @click.pass_obj
-def list_os_versions(obj: object) -> list[Version]:
+def list_os_versions(obj: object) -> list[OSVersion]:
     """利用可能なOSバージョンを検索する."""
     return list_available_os_versions(
         memory=obj["memory"],
@@ -74,7 +80,7 @@ def list_os_versions(obj: object) -> list[Version]:
 @add_vm_cli.command(name="os-latest")
 @view_options
 @click.pass_obj
-def find_latest_os_version(obj: object) -> list[Version]:
+def find_latest_os_version(obj: object) -> list[OSVersion]:
     """利用可能な最新のOSバージョンを検索する."""
     v = find_available_os_latest_version(
         memory=obj["memory"],
