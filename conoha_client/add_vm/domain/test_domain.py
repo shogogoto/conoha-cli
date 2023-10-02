@@ -8,7 +8,7 @@ from conoha_client.add_vm.domain.errors import (
     OSVersionExtractError,
 )
 
-from .domain import OS, Application, Version
+from .domain import OS, Application, OSVersion
 
 
 def test_os_is_match() -> None:
@@ -19,13 +19,22 @@ def test_os_is_match() -> None:
 
 def test_get_os_version() -> None:
     """OS Versionを取得できるか."""
-    assert OS.UBUNTU.version("xxx-ubuntu-vvv-zzzz") == Version(value="vvv")
+    assert OS.UBUNTU.version("xxx-ubuntu-vvv-zzzz") == OSVersion(
+        value="vvv",
+        os=OS.UBUNTU,
+    )
 
 
 def test_get_win_version() -> None:
     """Windowsの場合は後ろ2要素を結合したものがバージョンとなる."""
-    assert OS.WINDOWS.version("vmi-win2019dce-rds") == Version(value="win2019dce-rds")
-    assert OS.WINDOWS.version("vmi-win-2019dce-amd64") == Version(value="win-2019dce")
+    assert OS.WINDOWS.version("vmi-win2019dce-rds") == OSVersion(
+        value="win2019dce-rds",
+        os=OS.WINDOWS,
+    )
+    assert OS.WINDOWS.version("vmi-win-2019dce-amd64") == OSVersion(
+        value="win-2019dce",
+        os=OS.WINDOWS,
+    )
 
 
 def test_invalid_get_os_version() -> None:

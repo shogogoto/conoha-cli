@@ -4,6 +4,7 @@ from __future__ import annotations
 import operator
 import re
 from enum import Enum
+from functools import cache
 
 from pydantic import BaseModel
 
@@ -79,7 +80,7 @@ class OS(str, Enum):
             msg = f"引数の文字列にOS名{self.value}が含まれていません.:{img_name}"
             raise OSVersionExtractError(msg)
 
-    def version(self, img_name: str) -> Version:
+    def version(self, img_name: str) -> OSVersion:
         """VM Image名からバージョンを取得する."""
         self._check_match(img_name)
 
@@ -94,7 +95,7 @@ class OS(str, Enum):
         value = sp[i + 1]
         if self == OS.WINDOWS:
             value = "-".join(sp[i : i + 2])
-        return Version(value=value)
+        return OSVersion(value=value, os=self)
 
     def app_with_version(self, img_name: str) -> Application:
         """VM Image名のvmi-{x}-{value}のxを返す."""
@@ -124,7 +125,7 @@ class OS(str, Enum):
         raise ApplicationUnexpectedError
 
 
-class Version(BaseModel, frozen=True):
+class OSVersion(BaseModel, frozen=True):
     """VM Image OS or App Version.
 
     RootModelにしないのは,
@@ -132,6 +133,7 @@ class Version(BaseModel, frozen=True):
     """
 
     value: str
+    os: OS
 
     def is_match(self, img_name: str) -> bool:
         """イメージ名に{value}が含まれているか."""
@@ -150,9 +152,17 @@ class Application(BaseModel, frozen=True):
 
     def is_match(self, img_name: str) -> bool:
         """イメージ名にname,versionがともに含まれているか."""
-        return self.name in img_name and self.version.is_match(img_name)
+        n = self.name
+        v = self.version
+        if n == "NONE":
+            n = ""
+        if v == "NONE":
+            v = ""
+
+        return n in img_name and v in img_name
 
     @classmethod
+    @cache
     def none(cls) -> Application:
         """空情報."""
         v = "NONE"
@@ -168,7 +178,7 @@ class ImageNames(BaseModel, frozen=True):
 
     values: list[str]
 
-    def available_os_versions(self, os: OS) -> list[Version]:
+    def available_os_versions(self, os: OS) -> list[OSVersion]:
         """対応バージョン一覧を取得する."""
         s = set(filter(os.is_match, self.values))
         versions = {os.version(n) for n in s}

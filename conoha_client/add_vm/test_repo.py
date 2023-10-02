@@ -1,9 +1,11 @@
 """VM add repo test."""
 from __future__ import annotations
 
+import itertools
+
 from conoha_client.add_vm.domain.domain import Application
 
-from .domain import OS, Memory, Version
+from .domain import OS, Memory, OSVersion
 from .repo import (
     find_available_os_latest_version,
     list_available_apps,
@@ -19,12 +21,15 @@ def mock_names() -> list[str]:
 def test_list_available_os_versions() -> None:
     """Test for regression."""
     uv = list_available_os_versions(Memory.MG512, OS.UBUNTU, mock_names)
-    expected = [Version(value=v) for v in ["16.04", "20.04", "20.04.2", "22.04"]]
+    expected = [
+        OSVersion(value=v, os=OS.UBUNTU) for v in ["16.04", "20.04", "20.04.2", "22.04"]
+    ]
     assert uv == expected
 
     uv2 = list_available_os_versions(Memory.GB64, OS.UBUNTU, mock_names)
     expected2 = [
-        Version(value=v) for v in ["16.04", "18.04", "20.04", "20.04.2", "22.04"]
+        OSVersion(value=v, os=OS.UBUNTU)
+        for v in ["16.04", "18.04", "20.04", "20.04.2", "22.04"]
     ]
     assert uv2 == expected2
 
@@ -32,7 +37,7 @@ def test_list_available_os_versions() -> None:
 def test_find_available_os_latest() -> None:
     """Test for regression."""
     v = find_available_os_latest_version(Memory.MG512, OS.UBUNTU, mock_names)
-    assert v == Version(value="22.04")
+    assert v == OSVersion(value="22.04", os=OS.UBUNTU)
 
 
 def test_list_available_apps() -> None:
@@ -40,7 +45,7 @@ def test_list_available_apps() -> None:
     apps = list_available_apps(
         Memory.MG512,
         OS.ALMA,
-        Version(value="9.2"),
+        OSVersion(value="9.2", os=OS.ALMA),
         mock_names,
     )
     assert apps == [Application.none()]
@@ -51,10 +56,19 @@ def test_list_available_apps_by_latest() -> None:
     apps = list_available_apps(
         Memory.MG512,
         OS.UBUNTU,
-        Version(value="latest"),
+        OSVersion(value="latest", os=OS.UBUNTU),
         mock_names,
     )
     assert apps == [Application.none()]
+
+
+def test_find_image_id() -> None:
+    """一意にimage idを見つける. 一番大事."""
+    for mem, _os in itertools.product(Memory, OS):
+        for os_v in list_available_os_versions(mem, _os, mock_names):
+            for _app in list_available_apps(mem, _os, os_v, mock_names):
+                pass
+                # find_image_id(mem, _os, os_v, app)
 
 
 IMAGE_NAME_SNAPSHOT_20230930 = [

@@ -7,7 +7,7 @@ from pydantic import BaseModel
 T = TypeVar("T", bound=BaseModel)
 
 
-def filter_model_by(models: list[T], pred: Callable[T, bool]) -> T | None:
+def first_model_by(models: list[T], pred: Callable[T, bool]) -> T | None:
     """条件を満たしたモデルを抽出する."""
     ls = filter(pred, models)
     try:
@@ -16,4 +16,4 @@ def filter_model_by(models: list[T], pred: Callable[T, bool]) -> T | None:
         return None
 
 
-__all__ = ["filter_model_by"]
+__all__ = ["first_model_by"]

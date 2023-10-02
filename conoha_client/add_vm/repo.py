@@ -6,23 +6,20 @@ from typing import TYPE_CHECKING, Callable
 from uuid import UUID
 
 from conoha_client.add_vm.domain.domain import ImageNames
+from conoha_client.features._shared import view
 from conoha_client.features.image.repo import list_images
-from conoha_client.features.plan import find_vmplan_by
+from conoha_client.features.plan import first_vmplan_by
 
-from .domain import OS, Memory, NotFoundFlavorIdError, Version
-from .domain.errors import NotFoundVersionError
+from .domain import OS, Memory, NotFoundFlavorIdError, OSVersion
+from .domain.errors import (
+    ImageIdMappingMismatchWarning,
+    NotFoundApplicationError,
+    NotFoundOSVersionError,
+)
 
 if TYPE_CHECKING:
     from conoha_client.add_vm.domain.domain import Application
-
-
-def find_plan_id(mem: Memory) -> UUID:
-    """メモリ容量からFlavor IDをみつける."""
-    flavor = find_vmplan_by("name", mem.expression)
-    if flavor is None:
-        msg = f"{mem.value}GBのプランIDがみつかりませんでした"
-        raise NotFoundFlavorIdError(msg)
-    return flavor.flavor_id
+    from conoha_client.features.image.domain import Image
 
 
 def list_image_names() -> list[str]:
@@ -37,7 +34,7 @@ def list_available_os_versions(
     memory: Memory,
     os: OS,
     image_names: Callback,
-) -> list[Version]:
+) -> list[OSVersion]:
     """利用可能なOSバージョンを取得."""
     mem_names = filter(memory.is_match, image_names())
     names = ImageNames(values=list(mem_names))
@@ -48,18 +45,18 @@ def find_available_os_latest_version(
     memory: Memory,
     os: OS,
     image_names: Callback,
-) -> Version:
+) -> OSVersion:
     """利用可能な最新OSバージョンを取得."""
     vers = list_available_os_versions(memory, os, image_names)
     if len(vers) == 0:
-        raise NotFoundVersionError
+        raise NotFoundOSVersionError
     return vers[-1]
 
 
 def list_available_apps(
     memory: Memory,
     os: OS,
-    os_version: Version,
+    os_version: OSVersion,
     image_names: Callback,
 ) -> list[Application]:
     """引数のOS,versionで利用可能なアプリ,バージョン一覧."""
@@ -71,7 +68,7 @@ def list_available_apps(
             f"{os}のバージョン{os_version.value}は利用できません."
             f"利用可能なバージョンは{[v.value for v in os_versions]}です"
         )
-        raise NotFoundVersionError(msg)
+        raise NotFoundOSVersionError(msg)
     mem_names = filter(memory.is_match, image_names())
     os_names = filter(os.is_match, mem_names)
     ver_names = filter(os_version.is_match, os_names)
@@ -79,9 +76,53 @@ def list_available_apps(
     return sorted(appsv, key=operator.attrgetter("name"))
 
 
+def find_plan_id(memory: Memory) -> UUID:
+    """メモリ容量からFlavor IDをみつける."""
+    flavor = first_vmplan_by("name", memory.expression)
+    if flavor is None:
+        msg = f"{memory.value}GBのプランIDがみつかりませんでした"
+        raise NotFoundFlavorIdError(msg)
+    return flavor.flavor_id
+
+
+def find_image_id(
+    memory: Memory,
+    os: OS,
+    os_version: OSVersion,
+    app: Application,
+) -> UUID:
+    """指定条件からimage idを一意に検索する."""
+    if os_version.is_latest():
+        os_version = find_available_os_latest_version(memory, os, list_image_names)
+    if os_version not in list_available_os_versions(memory, os, list_image_names):
+        raise NotFoundOSVersionError
+
+    if app not in list_available_apps(memory, os, os_version, list_image_names):
+        raise NotFoundApplicationError
+
+    def pred(img: Image) -> bool:
+        n = img.name
+
+        return (
+            memory.is_match(n)
+            and os.is_match(n)
+            and os_version.is_match(n)
+            and app.is_match(n)
+        )
+
+    res = list(filter(pred, list_images()))
+    if len(res) != 1:
+        # print(memory, os, os_version, app)
+        view(res, keys={}, style="table", pass_command=False)
+        raise ImageIdMappingMismatchWarning
+
+    return res[0].image_id
+
+
 def add_vm(mem: Memory, os: OS, app: Application) -> None:
     """新規VM追加."""
     print(mem, os, app)  # noqa: T201
+    # print(find_image_id(mem, os, app))
     # plan = find_vmplan_by("name", mem.expression)
 
     # def pred(img: Image) -> bool:

@@ -21,5 +21,9 @@ class ApplicationUnexpectedError(Exception):
     """アプリ情報が何らかのせいで正常に取得できなかった."""
 
 
-class NotFoundVersionError(Exception):
+class NotFoundOSVersionError(Exception):
     """OSのバージョンが見つからなかった."""
+
+
+class NotFoundApplicationError(Exception):
+    """アプリケーションが見つからなかった."""
