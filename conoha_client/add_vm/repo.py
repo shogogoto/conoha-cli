@@ -8,6 +8,7 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
+from conoha_client.add_vm.domain.added_vm import AddedVM
 from conoha_client.features._shared import view
 from conoha_client.features._shared.endpoints.endpoints import Endpoints
 from conoha_client.features.image.repo import list_images
@@ -108,18 +109,25 @@ def find_plan_id(memory: Memory) -> UUID:
     return flavor.flavor_id
 
 
-def add_vm(
-    flavor_id: UUID,
-    image_id: UUID,
-    admin_pass: str,
-) -> dict:
-    """新規VM追加."""
-    js = {
-        "server": {
-            "flavorRef": str(flavor_id),
-            "imageRef": str(image_id),
-            "adminPass": admin_pass,
-        },
-    }
-    res = Endpoints.COMPUTE.post("servers", json=js)
-    return res.json()
+class AddVMCommand(BaseModel, frozen=True):
+    """Add New VM Command of CQS Pattern."""
+
+    flavor_id: UUID
+    image_id: UUID
+    admin_pass: str
+    sshkey_name: str | None
+
+    def __call__(self) -> AddedVM:
+        """新規VM追加."""
+        js = {
+            "server": {
+                "flavorRef": str(self.flavor_id),
+                "imageRef": str(self.image_id),
+                "adminPass": self.admin_pass,
+            },
+        }
+        if self.sshkey_name is not None:
+            js["server"]["key_name"] = self.sshkey_name
+
+        res = Endpoints.COMPUTE.post("servers", json=js).json("server")
+        return AddedVM.model_validate(res)
