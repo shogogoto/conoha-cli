@@ -144,8 +144,15 @@ def test_add_vm() -> None:
     assert added.vm_id == UUID(VM_ID)
 
 
-def test_invalid_add_vm(requests_mock: Mocker) -> None:
+def test_invalid_add_vm(
+    requests_mock: Mocker,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """Invalid case."""
+    monkeypatch.setenv("OS_CONOHA_REGION_NO", "1")
+    monkeypatch.setenv("OS_TENANT_ID", "tenant-id")
+    monkeypatch.setenv("OS_USERNAME", "testuser")
+
     requests_mock.post(
         Endpoints.IDENTITY.url("tokens"),
         json={"access": {"token": {"id": "test_token"}}},
