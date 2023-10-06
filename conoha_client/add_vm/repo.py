@@ -1,6 +1,7 @@
 """VM Create API."""
 from __future__ import annotations
 
+import http
 import operator
 from functools import cached_property
 from typing import TYPE_CHECKING, Callable
@@ -16,6 +17,7 @@ from conoha_client.features.plan.repo import first_vmplan_by
 
 from .domain.errors import (
     ImageIdMappingMismatchWarning,
+    NotFlavorProvidesError,
     NotFoundApplicationError,
     NotFoundFlavorIdError,
     NotFoundOSVersionError,
@@ -109,13 +111,26 @@ def find_plan_id(memory: Memory) -> UUID:
     return flavor.flavor_id
 
 
+def post_add_vm(json: dict) -> object:
+    """Post func for DI."""
+    res = Endpoints.COMPUTE.post("servers", json=json)
+    if res.status_code == http.HTTPStatus.BAD_REQUEST:
+        msg = (
+            "そのイメージとプランの組み合わせは提供されていません."
+            "別の組み合わせをお試しください"
+        )
+        raise NotFlavorProvidesError(msg)
+    return res.json()["server"]
+
+
 class AddVMCommand(BaseModel, frozen=True):
     """Add New VM Command of CQS Pattern."""
 
     flavor_id: UUID
     image_id: UUID
     admin_pass: str
-    sshkey_name: str | None
+    sshkey_name: str | None = None
+    post: Callable[[dict], object] = post_add_vm
 
     def __call__(self) -> AddedVM:
         """新規VM追加."""
@@ -128,6 +143,5 @@ class AddVMCommand(BaseModel, frozen=True):
         }
         if self.sshkey_name is not None:
             js["server"]["key_name"] = self.sshkey_name
-
-        res = Endpoints.COMPUTE.post("servers", json=js).json("server")
+        res = self.post(js)
         return AddedVM.model_validate(res)

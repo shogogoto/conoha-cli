@@ -27,3 +27,7 @@ class NotFoundOSVersionError(Exception):
 
 class NotFoundApplicationError(Exception):
     """アプリケーションが見つからなかった."""
+
+
+class NotFlavorProvidesError(Exception):
+    """そのImageとFlavorの組み合わせは提供されていない."""

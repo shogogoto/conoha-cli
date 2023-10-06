@@ -5,12 +5,21 @@ import itertools
 import json
 from functools import cache
 from pathlib import Path
+from typing import TYPE_CHECKING
+from uuid import UUID, uuid4
+
+import pytest
 
 from conoha_client.add_vm.domain.domain import Application
+from conoha_client.add_vm.domain.errors import NotFlavorProvidesError
+from conoha_client.features._shared.endpoints.endpoints import Endpoints
 from conoha_client.features.image.domain import Image
 
 from .domain import OS, Memory, OSVersion
-from .repo import ImageInfoRepo
+from .repo import AddVMCommand, ImageInfoRepo
+
+if TYPE_CHECKING:
+    from requests_mock import Mocker
 
 
 @cache
@@ -36,7 +45,9 @@ def mock_list_images() -> list[Image]:
 def test_list_available_os_versions() -> None:
     """Test for regression."""
     repo = ImageInfoRepo(
-        memory=Memory.MG512, os=OS.UBUNTU, list_images=mock_list_images,
+        memory=Memory.MG512,
+        os=OS.UBUNTU,
+        list_images=mock_list_images,
     )
     expected = [
         OSVersion(value=v, os=OS.UBUNTU) for v in ["16.04", "20.04", "20.04.2", "22.04"]
@@ -44,7 +55,9 @@ def test_list_available_os_versions() -> None:
     assert repo.available_os_versions == expected
 
     repo2 = ImageInfoRepo(
-        memory=Memory.GB64, os=OS.UBUNTU, list_images=mock_list_images,
+        memory=Memory.GB64,
+        os=OS.UBUNTU,
+        list_images=mock_list_images,
     )
     expected2 = [
         OSVersion(value=v, os=OS.UBUNTU)
@@ -56,7 +69,9 @@ def test_list_available_os_versions() -> None:
 def test_find_available_os_latest() -> None:
     """Test for regression."""
     repo = ImageInfoRepo(
-        memory=Memory.MG512, os=OS.UBUNTU, list_images=mock_list_images,
+        memory=Memory.MG512,
+        os=OS.UBUNTU,
+        list_images=mock_list_images,
     )
     assert repo.available_os_latest_version == OSVersion(value="22.04", os=OS.UBUNTU)
 
@@ -90,3 +105,58 @@ def test_find_image_id() -> None:
     # windowsの分を除外 -10
     # devを除外 -1
     assert len(imgids) == len(mock_list_images()) - 10 - 1
+
+
+VM_ID = "d9302160-27f5-42f8-8993-d2735d2b0c24"
+
+
+def mock_post(_dummy: any) -> object:
+    """add_vm mock."""
+    return {
+        "security_groups": [{"name": "default"}],
+        "OS-DCF:diskConfig": "MANUAL",
+        "id": VM_ID,
+        "links": [
+            {
+                "href": "https://compute.tyo3.conoha.io/v2/49756f55e53248df82e2e4cf080d6ceb/servers/d9302160-27f5-42f8-8993-d2735d2b0c24",
+                "rel": "self",
+            },
+            {
+                "href": "https://compute.tyo3.conoha.io/49756f55e53248df82e2e4cf080d6ceb/servers/d9302160-27f5-42f8-8993-d2735d2b0c24",
+                "rel": "bookmark",
+            },
+        ],
+        "adminPass": "xxx",
+    }
+
+
+def test_add_vm() -> None:
+    """VM追加."""
+    cmd = AddVMCommand(
+        flavor_id=uuid4(),
+        image_id=uuid4(),
+        admin_pass="xxx",  # noqa: S106
+        sshkey_name=None,
+        post=mock_post,
+    )
+
+    added = cmd()
+    assert added.vm_id == UUID(VM_ID)
+
+
+def test_invalid_add_vm(requests_mock: Mocker) -> None:
+    """Invalid case."""
+    requests_mock.post(
+        Endpoints.IDENTITY.url("tokens"),
+        json={"access": {"token": {"id": "test_token"}}},
+    )
+    requests_mock.post(Endpoints.COMPUTE.tenant_id_url("servers"), status_code=400)
+
+    cmd = AddVMCommand(
+        flavor_id=uuid4(),
+        image_id=uuid4(),
+        admin_pass="xxx",  # noqa: S106
+        sshkey_name=None,
+    )
+    with pytest.raises(NotFlavorProvidesError):
+        cmd()
