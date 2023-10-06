@@ -6,12 +6,21 @@ import click
 from conoha_client.add_vm.domain.domain import Application
 from conoha_client.add_vm.repo import (
     ImageInfoRepo,
-    add_vm,
-    find_plan_id,
 )
+from conoha_client.add_vm.usecase import add_vm
 from conoha_client.features._shared.view.domain import view_options
 
 from .domain import OS, Memory, OSVersion
+
+WITH_SSHKEY_SUBCOMMAND = "with-key"
+
+
+class AddVMContext(click.Context):
+    """Context."""
+
+    repo: ImageInfoRepo
+    os_version: OSVersion
+    app: Application
 
 
 @click.group("add", invoke_without_command=True)
@@ -50,20 +59,29 @@ def add_vm_cli(  # noqa: PLR0913
     """Add VM CLI."""
     ctx.ensure_object(dict)
     repo = ImageInfoRepo(memory=memory, os=os)
-    ctx.obj["repo"] = repo
     osv = OSVersion(value=os_version, os=os)
     appv = Application(name=app, version=app_version)
+    ctx.obj["repo"] = repo
     ctx.obj["os_version"] = osv
     ctx.obj["app"] = appv
+    # ctx.obj = AddVMContext(repo=repo, os_version=os_version, app=appv)
+    # ctx.obj.repo = repo
+    # ctx.obj.os_version = osv
+    # ctx.obj.app = appv
 
     if ctx.invoked_subcommand is None:
-        image_id = repo.find_image_id(osv, appv)
-        flavor_id = find_plan_id(memory)
-
-        msg = "VMのroot userのパスワードを入力してくだいさい"
-        password = click.prompt(msg, hide_input=True, confirmation_prompt=True)
-        res = add_vm(flavor_id, image_id, admin_pass=password)
+        click.echo("aaaaaaaaaa")
+        res = add_vm(repo, osv, appv)
         click.echo(res)
+
+
+# @add_vm_cli.command(name=WITH_SSHKEY_SUBCOMMAND)
+# @click.argument("sshkey_name")
+# @click.option("--host-name", "-h")
+# @click.pass_obj
+# def with_key(obj: AddVMContext, sshkey_name: str) -> None:
+#     """ssh鍵を設定する."""
+#     click.echo(obj.os_version)
 
 
 @add_vm_cli.command(name="os-vers")
