@@ -24,6 +24,7 @@ ruff = "^0.0.290"
 taskipy = "^1.12.0"
 ruff-lsp = "^0.0.39"
 pre-commit = "^3.4.0"
+requests-mock = "^1.11.0"
 
 [tool.poetry.scripts]
 conoha-client = "conoha_client.cli:main"
@@ -42,7 +43,8 @@ ignore = [
   "TCH003", # なんか from datetime がtype_checking blockに入れられる
   "ERA001", # commented-out codeを残す
   "S101",   # assertを許可したい
-  "FBT001"  # 関数の引数にboolを禁止するのはやりすぎだと思う
+  "FBT001", # 関数の引数にboolを禁止するのはやりすぎだと思う
+  # "F814"    # unusedな変数が編集の度に消えるのうざい
   ]
 
 [tool.taskipy.tasks]
