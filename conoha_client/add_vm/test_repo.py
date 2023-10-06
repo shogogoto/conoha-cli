@@ -152,6 +152,7 @@ def test_invalid_add_vm(
     monkeypatch.setenv("OS_CONOHA_REGION_NO", "1")
     monkeypatch.setenv("OS_TENANT_ID", "tenant-id")
     monkeypatch.setenv("OS_USERNAME", "testuser")
+    monkeypatch.setenv("OS_PASSWORD", "testuser")
 
     requests_mock.post(
         Endpoints.IDENTITY.url("tokens"),
