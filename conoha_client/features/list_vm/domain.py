@@ -14,6 +14,7 @@ class VMStatus(Enum):
     ACTIVE = "ACTIVE"
     SHUTOFF = "SHUTOFF"
     REBOOT = "REBOOT"
+    BUILD = "BUILD"
 
     def is_shutoff(self) -> bool:
         """シャットダウン済みか否か."""

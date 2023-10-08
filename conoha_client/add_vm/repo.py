@@ -4,7 +4,6 @@ from __future__ import annotations
 import http
 import operator
 from functools import cached_property
-from ipaddress import IPv4Address
 from typing import TYPE_CHECKING, Callable
 from uuid import UUID
 
@@ -154,10 +153,10 @@ class AddVMCommand(BaseModel, frozen=True):
         return AddedVM.model_validate(res)
 
 
-def find_ipv4(
+def find_added(
     vm_id: UUID,
     dep: Callable[[], list[object]] = get_dep,
-) -> IPv4Address:
+) -> Server:
     """Return ipv4 of added vm."""
 
     def pred(vm: Server) -> bool:
@@ -166,7 +165,7 @@ def find_ipv4(
     f = filter(pred, list_servers(get=dep))
 
     try:
-        return next(f).ipv4
+        return next(f)
     except StopIteration as e:
         msg = ""
         raise NotFoundAddedVMError(msg) from e

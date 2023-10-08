@@ -20,7 +20,7 @@ from conoha_client.features._shared.endpoints.endpoints import Endpoints
 from conoha_client.features.image.domain import Image
 
 from .domain import OS, Memory, OSVersion
-from .repo import AddVMCommand, ImageInfoRepo, find_ipv4
+from .repo import AddVMCommand, ImageInfoRepo, find_added
 
 if TYPE_CHECKING:
     from requests_mock import Mocker
@@ -183,8 +183,8 @@ def test_find_ipv4() -> None:
         p = Path(__file__).resolve().parent / "fixture_servers20231006.json"
         return json.loads(p.read_text())
 
-    ip = find_ipv4(UUID(VM_ID), dep=mock_get_servers)
-    assert ip == expected
+    added = find_added(UUID(VM_ID), dep=mock_get_servers)
+    assert added.ipv4 == expected
 
 
 def test_invalid_find_ipv4() -> None:
@@ -196,4 +196,4 @@ def test_invalid_find_ipv4() -> None:
         return [json.loads(p.read_text())[1]]
 
     with pytest.raises(NotFoundAddedVMError):
-        find_ipv4(UUID(VM_ID), dep=mock_get_servers)
+        find_added(UUID(VM_ID), dep=mock_get_servers)

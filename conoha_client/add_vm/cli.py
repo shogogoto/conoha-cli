@@ -1,6 +1,9 @@
 """add VM CLI."""
 from __future__ import annotations
 
+import os
+from typing import TYPE_CHECKING
+
 import click
 
 from conoha_client.add_vm.domain.domain import Application
@@ -12,20 +15,24 @@ from conoha_client.features._shared.view.domain import view_options
 
 from .domain import OS, Memory, OSVersion
 
-WITH_SSHKEY_SUBCOMMAND = "with-key"
-
-
-class AddVMContext(click.Context):
-    """Context."""
-
-    repo: ImageInfoRepo
-    os_version: OSVersion
-    app: Application
+if TYPE_CHECKING:
+    from conoha_client.features.list_vm.domain import Server
 
 
 @click.group("add", invoke_without_command=True)
-@click.option("--memory", "-m", type=click.Choice(Memory), required=True)
-@click.option("--os", "-o", type=click.Choice(OS), default=OS.UBUNTU, show_default=True)
+@click.option(
+    "--memory",
+    "-m",
+    type=click.Choice(Memory),
+    required=True,
+)
+@click.option(
+    "--os",
+    "-o",
+    type=click.Choice(OS),
+    default=OS.UBUNTU,
+    show_default=True,
+)
 @click.option(
     "--os-version",
     "-ov",
@@ -47,6 +54,21 @@ class AddVMContext(click.Context):
     help="アプリのバージョン.NONEは指定なし",
     show_default=True,
 )
+@click.option(
+    "--keypair-name",
+    "-k",
+    default=lambda: os.getenv("OS_SSHKEY_NAME", None),
+    help="sshkeyのペア名:OS_SSHKEY_NAME環境変数の値が設定される",
+    show_default=True,
+)
+@click.option(
+    "--admin-password",
+    "-pw",
+    default=lambda: os.getenv("OS_ADMIN_PASSWORD", None),
+    help="VMのrootユーザーのパスワード:OS_ADMIN_PASSWORD環境変数の値が設定される",
+    show_default=True,
+)
+@view_options
 @click.pass_context
 def add_vm_cli(  # noqa: PLR0913
     ctx: click.Context,
@@ -55,7 +77,9 @@ def add_vm_cli(  # noqa: PLR0913
     os_version: str,
     app: str,
     app_version: str,
-) -> None:
+    admin_password: str | None,
+    keypair_name: str | None,
+) -> list[Server]:
     """Add VM CLI."""
     ctx.ensure_object(dict)
     repo = ImageInfoRepo(memory=memory, os=os)
@@ -64,24 +88,18 @@ def add_vm_cli(  # noqa: PLR0913
     ctx.obj["repo"] = repo
     ctx.obj["os_version"] = osv
     ctx.obj["app"] = appv
-    # ctx.obj = AddVMContext(repo=repo, os_version=os_version, app=appv)
-    # ctx.obj.repo = repo
-    # ctx.obj.os_version = osv
-    # ctx.obj.app = appv
 
     if ctx.invoked_subcommand is None:
-        click.echo("aaaaaaaaaa")
-        res = add_vm(repo, osv, appv)
-        click.echo(res)
-
-
-# @add_vm_cli.command(name=WITH_SSHKEY_SUBCOMMAND)
-# @click.argument("sshkey_name")
-# @click.option("--host-name", "-h")
-# @click.pass_obj
-# def with_key(obj: AddVMContext, sshkey_name: str) -> None:
-#     """ssh鍵を設定する."""
-#     click.echo(obj.os_version)
+        added = add_vm(
+            repo,
+            osv,
+            appv,
+            admin_password,
+            keypair_name,
+        )
+        print(":以下のVMが新規追加されました")  # noqa: T201
+        return [added]
+    return []
 
 
 @add_vm_cli.command(name="os-vers")
