@@ -2,6 +2,7 @@
 
 from datetime import datetime
 from enum import Enum
+from ipaddress import IPv4Address
 from uuid import UUID
 
 from pydantic import AliasPath, BaseModel, Field
@@ -13,6 +14,7 @@ class VMStatus(Enum):
     ACTIVE = "ACTIVE"
     SHUTOFF = "SHUTOFF"
     REBOOT = "REBOOT"
+    BUILD = "BUILD"
 
     def is_shutoff(self) -> bool:
         """シャットダウン済みか否か."""
@@ -33,3 +35,7 @@ class Server(BaseModel, frozen=True):
     # def elapsed_from_created(self) -> timedelta:
     #     """作成時からの経過時間を秒以下を省いて計算する."""
     #     return now_jst() - self.created_at
+    @property
+    def ipv4(self) -> IPv4Address:
+        """ipv4 from name."""
+        return IPv4Address(self.name.replace("-", "."))

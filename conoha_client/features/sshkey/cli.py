@@ -30,7 +30,12 @@ def _list() -> list[KeyPair]:
 
 
 @sshkey_cli.command()
-@click.option("--out-dir", help="鍵のファイル出力先", default="./")
+@click.option(
+    "--out-dir",
+    help="鍵のファイル出力先",
+    default="./",
+    show_default=True,
+)
 def add(out_dir: str) -> None:
     """秘密鍵生成."""
     kp = create_keypair()

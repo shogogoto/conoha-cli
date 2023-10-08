@@ -1,20 +1,26 @@
 """VM Create API."""
 from __future__ import annotations
 
+import http
 import operator
 from functools import cached_property
 from typing import TYPE_CHECKING, Callable
 from uuid import UUID
 
 from pydantic import BaseModel
+from requests import HTTPError
 
+from conoha_client.add_vm.domain.added_vm import AddedVM
 from conoha_client.features._shared import view
 from conoha_client.features._shared.endpoints.endpoints import Endpoints
 from conoha_client.features.image.repo import list_images
+from conoha_client.features.list_vm.repo import get_dep, list_servers
 from conoha_client.features.plan.repo import first_vmplan_by
 
 from .domain.errors import (
     ImageIdMappingMismatchWarning,
+    NotFlavorProvidesError,
+    NotFoundAddedVMError,
     NotFoundApplicationError,
     NotFoundFlavorIdError,
     NotFoundOSVersionError,
@@ -23,6 +29,7 @@ from .domain.errors import (
 if TYPE_CHECKING:
     from conoha_client.add_vm.domain.domain import Application
     from conoha_client.features.image.domain import Image
+    from conoha_client.features.list_vm.domain import Server
 
 from .domain import OS, Memory, OSVersion  # noqa: TCH001
 
@@ -108,18 +115,57 @@ def find_plan_id(memory: Memory) -> UUID:
     return flavor.flavor_id
 
 
-def add_vm(
-    flavor_id: UUID,
-    image_id: UUID,
-    admin_pass: str,
-) -> dict:
-    """新規VM追加."""
-    js = {
-        "server": {
-            "flavorRef": str(flavor_id),
-            "imageRef": str(image_id),
-            "adminPass": admin_pass,
-        },
-    }
-    res = Endpoints.COMPUTE.post("servers", json=js)
-    return res.json()
+def post_add_vm(json: dict) -> object:
+    """Post func for DI."""
+    res = Endpoints.COMPUTE.post("servers", json=json)
+    if res.status_code == http.HTTPStatus.BAD_REQUEST:
+        msg = (
+            "そのイメージとプランの組み合わせは提供されていません."
+            "別の組み合わせをお試しください"
+        )
+        raise NotFlavorProvidesError(msg)
+    if res.status_code != http.HTTPStatus.ACCEPTED:
+        msg = "なんか想定外のエラーが起きた"
+        raise HTTPError(msg)
+    return res.json()["server"]
+
+
+class AddVMCommand(BaseModel, frozen=True):
+    """Add New VM Command of CQS Pattern."""
+
+    flavor_id: UUID
+    image_id: UUID
+    admin_pass: str
+    post: Callable[[dict], object] = post_add_vm
+
+    def __call__(self, sshkey_name: str | None = None) -> AddedVM:
+        """新規VM追加."""
+        js = {
+            "server": {
+                "flavorRef": str(self.flavor_id),
+                "imageRef": str(self.image_id),
+                "adminPass": self.admin_pass,
+            },
+        }
+        if sshkey_name is not None:
+            js["server"]["key_name"] = sshkey_name
+        res = self.post(js)
+        return AddedVM.model_validate(res)
+
+
+def find_added(
+    vm_id: UUID,
+    dep: Callable[[], list[object]] = get_dep,
+) -> Server:
+    """Return ipv4 of added vm."""
+
+    def pred(vm: Server) -> bool:
+        return vm.vm_id == vm_id
+
+    f = filter(pred, list_servers(get=dep))
+
+    try:
+        return next(f)
+    except StopIteration as e:
+        msg = ""
+        raise NotFoundAddedVMError(msg) from e
