@@ -16,6 +16,7 @@ from conoha_client.add_vm.domain.errors import (
     NotFlavorProvidesError,
     NotFoundAddedVMError,
 )
+from conoha_client.features._shared.conftest import prepare
 from conoha_client.features._shared.endpoints.endpoints import Endpoints
 from conoha_client.features.image.domain import Image
 
@@ -153,15 +154,7 @@ def test_invalid_add_vm(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Invalid case."""
-    monkeypatch.setenv("OS_CONOHA_REGION_NO", "1")
-    monkeypatch.setenv("OS_TENANT_ID", "tenant-id")
-    monkeypatch.setenv("OS_USERNAME", "testuser")
-    monkeypatch.setenv("OS_PASSWORD", "testuser")
-
-    requests_mock.post(
-        Endpoints.IDENTITY.url("tokens"),
-        json={"access": {"token": {"id": "test_token"}}},
-    )
+    prepare(requests_mock, monkeypatch)
     requests_mock.post(Endpoints.COMPUTE.tenant_id_url("servers"), status_code=400)
 
     cmd = AddVMCommand(
