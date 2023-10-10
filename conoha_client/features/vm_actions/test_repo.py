@@ -8,9 +8,12 @@ from requests_mock import Mocker
 
 from conoha_client.features._shared.conftest import prepare
 from conoha_client.features._shared.endpoints.endpoints import Endpoints
-from conoha_client.features.vm_actions.domain.errors import VMDeleteError
+from conoha_client.features.vm_actions.domain.errors import (
+    VMDeleteError,
+    VMShutdownError,
+)
 
-from .repo import remove_vm
+from .repo import VMActionCommands, remove_vm
 
 
 def test_invalid_remove_vm(
@@ -26,3 +29,19 @@ def test_invalid_remove_vm(
     )
     with pytest.raises(VMDeleteError):
         remove_vm(uid)
+
+
+def test_invalid_shutdown(
+    requests_mock: Mocker,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Invalid case."""
+    prepare(requests_mock, monkeypatch)
+    uid = uuid4()
+    requests_mock.post(
+        Endpoints.COMPUTE.tenant_id_url(f"servers/{uid}/action"),
+        status_code=404,
+    )
+    cmd = VMActionCommands(vm_id=uid)
+    with pytest.raises(VMShutdownError):
+        cmd.shutdown()
