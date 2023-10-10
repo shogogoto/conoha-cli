@@ -19,3 +19,7 @@ class VMBootError(Exception):
 
 class VMRebootError(Exception):
     """VMを再起動できなかった."""
+
+
+class VMSnapshotError(Exception):
+    """VMをイメージとして保存できなかった."""

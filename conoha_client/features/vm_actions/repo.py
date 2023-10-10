@@ -33,7 +33,7 @@ def remove_vm(
         msg = f"削除対象のVM_ID={vm_id}が見つかりませんでした"
         raise VMDeleteError(msg)
     if res.status_code != HTTPStatus.NO_CONTENT:
-        msg = f"{vm_id}は何らかの理由でVMが削除できませんでした"
+        msg = f"{vm_id}を削除できませんでした"
         raise VMDeleteError(msg)
 
 
@@ -62,7 +62,7 @@ class VMActionCommands(BaseModel, frozen=True):
         res = self.dep(self.vm_id, params)
 
         if res.status_code != HTTPStatus.ACCEPTED:
-            msg = f"{self.vm_id}は何らかの理由でシャットダウンできませんでした"
+            msg = f"{self.vm_id}をシャットダウンできませんでした"
             raise VMShutdownError(msg)
 
     def boot(self) -> None:
@@ -71,7 +71,7 @@ class VMActionCommands(BaseModel, frozen=True):
         res = self.dep(self.vm_id, params)
 
         if res.status_code != HTTPStatus.ACCEPTED:
-            msg = f"{self.vm_id}は何らかの理由で起動できませんでした"
+            msg = f"{self.vm_id}を起動できませんでした"
             raise VMBootError(msg)
 
     def reboot(self) -> None:
@@ -80,5 +80,14 @@ class VMActionCommands(BaseModel, frozen=True):
         res = self.dep(self.vm_id, params)
 
         if res.status_code != HTTPStatus.ACCEPTED:
-            msg = f"{self.vm_id}は何らかの理由で再起動できませんでした"
+            msg = f"{self.vm_id}を再起動できませんでした"
             raise VMRebootError(msg)
+
+    def snapshot(self, name: str) -> None:
+        """VMの状態をイメージとして保存."""
+        params = {"createImage": {"name": name}}
+        res = self.dep(self.vm_id, params)
+
+        if res.status_code != HTTPStatus.ACCEPTED:
+            msg = f"{self.vm_id}をスナップショットできませんでした"
+            raise VMShutdownError(msg)
