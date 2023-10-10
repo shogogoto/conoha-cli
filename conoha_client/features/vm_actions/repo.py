@@ -10,7 +10,10 @@ from requests import Response
 
 from conoha_client.features._shared.endpoints.endpoints import Endpoints
 from conoha_client.features.vm_actions.domain.errors import (
+    VMActionTargetNotFoundError,
+    VMBootError,
     VMDeleteError,
+    VMRebootError,
     VMShutdownError,
 )
 
@@ -39,7 +42,11 @@ ActionDependency = Callable[[UUID, dict], Response]
 
 def action_dep(vm_id: UUID, params: dict) -> Response:
     """VMアクションrequest."""
-    return Endpoints.COMPUTE.post(f"servers/{vm_id}/action", json=params)
+    res = Endpoints.COMPUTE.post(f"servers/{vm_id}/action", json=params)
+    if res.status_code == HTTPStatus.NOT_FOUND:
+        msg = f"VM_ID={vm_id}が見つかりませんでした"
+        raise VMActionTargetNotFoundError(msg)
+    return res
 
 
 class VMActionCommands(BaseModel, frozen=True):
@@ -54,9 +61,24 @@ class VMActionCommands(BaseModel, frozen=True):
         params = {"os-stop": v}
         res = self.dep(self.vm_id, params)
 
-        if res.status_code == HTTPStatus.NOT_FOUND:
-            msg = f"VM_ID={self.vm_id}が見つかりませんでした"
-            raise VMShutdownError(msg)
         if res.status_code != HTTPStatus.ACCEPTED:
             msg = f"{self.vm_id}は何らかの理由でシャットダウンできませんでした"
             raise VMShutdownError(msg)
+
+    def boot(self) -> None:
+        """VM起動."""
+        params = {"os-start": None}
+        res = self.dep(self.vm_id, params)
+
+        if res.status_code != HTTPStatus.ACCEPTED:
+            msg = f"{self.vm_id}は何らかの理由で起動できませんでした"
+            raise VMBootError(msg)
+
+    def reboot(self) -> None:
+        """VM再起動. HARDは必要になったら作る."""
+        params = {"reboot": {"type": "SOFT"}}
+        res = self.dep(self.vm_id, params)
+
+        if res.status_code != HTTPStatus.ACCEPTED:
+            msg = f"{self.vm_id}は何らかの理由で再起動できませんでした"
+            raise VMRebootError(msg)
