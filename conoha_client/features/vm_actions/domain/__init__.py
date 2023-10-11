@@ -1,0 +1,1 @@
+"""VM actions domain init."""

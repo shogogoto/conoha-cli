@@ -9,3 +9,4 @@ from conoha_client.features.image import *  # noqa: F403
 from conoha_client.features.list_vm import *  # noqa: F403
 from conoha_client.features.plan import *  # noqa: F403
 from conoha_client.features.sshkey import *  # noqa: F403
+from conoha_client.features.vm_actions import *  # noqa: F403

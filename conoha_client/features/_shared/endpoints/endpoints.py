@@ -79,7 +79,10 @@ class Endpoints(Enum):
         url = self.tenant_id_url(relative)
         # VM addでタイムアウトしたから延長
         return requests.post(
-            url, headers=token_headers(), timeout=TIMEOUT * 2, json=json,
+            url,
+            headers=token_headers(),
+            timeout=TIMEOUT * 2,
+            json=json,
         )
 
     def delete(self, relative: str) -> requests.Response:
@@ -88,4 +91,8 @@ class Endpoints(Enum):
         :param relative: テナントID以降の文字列
         """
         url = self.tenant_id_url(relative)
-        return requests.delete(url, headers=token_headers(), timeout=TIMEOUT)
+        return requests.delete(
+            url,
+            headers=token_headers(),
+            timeout=TIMEOUT * 2,
+        )
