@@ -41,6 +41,8 @@ def mock_list_images() -> list[Image]:
                     "app": j["app"],
                     "os_type": j["os"],
                 },
+                "created": "2023-07-12T04:36:33Z",
+                "minDisk": 30,
             },
         )
         for j in json.loads(p.read_text())
