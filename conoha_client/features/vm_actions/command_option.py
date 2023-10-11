@@ -10,7 +10,7 @@ P = ParamSpec("P")
 Param = Concatenate[tuple[UUID], TextIO, P]
 
 
-def uuid_target_options(
+def uuid_targets_options(
     func: Callable[Concatenate[UUID, ...], None],
 ) -> Callable[Param, None]:
     """標準入力からもuuidを取得できるオプション."""

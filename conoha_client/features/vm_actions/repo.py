@@ -15,6 +15,7 @@ from conoha_client.features.vm_actions.domain.errors import (
     VMDeleteError,
     VMRebootError,
     VMShutdownError,
+    VMSnapshotError,
 )
 
 
@@ -90,4 +91,4 @@ class VMActionCommands(BaseModel, frozen=True):
 
         if res.status_code != HTTPStatus.ACCEPTED:
             msg = f"{self.vm_id}をスナップショットできませんでした"
-            raise VMShutdownError(msg)
+            raise VMSnapshotError(msg)
