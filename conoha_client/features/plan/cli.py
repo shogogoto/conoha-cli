@@ -7,7 +7,7 @@ import click
 
 from conoha_client.features import view_options
 
-from .repo import first_vmplan_by, list_vmplans
+from .repo import list_vmplans
 
 if TYPE_CHECKING:
     from .domain import VMPlan
@@ -22,11 +22,3 @@ def vm_plan_cli() -> None:
 @view_options
 def _list() -> list[VMPlan]:
     return list_vmplans()
-
-
-@vm_plan_cli.command(name="find")
-@click.argument("attr_name")
-@click.argument("value")
-@view_options
-def _find(attr_name: str, value: str) -> list[VMPlan]:
-    return [first_vmplan_by(attr_name, value)]

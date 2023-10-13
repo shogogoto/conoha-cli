@@ -2,13 +2,13 @@
 from __future__ import annotations
 
 from functools import cache
+from typing import Callable
 
 from conoha_client.features import Endpoints
-from conoha_client.features._shared.domain import first_model_by
-from conoha_client.features._shared.view.domain import check_include_keys
+from conoha_client.features._shared.view.domain import model_filter
 
 from .domain import Memory, VMPlan
-from .errors import NotFoundFlavorError
+from .errors import FlavorIdentificationError
 
 
 @cache
@@ -18,20 +18,13 @@ def list_vmplans() -> list[VMPlan]:
     return [VMPlan.model_validate(e) for e in res["flavors"]]
 
 
-def first_vmplan_by(attr_name: str, value: any) -> VMPlan | None:
-    """key-valueにマッチしたプラン情報を返す."""
-
-    def pred(e: VMPlan) -> bool:
-        check_include_keys(e, {attr_name})
-        return value in str(getattr(e, attr_name))
-
-    return first_model_by(list_vmplans(), pred)
-
-
-def find_vmplan(mem: Memory) -> VMPlan:
+def find_vmplan(
+    mem: Memory,
+    dep: Callable[[], list[VMPlan]] = list_vmplans,
+) -> VMPlan:
     """メモリ容量からFlavor IDをみつける."""
-    flavor = first_vmplan_by("name", mem.expression)
-    if flavor is None:
-        msg = f"{mem.value}GBのプランIDがみつかりませんでした"
-        raise NotFoundFlavorError(msg)
-    return flavor.flavor_id
+    plans = model_filter(dep(), "name", mem.expression)
+    if len(plans) != 1:
+        msg = f"{mem.value}GBのプランを特定できませんでした"
+        raise FlavorIdentificationError(msg)
+    return plans[0]

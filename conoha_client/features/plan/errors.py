@@ -1,5 +1,5 @@
 """VM Plan errors."""
 
 
-class NotFoundFlavorError(Exception):
-    """Flavorが見つからないはずがない."""
+class FlavorIdentificationError(Exception):
+    """Flavorを一意に特定できなかった."""
