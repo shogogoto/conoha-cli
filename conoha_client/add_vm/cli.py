@@ -2,21 +2,16 @@
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING
 
 import click
 
 from conoha_client.add_vm.domain.domain import Application
-from conoha_client.add_vm.repo import (
-    ImageInfoRepo,
-)
+from conoha_client.add_vm.repo import ImageInfoRepo
 from conoha_client.add_vm.usecase import add_vm
 from conoha_client.features._shared.view.domain import view_options
+from conoha_client.features.plan.domain import Memory
 
-from .domain import OS, Memory, OSVersion
-
-if TYPE_CHECKING:
-    from conoha_client.features.list_vm.domain import Server
+from .domain import OS, OSVersion
 
 
 @click.group("add", invoke_without_command=True)
@@ -68,7 +63,6 @@ if TYPE_CHECKING:
     help="VMのrootユーザーのパスワード:OS_ADMIN_PASSWORD環境変数の値が設定される",
     show_default=True,
 )
-@view_options
 @click.pass_context
 def add_vm_cli(  # noqa: PLR0913
     ctx: click.Context,
@@ -79,7 +73,7 @@ def add_vm_cli(  # noqa: PLR0913
     app_version: str,
     admin_password: str | None,
     keypair_name: str | None,
-) -> list[Server]:
+) -> None:
     """Add VM CLI."""
     ctx.ensure_object(dict)
     repo = ImageInfoRepo(memory=memory, os=os)
@@ -88,7 +82,6 @@ def add_vm_cli(  # noqa: PLR0913
     ctx.obj["repo"] = repo
     ctx.obj["os_version"] = osv
     ctx.obj["app"] = appv
-
     if ctx.invoked_subcommand is None:
         added = add_vm(
             repo,
@@ -97,9 +90,8 @@ def add_vm_cli(  # noqa: PLR0913
             admin_password,
             keypair_name,
         )
-        print(":以下のVMが新規追加されました")  # noqa: T201
-        return [added]
-    return []
+        click.echo(":以下のVMが新規追加されました")
+        click.echo(f"{added}")
 
 
 @add_vm_cli.command(name="os-vers")

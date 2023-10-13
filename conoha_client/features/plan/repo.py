@@ -7,7 +7,8 @@ from conoha_client.features import Endpoints
 from conoha_client.features._shared.domain import first_model_by
 from conoha_client.features._shared.view.domain import check_include_keys
 
-from .domain import VMPlan
+from .domain import Memory, VMPlan
+from .errors import NotFoundFlavorError
 
 
 @cache
@@ -25,3 +26,12 @@ def first_vmplan_by(attr_name: str, value: any) -> VMPlan | None:
         return value in str(getattr(e, attr_name))
 
     return first_model_by(list_vmplans(), pred)
+
+
+def find_vmplan(mem: Memory) -> VMPlan:
+    """メモリ容量からFlavor IDをみつける."""
+    flavor = first_vmplan_by("name", mem.expression)
+    if flavor is None:
+        msg = f"{mem.value}GBのプランIDがみつかりませんでした"
+        raise NotFoundFlavorError(msg)
+    return flavor.flavor_id

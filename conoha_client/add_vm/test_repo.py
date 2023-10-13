@@ -19,8 +19,9 @@ from conoha_client.add_vm.domain.errors import (
 from conoha_client.features._shared.conftest import prepare
 from conoha_client.features._shared.endpoints.endpoints import Endpoints
 from conoha_client.features.image.domain import Image
+from conoha_client.features.plan.domain import Memory
 
-from .domain import OS, Memory, OSVersion
+from .domain import OS, OSVersion
 from .repo import AddVMCommand, ImageInfoRepo, find_added
 
 if TYPE_CHECKING:

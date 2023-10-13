@@ -5,10 +5,6 @@ class ImageIdMappingMismatchWarning(Warning):
     """VM Image Idを検索できない可能性が生じた."""
 
 
-class NotFoundFlavorIdError(Exception):
-    """Flavorが見つからないはずがない."""
-
-
 class OSVersionExtractError(Exception):
     """Image名にOS名やバージョン情報が入っていない訳がない."""
 

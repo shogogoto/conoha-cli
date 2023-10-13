@@ -9,8 +9,8 @@ from conoha_client.add_vm.repo import (
     AddVMCommand,
     ImageInfoRepo,
     find_added,
-    find_plan_id,
 )
+from conoha_client.features.plan.repo import find_vmplan
 
 if TYPE_CHECKING:
     from conoha_client.add_vm.domain.domain import Application, OSVersion
@@ -41,11 +41,11 @@ def add_vm(
     sshkey_name: str | None = None,
 ) -> Server:
     """Add VM Usecase."""
-    flavor_id = find_plan_id(repo.memory)
+    flavor = find_vmplan(repo.memory)
     image_id = repo.find_image_id(os_version, app)
 
     cmd = AddVMCommand(
-        flavor_id=flavor_id,
+        flavor_id=flavor.flavor_id,
         image_id=image_id,
         admin_pass=get_password(admin_pass),
     )

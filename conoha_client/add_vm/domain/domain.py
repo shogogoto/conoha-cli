@@ -14,37 +14,6 @@ from conoha_client.add_vm.domain.errors import (
 )
 
 
-# 数字始まりの変数名にできなので単位をprefixにした
-class Memory(str, Enum):
-    """VMのメモリ容量."""
-
-    MG512 = "0.5"
-    GB1 = "1"
-    GB2 = "2"
-    GB4 = "4"
-    GB8 = "8"
-    GB16 = "16"
-    GB32 = "32"
-    GB64 = "64"
-
-    @property
-    def expression(self) -> str:
-        """Flavor(VMプラン)を特定するための表現."""
-        if self.is_smallest():
-            return "m512d"
-        return f"m{self.value}d"
-
-    def is_smallest(self) -> bool:
-        """最小のメモリか."""
-        return self == Memory.MG512
-
-    def is_match(self, img_name: str) -> bool:
-        """valueがイメージ名に含まれているか."""
-        if self.is_smallest():
-            return "30gb" in img_name
-        return "100gb" in img_name
-
-
 class OS(str, Enum):
     """os of VM Image."""
 

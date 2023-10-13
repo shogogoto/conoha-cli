@@ -15,14 +15,12 @@ from conoha_client.features._shared import view
 from conoha_client.features._shared.endpoints.endpoints import Endpoints
 from conoha_client.features.image.repo import list_images
 from conoha_client.features.list_vm.repo import get_dep, list_servers
-from conoha_client.features.plan.repo import first_vmplan_by
 
 from .domain.errors import (
     ImageIdMappingMismatchWarning,
     NotFlavorProvidesError,
     NotFoundAddedVMError,
     NotFoundApplicationError,
-    NotFoundFlavorIdError,
     NotFoundOSVersionError,
 )
 
@@ -31,7 +29,9 @@ if TYPE_CHECKING:
     from conoha_client.features.image.domain import Image
     from conoha_client.features.list_vm.domain import Server
 
-from .domain import OS, Memory, OSVersion  # noqa: TCH001
+from conoha_client.features.plan.domain import Memory  # noqa: TCH001
+
+from .domain import OS, OSVersion  # noqa: TCH001
 
 
 class ImageInfoRepo(BaseModel, frozen=True):
@@ -104,15 +104,6 @@ class ImageInfoRepo(BaseModel, frozen=True):
             raise ImageIdMappingMismatchWarning
 
         return res[0].image_id
-
-
-def find_plan_id(memory: Memory) -> UUID:
-    """メモリ容量からFlavor IDをみつける."""
-    flavor = first_vmplan_by("name", memory.expression)
-    if flavor is None:
-        msg = f"{memory.value}GBのプランIDがみつかりませんでした"
-        raise NotFoundFlavorIdError(msg)
-    return flavor.flavor_id
 
 
 def post_add_vm(json: dict) -> object:
