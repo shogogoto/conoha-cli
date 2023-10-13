@@ -59,6 +59,6 @@ def test_view_option_json() -> None:
 def test_view_option_table() -> None:
     """Table view test."""
     runner = CliRunner()
-    result = runner.invoke(cli, ["x", "-s", "table", "-p"])
+    result = runner.invoke(cli, ["-k", "x", "-s", "table", "-p"])
     assert result.exit_code == 0
     assert result.stdout.split() == [t.x for t in tm]

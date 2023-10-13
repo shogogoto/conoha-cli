@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import os
+from typing import TYPE_CHECKING
 
 import click
 
@@ -12,6 +13,9 @@ from conoha_client.features._shared.view.domain import view_options
 from conoha_client.features.plan.domain import Memory
 
 from .domain import OS, OSVersion
+
+if TYPE_CHECKING:
+    from conoha_client.features.list_vm.domain import Server
 
 
 @click.group("add", invoke_without_command=True)
@@ -63,6 +67,7 @@ from .domain import OS, OSVersion
     help="VMのrootユーザーのパスワード:OS_ADMIN_PASSWORD環境変数の値が設定される",
     show_default=True,
 )
+@view_options
 @click.pass_context
 def add_vm_cli(  # noqa: PLR0913
     ctx: click.Context,
@@ -73,7 +78,7 @@ def add_vm_cli(  # noqa: PLR0913
     app_version: str,
     admin_password: str | None,
     keypair_name: str | None,
-) -> None:
+) -> list[Server]:
     """Add VM CLI."""
     ctx.ensure_object(dict)
     repo = ImageInfoRepo(memory=memory, os=os)
@@ -91,7 +96,8 @@ def add_vm_cli(  # noqa: PLR0913
             keypair_name,
         )
         click.echo(":以下のVMが新規追加されました")
-        click.echo(f"{added}")
+        return [added]
+    return []
 
 
 @add_vm_cli.command(name="os-vers")
