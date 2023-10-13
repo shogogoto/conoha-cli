@@ -8,7 +8,7 @@ repository = "https://github.com/shogogoto/conoha-client"
 
 [tool.poetry-dynamic-versioning]
 enable = true
-format = "{base}" # defaultで PEP440
+# format = "{base}" # defaultで PEP440
 vcs = "git"
 
 [tool.poetry.dependencies]
