@@ -1,12 +1,20 @@
-"""VM Image Domain."""
-from __future__ import annotations
+"""Image DTO."""
 
-from datetime import datetime
+
+import datetime
+from enum import Enum
 from uuid import UUID
 
 from pydantic import AliasPath, BaseModel, Field, field_validator
 
 from conoha_client.features._shared.util import utc2jst
+
+
+class ImageType(Enum):
+    """VMイメージの種類."""
+
+    SNAPSHOT = "snapshot"
+    PRIOR = None
 
 
 class Image(BaseModel, frozen=True):
@@ -22,6 +30,7 @@ class Image(BaseModel, frozen=True):
         alias="minDisk",
         description="インスタンス化に必要なディスク容量",
     )
+    image_type: ImageType = Field(None, alias=AliasPath("metadata", "image_type"))
 
     @field_validator("created")
     def validate_created(cls, v: str) -> datetime:  # noqa: N805
