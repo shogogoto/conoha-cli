@@ -1,0 +1,2222 @@
+[
+  {
+    "image_id": "c8fe76e5-d42f-40bb-a50b-a82d657ead4b",
+    "name": "vmi-gitlab-16.3.4-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "GitLab-16.3-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-09-27T14:22:50+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "ad4358c6-8104-48d7-9ecb-1d2f2d9a6116",
+    "name": "vmi-rust-latest-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Rust-latest-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-09-22T14:09:51+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "02b46547-e662-48f9-acb2-d807948d9f6b",
+    "name": "dev",
+    "dist": "",
+    "app": "Docker-20.10-64bit",
+    "os": "lin",
+    "image_type": "snapshot",
+    "created": "2023-09-11T22:40:41+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "99957305-2c6e-4c41-9b0a-7c9f6e7b9fa4",
+    "name": "vmi-misskey-13.14.2-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Misskey-13.14.2-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-08-30T16:00:07+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "a0431cd3-1291-4036-b6b3-a654a29b80ef",
+    "name": "vmi-7dtd-a21.1b16-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "7_days_to_die-latest-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-08-23T14:09:44+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "d53152f8-3e8a-429e-b8bc-68b3193b53af",
+    "name": "vmi-arch-20230714-amd64-100gb",
+    "dist": "Arch_Linux-20230714-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-07-19T13:33:11+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "96824125-f3a3-4f7c-a7c7-a93e4ef7966a",
+    "name": "vmi-arch-20230714-amd64-30gb",
+    "dist": "Arch_Linux-20230714-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-07-19T13:32:46+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "bf3b1b27-f2fe-46aa-993d-3c188f2caf15",
+    "name": "vmi-gptenginnier-0.0.7-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "GPT_Engineer-0.0.7-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-07-12T13:37:17+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "57688f03-c6cf-435c-8abe-9b3ac6d87150",
+    "name": "vmi-gptenginnier-0.0.7-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "GPT_Engineer-0.0.7-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-07-12T13:36:33+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "109c16cd-71de-4dea-b9d8-c1526ca94f81",
+    "name": "vmi-babyagi-latest-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "BabyAGI_UI-latest-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-07-05T13:16:48+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "aa7ecbcc-4e6c-4956-9d3e-684f336a9fb7",
+    "name": "vmi-babyagi-latest-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "BabyAGI_UI-latest-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-07-05T13:15:52+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "908bc9d8-bdb3-48c6-a715-4481c0bda102",
+    "name": "vmi-debian-12.0-amd64-100gb",
+    "dist": "Debian-12.0-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-06-28T14:00:02+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "5117b7fd-10ec-4ad6-80fd-11fd5f29d333",
+    "name": "vmi-debian-12.0-amd64-30gb",
+    "dist": "Debian-12.0-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-06-28T13:59:34+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "e23a1cb8-df28-40db-a850-965899e8819f",
+    "name": "vmi-oraclelinux-9.2-amd64-100gb",
+    "dist": "Oracle_Linux-9.2-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-06-21T13:34:19+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "f0e91d6f-27fb-47b3-9161-345a38b4fc48",
+    "name": "vmi-oraclelinux-9.2-amd64-30gb",
+    "dist": "Oracle_Linux-9.2-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-06-21T13:33:49+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "f985aeb7-77eb-4852-8916-8275d74c5a95",
+    "name": "vmi-almalinux-9.2-amd64-100gb",
+    "dist": "AlmaLinux-9.2-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-06-14T14:42:12+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "ab1de9d8-a8f3-4548-a3f2-c1cb0423ee03",
+    "name": "vmi-almalinux-9.2-amd64-30gb",
+    "dist": "AlmaLinux-9.2-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-06-14T14:41:50+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "6139d566-21fc-40ab-bf00-fca7684f8bce",
+    "name": "vmi-stablestudio-latest-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "StableStudio-latest-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-06-07T14:46:33+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "921933a6-bb65-4a01-acdf-7813425260fe",
+    "name": "vmi-stablestudio-latest-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "StableStudio-latest-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-06-07T14:45:46+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "b8fb32c6-a781-4e01-9063-69658032366a",
+    "name": "vmi-rockylinux-9.2-amd64-100gb",
+    "dist": "Rocky_Linux-9.2-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-06-07T14:45:25+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "90240d69-958e-4464-97af-5574a43c988b",
+    "name": "vmi-rockylinux-9.2-amd64-30gb",
+    "dist": "Rocky_Linux-9.2-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-06-07T14:44:55+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "5206c97d-33a7-40a1-a02f-ae087ee8a7d8",
+    "name": "vmi-autogpt-v0.3.1-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "AutoGPT-v0.3.1-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-05-31T17:01:49+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "14816542-2403-47d3-a2fd-38502b183e0c",
+    "name": "vmi-autogpt-v0.3.1-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "AutoGPT-v0.3.1-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-05-31T17:00:52+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "cc9ac25a-beb5-42a8-8688-f0701ad40388",
+    "name": "vmi-fedora-38-amd64-100gb",
+    "dist": "Fedora-38-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-05-31T17:00:31+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "a2f0cf8d-921f-44f8-83a4-34c7e663ac75",
+    "name": "vmi-fedora-38-amd64-30gb",
+    "dist": "Fedora-38-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-05-31T17:00:07+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "080ab192-ecf0-46e0-8e0f-805332c9fb07",
+    "name": "vmi-archivebox-0.2.4-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "ArchiveBox-0.2.4-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-05-17T15:39:56+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "6615fbd5-06c0-4635-8096-c389827b63f5",
+    "name": "vmi-archivebox-0.2.4-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "ArchiveBox-0.2.4-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-05-17T15:39:02+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "ea7798e4-99a1-4fcb-ab9b-662aa1d3e596",
+    "name": "vmi-concretecms-9.2.0-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Concrete_CMS-9.2.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-05-10T13:54:09+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "09eb6b7d-950a-4a6f-8f73-94e4e20224a0",
+    "name": "vmi-concretecms-9.2.0-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "Concrete_CMS-9.2.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-05-10T13:53:21+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "0b3804b0-818a-49c1-942e-64fe2d398300",
+    "name": "vmi-oraclelinux-8.7-amd64-100gb",
+    "dist": "Oracle_Linux-8.7-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-04-26T13:54:59+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "6976ffad-8b22-4f99-9bc8-fab70f3a80fe",
+    "name": "vmi-oraclelinux-8.7-amd64-30gb",
+    "dist": "Oracle_Linux-8.7-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-04-26T13:54:17+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "dce67530-5999-4704-ac4d-c80fdcfd570c",
+    "name": "vmi-rockylinux-8.7-amd64-100gb",
+    "dist": "Rocky_Linux-8.7-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-04-12T15:06:53+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "dd7067d7-2b07-4263-ac70-aa5c1790c604",
+    "name": "vmi-rockylinux-8.7-amd64-30gb",
+    "dist": "Rocky_Linux-8.7-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-04-12T15:06:12+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "a7b42fd9-5d70-404e-a1ed-d0af3e7fb044",
+    "name": "vmi-almalinux-8.7-amd64-100gb",
+    "dist": "AlmaLinux-8.7-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-04-05T15:33:16+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "60b58aa0-c675-4b80-91af-74f5ccbc1d7a",
+    "name": "vmi-almalinux-8.7-amd64-30gb",
+    "dist": "AlmaLinux-8.7-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-04-05T15:32:33+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "89decc1a-41bc-42c2-9154-ded0bc3e0aa4",
+    "name": "vmi-kusanagimanager9-0.5.2-centos-stream9-amd64-100gb",
+    "dist": "",
+    "app": "KUSANAGI_manager-KUSANAGI9_CentOS_Stream9-0.5.2-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-03-29T14:15:51+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "04a0a6ff-4ab9-4adc-b99f-2b5504cab89e",
+    "name": "vmi-drupal-10.0.5-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Drupal-10.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-03-22T13:17:06+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "ec7d0847-a24e-48f6-9fed-0c73fa20801c",
+    "name": "vmi-drupal-10.0.5-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "Drupal-10.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-03-22T13:16:22+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "b7b18dba-63ae-4253-9316-a638e26f2e72",
+    "name": "vmi-centos-7.5-amd64-100gb",
+    "dist": "CentOS-7.5-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-03-15T16:48:14+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "009673e9-ab37-4f6c-bce3-c6939d4a2a67",
+    "name": "vmi-centos-7.4-amd64-100gb",
+    "dist": "CentOS-7.4-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-03-15T16:47:49+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "64c77792-0309-4eb8-aa0d-98432458d068",
+    "name": "vmi-centos-7.3-amd64-100gb",
+    "dist": "CentOS-7.3-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-03-15T16:47:24+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "88601ca2-9865-4ddb-8ac4-7707236ff694",
+    "name": "vmi-centos-7.5-amd64-30gb",
+    "dist": "CentOS-7.5-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-03-15T16:46:59+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "e2cf90f6-a822-4be9-bbfb-08f6253d3188",
+    "name": "vmi-centos-7.4-amd64-30gb",
+    "dist": "CentOS-7.4-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-03-15T16:46:35+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "60a934e3-3886-4663-acc6-cc71b98f820d",
+    "name": "vmi-centos-7.3-amd64-30gb",
+    "dist": "CentOS-7.3-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-03-15T16:46:01+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "d7c7c274-2688-440e-87bd-fdd547701c3f",
+    "name": "vmi-centos-7.8-amd64-100gb",
+    "dist": "CentOS-7.8-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-03-08T14:28:03+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "1c4af1ec-ea54-4fe8-bef1-ca877ea4db3f",
+    "name": "vmi-centos-7.7-amd64-100gb",
+    "dist": "CentOS-7.7-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-03-08T14:27:34+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "cacfc2b2-88db-4d18-a0af-9c60c2f59b39",
+    "name": "vmi-centos-7.6-amd64-100gb",
+    "dist": "CentOS-7.6-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-03-08T14:27:03+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "b5796a54-f6d8-45be-9f23-5363708cc4ec",
+    "name": "vmi-centos-7.8-amd64-30gb",
+    "dist": "CentOS-7.8-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-03-08T14:26:30+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "1fed1ba5-b497-4a42-83c7-507510bcd475",
+    "name": "vmi-centos-7.7-amd64-30gb",
+    "dist": "CentOS-7.7-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-03-08T14:25:58+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "a067e90e-04b1-4409-a220-5d2c7d49d781",
+    "name": "vmi-centos-7.6-amd64-30gb",
+    "dist": "CentOS-7.6-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-03-08T14:25:07+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "e6a0d292-abb3-47b5-8cc6-1cc371f329fd",
+    "name": "vmi-centos-7.9-amd64-30gb",
+    "dist": "CentOS-7.9-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-02-22T13:33:00+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "170617ab-d04b-4b57-b50d-a5c1bc341cfa",
+    "name": "vmi-centos-7.9-amd64-100gb",
+    "dist": "CentOS-7.9-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-02-22T13:32:10+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "700e3c9d-8022-41a3-b9ad-20fbb46a1eb3",
+    "name": "vmi-ubuntu-20.04-amd64-100gb",
+    "dist": "Ubuntu-20.04-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-02-15T13:32:20+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "5167cecf-897c-4fda-8671-cfaeee5c5249",
+    "name": "vmi-ubuntu-20.04-amd64-30gb",
+    "dist": "Ubuntu-20.04-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-02-15T13:31:14+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "832599c1-5db3-40eb-88cb-ea7040fa3af5",
+    "name": "vmi-oraclelinux-9.1-amd64-30gb",
+    "dist": "Oracle_Linux-9.1-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-02-08T13:59:23+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "ccdd6d44-0497-4572-86cf-e1aa67048a8d",
+    "name": "vmi-oraclelinux-9.1-amd64-100gb",
+    "dist": "Oracle_Linux-9.1-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-02-08T13:58:58+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "3da780ec-6257-4eae-b55f-f1dcfb7187df",
+    "name": "vmi-mediawiki-1.39-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "MediaWiki-1.39-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-02-01T13:16:01+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "d010476b-c3bb-4d06-830f-d5dd4a59199a",
+    "name": "vmi-mediawiki-1.39-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "MediaWiki-1.39-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-02-01T13:15:17+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "251d8c8c-c49b-49b7-a580-6db6a9c95176",
+    "name": "vmi-nextcloud-25.0.3-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Nextcloud-25.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-01-25T14:02:26+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "23ed3159-9934-49bd-af35-8cb2fb6ae4e1",
+    "name": "vmi-nextcloud-25.0.3-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "Nextcloud-25.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-01-25T14:01:31+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "241f8aa5-48a2-4c59-8622-9cc2521a3a70",
+    "name": "vmi-rockylinux-9.1-amd64-100gb",
+    "dist": "Rocky_Linux-9.1-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-01-18T12:50:13+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "cc116c77-ced2-431d-a743-94d824a6507c",
+    "name": "vmi-rockylinux-9.1-amd64-30gb",
+    "dist": "Rocky_Linux-9.1-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-01-18T12:49:53+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "392f9dd3-be0c-4364-a060-8e1c314a25ca",
+    "name": "vmi-almalinux-9.1-amd64-30gb",
+    "dist": "AlmaLinux-9.1-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-01-11T13:09:20+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "49059f4a-40e6-49b6-be0a-e87fce5981ad",
+    "name": "vmi-almalinux-9.1-amd64-100gb",
+    "dist": "AlmaLinux-9.1-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2023-01-11T13:08:11+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "d61552cc-36a6-4762-ae6c-d24e9b391c35",
+    "name": "vmi-minecraft-1.19.3-centos-7.9-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.19.3-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-12-14T13:20:33+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "983b0e2c-24f7-42c8-b544-98283d94ec74",
+    "name": "vmi-opensuse-15.4-amd64-30gb",
+    "dist": "openSUSE-15.4-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-12-14T13:20:02+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "61ed5691-2aba-4992-9584-81422ffc4855",
+    "name": "vmi-opensuse-15.4-amd64-100gb",
+    "dist": "openSUSE-15.4-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-12-14T13:19:26+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "fb156361-35a0-49be-af56-0883c3aa4b1c",
+    "name": "vmi-matomo-4.12.3-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Matomo-4.12-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-12-07T14:16:05+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "fc4443eb-d5a6-4e9e-8b91-22732e49cf8b",
+    "name": "vmi-matomo-4.12.3-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "Matomo-4.12-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-12-07T14:14:59+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "52bdfdf7-709a-4f1b-8800-4ca43d6ad0e5",
+    "name": "vmi-mastodon-4.0.2-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Mastodon-4.0.2-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-11-30T14:29:06+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "d8f66f3e-0e01-4565-a2b0-4c7442fe1242",
+    "name": "vmi-mastodon-4.0.2-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "Mastodon-4.0.2-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-11-30T14:28:07+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "091b6b59-c104-4b9d-aac1-2ef7b7cf551e",
+    "name": "vmi-freebsd-13.1-zfs-amd64-100gb",
+    "dist": "FreeBSD-13.1_ZFS-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-11-30T14:27:44+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "e15f896b-66c9-455a-bda3-1ee753d8012d",
+    "name": "vmi-freebsd-13.1-zfs-amd64-30gb",
+    "dist": "FreeBSD-13.1_ZFS-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-11-30T14:27:23+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "d7656f40-736b-41a9-bdba-5edd9be2dc1b",
+    "name": "vmi-freebsd-13.1-ufs-amd64-100gb",
+    "dist": "FreeBSD-13.1-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-11-30T14:26:59+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "6cc20fb8-3d9d-49ac-80bd-087457b4da4d",
+    "name": "vmi-freebsd-13.1-ufs-amd64-30gb",
+    "dist": "FreeBSD-13.1-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-11-30T14:26:30+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "2c8aefe9-3899-4baf-8a5b-a1fd9a51a005",
+    "name": "vmi-rockylinux-9.0-amd64-100gb",
+    "dist": "Rocky_Linux-9.0-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-11-24T13:45:40+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "65ccf72f-9301-4571-b330-4aff4bbc7be7",
+    "name": "vmi-almalinux-9.0-amd64-100gb",
+    "dist": "AlmaLinux-9.0-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-11-24T13:45:09+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "588c9fd2-c37a-4f2b-8e6f-4c939fa76604",
+    "name": "vmi-oraclelinux-9.0-amd64-100gb",
+    "dist": "Oracle_Linux-9.0-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-11-24T13:44:40+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "b7a224be-8772-487b-a596-9678f2844961",
+    "name": "vmi-rockylinux-9.0-amd64-30gb",
+    "dist": "Rocky_Linux-9.0-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-11-24T13:44:17+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "7abb0166-301a-4cb3-932f-a8002d648ef6",
+    "name": "vmi-almalinux-9.0-amd64-30gb",
+    "dist": "AlmaLinux-9.0-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-11-24T13:43:47+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "f0c9e59b-bdc6-43d4-9dc6-b666fc571bbf",
+    "name": "vmi-oraclelinux-9.0-amd64-30gb",
+    "dist": "Oracle_Linux-9.0-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-11-24T13:42:39+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "3259adb3-8df6-4687-978b-c25f2f6bf5c4",
+    "name": "vmi-kusanagimanager9-0.5.1-centos-stream8-amd64-100gb",
+    "dist": "",
+    "app": "KUSANAGI_manager-KUSANAGI9-0.5.1-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-11-16T12:45:06+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "d3ece579-a001-4f41-8495-567129570775",
+    "name": "vmi-ubuntu-22.04-amd64-30gb",
+    "dist": "Ubuntu-22.04-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-11-09T14:35:33+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "1e3a4be4-8d36-48fe-abb0-2e30e38775c5",
+    "name": "vmi-centos-stream9-amd64-30gb",
+    "dist": "CentOS-Stream9-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-11-09T14:35:02+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "f4ab202a-a40c-4407-bd55-208cf301910e",
+    "name": "vmi-ubuntu-22.04-amd64-100gb",
+    "dist": "Ubuntu-22.04-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-11-09T14:33:46+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "6b3b078c-7383-490a-b66d-595869e3eac7",
+    "name": "vmi-centos-stream9-amd64-100gb",
+    "dist": "CentOS-Stream9-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-11-09T14:32:57+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "f8aa227c-1cc0-49e6-a199-f0bca1c93c46",
+    "name": "vmi-assettocorsa-1.16-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "AssettoCorsa-1.16.4-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-10-26T13:22:18+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "fdf019e5-2303-413f-9de6-f11d1327fd90",
+    "name": "vmi-factorio-latest-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Factorio-latest-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-10-19T13:07:03+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "30f4f5d6-7760-4db6-90d1-479c09164337",
+    "name": "vmi-terraria-latest-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Terraria-latest-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-10-12T13:16:09+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "a1c3b09b-d822-4dc6-9341-ad0cd7a65d25",
+    "name": "vmi-tf2-7542465-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Team_Fortress_2-latest-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-10-05T13:31:21+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "4907a2c8-7f28-44b8-8c4a-4c915163cf02",
+    "name": "vmi-webmin-2.000-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "Webmin-2.000-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-10-05T13:30:43+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "94450483-7df7-47e9-94e1-e81151977706",
+    "name": "vmi-webmin-2.000-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Webmin-2.000-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-10-05T13:29:54+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "97d87ccd-5437-4473-9521-155f044e705c",
+    "name": "vmi-minecraftbe-latest-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_Bedrock_Edition-latest-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-09-28T13:28:35+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "789d8926-7975-4b8a-acb8-993c43ee15d7",
+    "name": "vmi-minecraft-1.19.2-centos-7.9-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.19.2-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-09-28T13:28:11+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "4ec551d1-d44b-4011-a884-83de09b5778d",
+    "name": "vmi-minecraft-manager-latest-1.4.1-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-manager-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-09-21T13:49:22+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "fa9997c3-769d-40fa-a953-fe92c728d47d",
+    "name": "vmi-minecraftbe-manager-latest-1.4.1-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_Bedrock_Edition-manager-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-09-21T13:48:47+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "105a6641-768c-48d1-9f73-64b173c0782c",
+    "name": "vmi-valheim-latest-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Valheim-latest-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-09-14T18:47:42+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "f63e58e5-1a32-4e22-8fc7-adb3c1cdbfcc",
+    "name": "vmi-win-2022dce-amd64",
+    "dist": "Windows Server 2022",
+    "app": "",
+    "os": "win_2022",
+    "image_type": null,
+    "created": "2022-08-17T18:20:44+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "f06296bf-97ec-40b5-a3df-d44a623c5d0f",
+    "name": "vmi-mattermost-7.0.1-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Mattermost-7.0.1-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-08-05T18:34:04+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "e61a21bf-4c66-4bdb-a328-62a7e44b8f19",
+    "name": "vmi-mattermost-7.0.1-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "Mattermost-7.0.1-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-08-05T18:33:07+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "4d262fb9-b9e1-4815-8f91-91acebaa6716",
+    "name": "vmi-minecraft-1.19.1-centos-7.9-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.19.1-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-08-05T18:30:38+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "44653f87-2989-44d0-8c4d-3399fdd2202b",
+    "name": "vmi-win2019dce-rdsoffice2019",
+    "dist": "WindowsServer 2019 Remote Desktop + Office Professional Plus",
+    "app": "",
+    "os": "win_2019office2019pro_rds",
+    "image_type": null,
+    "created": "2022-08-04T13:13:45+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "819d01b1-dae7-46a9-9d27-4a689b614bb6",
+    "name": "vmi-win2019dce-rds",
+    "dist": "WindowsServer 2019 Remote Desktop",
+    "app": "",
+    "os": "win_2019_rds",
+    "image_type": null,
+    "created": "2022-08-04T13:09:37+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "188f1ccb-e09e-4d97-a0ab-c854a52992a6",
+    "name": "vmi-win-2019dce-amd64",
+    "dist": "Windows Server 2019",
+    "app": "",
+    "os": "win_2019",
+    "image_type": null,
+    "created": "2022-08-04T13:05:16+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "f070a2ed-06fa-4299-a0be-6bc5a02e434e",
+    "name": "vmi-win2016dce-rdsoffice2016",
+    "dist": "WindowsServer 2016 Remote Desktop + Office Professional Plus",
+    "app": "",
+    "os": "win_2016office2016pro_rds",
+    "image_type": null,
+    "created": "2022-08-04T12:59:10+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "b3dc0032-000f-4a1a-86f9-35f2e0b0aa05",
+    "name": "vmi-win2016dce-rds",
+    "dist": "WindowsServer 2016 Remote Desktop",
+    "app": "",
+    "os": "win_2016_rds",
+    "image_type": null,
+    "created": "2022-08-04T12:53:54+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "d708fd70-ed84-4abe-84e0-20e8ed407a53",
+    "name": "vmi-win2016dce-sql2016web",
+    "dist": "Windows Server 2016 + SQL Server 2016",
+    "app": "",
+    "os": "win_2016sql2016web",
+    "image_type": null,
+    "created": "2022-08-04T12:47:37+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "07c82c9a-7afc-47f7-977c-66de9d8906ae",
+    "name": "vmi-win-2016dce-amd64",
+    "dist": "Windows Server 2016",
+    "app": "",
+    "os": "win_2016",
+    "image_type": null,
+    "created": "2022-08-04T12:42:20+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "3b430ce0-7f56-4c96-85f3-2f7c54477723",
+    "name": "vmi-win2022dce-rdsoffice2021",
+    "dist": "WindowsServer 2022 Remote Desktop + Office Professional Plus",
+    "app": "",
+    "os": "win_2022office2021pro_rds",
+    "image_type": null,
+    "created": "2022-07-28T16:47:59+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "20102f43-1415-454f-886e-aabdd95ddf16",
+    "name": "vmi-win2022dce-rds",
+    "dist": "WindowsServer 2022 Remote Desktop",
+    "app": "",
+    "os": "win_2022_rds",
+    "image_type": null,
+    "created": "2022-07-28T16:44:15+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "20cd0522-f15f-42f7-a3e0-29ec333bc005",
+    "name": "vmi-minecraft-1.18.0-centos-7.9-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.18.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-27T16:18:49+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "bc12162c-6261-450b-a32a-bcde04c24a69",
+    "name": "vmi-kusanagimanager8-0.4.0-centos-7.9-amd64-100gb",
+    "dist": "",
+    "app": "KUSANAGI_manager-KUSANAGI8-0.4.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-27T16:17:55+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "bb353b75-b068-4b05-a48f-fbd8d5ebe25d",
+    "name": "vmi-redis-5.0-centos-7.6-amd64-100gb",
+    "dist": "",
+    "app": "Redis-5.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-27T16:08:44+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "0c97776d-c89c-4665-a162-bd6c888b21ab",
+    "name": "vmi-redis-5.0-centos-7.6-amd64-30gb",
+    "dist": "",
+    "app": "Redis-5.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-27T16:08:20+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "9fafb9cc-e9fd-4559-aa2d-3ed520c088c2",
+    "name": "vmi-mongodb-4.0-centos-7.5-amd64-100gb",
+    "dist": "",
+    "app": "MongoDB-4.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-27T16:07:57+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "28dcb365-54c3-4d32-84da-7b52a60b6514",
+    "name": "vmi-mongodb-4.0-centos-7.5-amd64-30gb",
+    "dist": "",
+    "app": "MongoDB-4.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-27T16:07:25+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "cce6f03b-0e9e-4a40-a23f-f26596dce8ec",
+    "name": "vmi-isucon7-qualify-ubuntu-16.04-amd64-100gb",
+    "dist": "",
+    "app": "ISUCON7-qualify-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-27T16:05:21+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "27889e86-c934-44ef-a1be-7e494141eb45",
+    "name": "vmi-isucon7-qualify-ubuntu-16.04-amd64-30gb",
+    "dist": "",
+    "app": "ISUCON7-qualify-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-27T16:04:21+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "0988d615-8fab-43f3-81f4-37e360aa5ab3",
+    "name": "vmi-isucon8-qualify-centos-7.5-amd64-100gb",
+    "dist": "",
+    "app": "ISUCON8-qualify-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-27T16:03:40+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "83f5fe19-06ae-4036-a852-6686239e8449",
+    "name": "vmi-isucon8-qualify-centos-7.5-amd64-30gb",
+    "dist": "",
+    "app": "ISUCON8-qualify-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-27T16:02:52+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "fcd54499-e7c9-427e-b207-e8e90eff9012",
+    "name": "vmi-joomla-4.0.3-centos-7.9-amd64-100gb",
+    "dist": "",
+    "app": "Joomla-4.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T15:43:36+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "5461cc37-6c8c-44e4-8f26-875c2e90d15f",
+    "name": "vmi-joomla-4.0.3-centos-7.9-amd64-30gb",
+    "dist": "",
+    "app": "Joomla-4.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T15:42:40+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "cbf05346-8984-4c93-b527-16fb6cf913bb",
+    "name": "vmi-basercms-4.5.4-centos-7.9-amd64-100gb",
+    "dist": "",
+    "app": "baserCMS-4.5-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T15:33:50+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "9fac53b7-ad92-40c8-a06b-e6889a1a194d",
+    "name": "vmi-basercms-4.5.4-centos-7.9-amd64-30gb",
+    "dist": "",
+    "app": "baserCMS-4.5-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T15:33:10+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "c2eaca35-ba71-4954-a29a-1cb8a9f6e743",
+    "name": "vmi-zbx-5.0-miraclelinux-8.4-amd64-100gb",
+    "dist": "",
+    "app": "MIRACLE_ZBX-5.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T15:26:34+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "7c62f680-1bd1-4335-b3a2-0572ab390db9",
+    "name": "vmi-jenkins-2.289-centos-7.9-amd64-100gb",
+    "dist": "",
+    "app": "Jenkins-2.289-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T15:24:47+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "54e70f08-6e4a-4120-ad05-debf527177ee",
+    "name": "vmi-jenkins-2.289-centos-7.9-amd64-30gb",
+    "dist": "",
+    "app": "Jenkins-2.289-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T15:24:16+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "76ea9124-74c8-452f-b52e-7e5dbcceebec",
+    "name": "vmi-django-4.0.3-ubuntu-20.04.2-amd64-100gb",
+    "dist": "",
+    "app": "Django-4.0.3-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T15:19:04+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "fec97376-75c8-4a61-9233-1586476bc7a1",
+    "name": "vmi-django-4.0.3-ubuntu-20.04.2-amd64-30gb",
+    "dist": "",
+    "app": "Django-4.0.3-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T15:18:09+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "0c0d76e1-2200-4e0f-8655-1d171b4407d5",
+    "name": "vmi-redmine-5.0.0-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Redmine-5.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T15:17:09+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "0697be0c-eca5-468a-beb5-96589a6d089b",
+    "name": "vmi-redmine-5.0.0-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "Redmine-5.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T15:16:07+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "8d18e266-ae94-4f1a-8e5c-92b304d87916",
+    "name": "vmi-owncloud-10.9.1-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "ownCloud-10.9-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T15:13:45+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "7276d11e-fd14-4bbe-b56c-de615be3126a",
+    "name": "vmi-owncloud-10.9.1-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "ownCloud-10.9-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T15:12:54+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "b14fa84f-e410-4a7f-bbcd-ef5eb69b24b7",
+    "name": "vmi-rails-7.0.2.3-ubuntu-20.04.2-amd64-100gb",
+    "dist": "",
+    "app": "Ruby_on_Rails-7.0.2-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T15:10:38+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "7c816181-8420-42e7-8440-f328a1521b5b",
+    "name": "vmi-rails-7.0.2.3-ubuntu-20.04.2-amd64-30gb",
+    "dist": "",
+    "app": "Ruby_on_Rails-7.0.2-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T15:09:27+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "4eeacf14-ac20-4792-a156-4b660ead77d5",
+    "name": "vmi-zabbix-6.0-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Zabbix-6.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T15:08:41+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "ee40f9f4-bc74-4cd7-9f3d-0992ed43d938",
+    "name": "vmi-zabbix-6.0-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "Zabbix-6.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T15:07:47+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "607d526b-e354-4811-aae2-3f1cc1f4d068",
+    "name": "vmi-lemp-latest-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "LEMP(PHP)-latest-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T15:04:44+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "bd119bdf-6b75-425a-a6da-5fbaee5bffd1",
+    "name": "vmi-lemp-latest-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "LEMP(PHP)-latest-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T15:03:53+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "7b8d8861-c44b-49b2-9bf7-5e39500109db",
+    "name": "vmi-laravel-9.2.0-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Laravel-9.2-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T15:03:05+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "11c26e9a-c08a-48b7-b639-1c5087cc0141",
+    "name": "vmi-laravel-9.2.0-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "Laravel-9.2-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T15:02:13+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "47300deb-5f66-4e03-bd3f-a93fd30007f0",
+    "name": "vmi-cacti-nagios-1.2.17.4.4.6-centos-7.9-amd64-100gb",
+    "dist": "",
+    "app": "Cacti_Nagios-1.2.17-4.4.6-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:54:17+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "c8659c76-c5da-4d17-9efe-6664b5eb83a6",
+    "name": "vmi-cacti-nagios-1.2.17.4.4.6-centos-7.9-amd64-30gb",
+    "dist": "",
+    "app": "Cacti_Nagios-1.2.17-4.4.6-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:53:44+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "fd24016c-ad43-4137-a999-4a57bad1d474",
+    "name": "vmi-prometheus-grafana-2.30.3-8.2.1-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Prometheus-2.30-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:53:01+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "ecf2f817-4335-4035-983a-384e22f2c44f",
+    "name": "vmi-prometheus-grafana-2.30.3-8.2.1-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "Prometheus-2.30-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:52:13+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "75d387ca-403b-4c5a-bae2-ebcd824b7d41",
+    "name": "vmi-nodejs-17.4.0-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Node.js-17.4-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:49:45+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "41b8182e-caf2-4bd8-9cce-ba29f493e771",
+    "name": "vmi-nodejs-17.4.0-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "Node.js-17.4-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:48:58+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "ac377992-1957-4d11-9ba4-364c60f45405",
+    "name": "vmi-dokku-0.27.5-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Dokku-0.27-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:46:19+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "ba7f164c-e66c-4dec-8b10-b597f6bb229c",
+    "name": "vmi-dokku-0.27.5-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "Dokku-0.27-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:45:06+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "92897f90-b40c-4a88-a0e1-95e36177a393",
+    "name": "vmi-kusanagi-latest-centos-7.8-amd64-100gb",
+    "dist": "",
+    "app": "WordPress(KUSANAGI)-8.4-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:42:34+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "aaa22014-754a-4ba6-afe4-d7e27898614c",
+    "name": "vmi-kusanagi-latest-centos-7.8-amd64-30gb",
+    "dist": "",
+    "app": "WordPress(KUSANAGI)-8.4-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:41:41+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "a73bad0b-6ece-4622-9b1f-16d6cf00178a",
+    "name": "vmi-kusanagi9-9.0.9-centos-8-amd64-100gb",
+    "dist": "",
+    "app": "WordPress(KUSANAGI)-9.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:41:03+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "4113d19f-737c-45c0-af2b-7f5e8b3421fe",
+    "name": "vmi-kusanagi9-9.0.9-centos-8-amd64-30gb",
+    "dist": "",
+    "app": "WordPress(KUSANAGI)-9.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:40:17+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "9642c3c0-76da-41c7-8105-12f26021b4b2",
+    "name": "vmi-metabase-0.41.5-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Metabase-0.41-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:38:06+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "c8588cae-d29a-436b-86a2-2fec396faccb",
+    "name": "vmi-metabase-0.41.5-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "Metabase-0.41-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:37:04+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "f447e461-25fa-4b21-abcd-65e474774624",
+    "name": "vmi-lamp-latest-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "LAMP(PHP)-latest-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:31:53+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "53e9af4f-0650-412e-a3c8-db01eab5cef6",
+    "name": "vmi-lamp-latest-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "LAMP(PHP)-latest-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:31:02+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "00d06a52-e916-4d17-b1dc-4a5e44718a25",
+    "name": "vmi-docker-20.10-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "Docker-20.10-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:30:13+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "87235e55-01a3-4922-88d6-274cb69447cc",
+    "name": "vmi-docker-20.10-ubuntu-20.04-amd64-30gb",
+    "dist": "",
+    "app": "Docker-20.10-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:29:11+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "4a45ae01-4c29-414e-9618-109cb367691a",
+    "name": "vmi-jitsi-2.0.5142-ubuntu-18.04-amd64-100gb",
+    "dist": "",
+    "app": "Jitsi_Meet-2.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:26:53+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "03d2e8b5-fd9f-4367-a977-5fd08ffb8cda",
+    "name": "vmi-ark-346.12-ubuntu-20.04-amd64-100gb",
+    "dist": "",
+    "app": "ARK:_Survival_Evolved-latest-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:15:52+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "4ce06203-efb6-4206-ad45-1b9945627e5e",
+    "name": "vmi-minecraft-1.12.2-centos-7.6-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.12.2-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:12:34+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "9e6afb43-ec16-4abb-8d4a-20ab9eaae6fa",
+    "name": "vmi-minecraft-1.13.0-centos-7.5-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.13.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:12:10+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "b7c83996-f348-4a6b-9bf0-8fbdf9c93a8d",
+    "name": "vmi-minecraft-1.13.1-centos-7.5-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.13.1-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:11:46+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "56ffe7a8-ea02-4d5e-a6b8-c83c451e7a29",
+    "name": "vmi-minecraft-1.13.2-centos-7.5-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.13.2-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:11:20+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "6d6a9d77-2322-43cb-aeb0-852972daf22d",
+    "name": "vmi-minecraft-1.14.0-centos-7.6-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.14.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:10:54+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "9864c54a-0788-4b6e-a311-3d5a2fef1482",
+    "name": "vmi-minecraft-1.14.1-centos-7.6-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.14.1-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:10:26+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "799916aa-0146-4d5f-966c-15c19edc7330",
+    "name": "vmi-minecraft-1.14.2-centos-7.6-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.14.2-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:09:58+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "e95f2ab2-3e93-4e8a-a2c3-d59a8c1e023f",
+    "name": "vmi-minecraft-1.14.3-centos-7.6-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.14.3-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:07:43+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "c7f2cce7-7b58-4e73-b7d0-601454674099",
+    "name": "vmi-minecraft-1.14.4-centos-7.6-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.14.4-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:07:14+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "fad3ae0c-9e19-417d-8446-eb6dec200249",
+    "name": "vmi-minecraft-1.15.0-centos-7.7-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.15.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:06:48+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "82e8e932-0854-4dd5-8756-af6ffee059f6",
+    "name": "vmi-minecraft-1.15.1-centos-7.7-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.15.1-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:06:20+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "ba0834f2-46ea-46b2-a369-64a39d4b0cff",
+    "name": "vmi-minecraft-1.15.2-centos-7.7-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.15.2-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:05:54+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "4e4c668d-ce23-4e72-abde-5b3e644292c4",
+    "name": "vmi-minecraft-1.16.0-centos-7.8-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.16.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:05:28+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "cb7ff600-10f6-4ce6-86a3-3d374f9c3b10",
+    "name": "vmi-minecraft-1.16.1-centos-7.8-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.16.1-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:02:42+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "d0652ee9-1006-4d16-873b-548e12498082",
+    "name": "vmi-minecraft-1.16.2-centos-7.8-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.16.2-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:02:13+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "00e858a4-6cd5-4a30-9b5c-758744a1ec98",
+    "name": "vmi-minecraft-1.16.3-centos-7.8-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.16.3-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:01:46+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "83ef5fdb-879b-4ebf-9a3f-656803ddc956",
+    "name": "vmi-minecraft-1.16.4-centos-7.8-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.16.4-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:01:19+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "338b1de2-3fbd-4f26-82a4-d83afef46321",
+    "name": "vmi-minecraft-1.16.5-centos-7.9-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.16.5-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:00:51+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "7dcf7e0e-5f2b-4ee9-8514-63a357febd3b",
+    "name": "vmi-minecraft-1.17.0-centos-7.9-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.17.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T13:00:21+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "94570272-52a6-4776-88fc-4e754dfca83d",
+    "name": "vmi-minecraft-1.17.1-centos-7.9-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.17.1-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T12:52:54+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "097cf23e-db10-48e2-8ddd-9ee34b4813bc",
+    "name": "vmi-minecraft-1.18.1-centos-7.9-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.18.1-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T12:52:15+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "789c869a-e1a3-4c53-84c5-2408a346ad2d",
+    "name": "vmi-minecraft-1.18.2-centos-7.9-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.18.2-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T12:51:42+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "b498a155-c85c-4ed0-9405-5b5595d0518f",
+    "name": "vmi-minecraft-1.19.0-centos-7.9-amd64-100gb",
+    "dist": "",
+    "app": "Minecraft_JAVA_Edition-1.19.0-64bit",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T12:51:10+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "a4697db6-39d2-45b1-8b36-8929c0d6482c",
+    "name": "vmi-netbsd-9.1-amd64-30gb",
+    "dist": "NetBSD-9.1-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T00:10:15+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "9ee456f5-fe72-48a9-ab8e-bceae6045ed9",
+    "name": "vmi-netbsd-9.1-amd64-100gb",
+    "dist": "NetBSD-9.1-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T00:10:04+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "f489647e-f9ae-433e-aceb-79697b4211d0",
+    "name": "vmi-openbsd-7.0-amd64-30gb",
+    "dist": "OpenBSD-7.0-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T00:08:07+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "ba9a6b85-f6e6-43b7-ba5f-c04a4c47b0e1",
+    "name": "vmi-openbsd-7.0-amd64-100gb",
+    "dist": "OpenBSD-7.0-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-26T00:07:45+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "d2a2efa0-61e6-47ad-9b8f-02be35b77322",
+    "name": "vmi-centos-7.1-amd64-30gb",
+    "dist": "CentOS-7.1-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T21:35:34+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "42a5c5ad-8e0f-4be2-b153-8236f3be09d3",
+    "name": "vmi-centos-7.1-amd64-100gb",
+    "dist": "CentOS-7.1-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T21:35:17+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "d2a2efa0-61e6-47ad-9b8f-02be35b77324",
+    "name": "vmi-centos-7.2-amd64-30gb",
+    "dist": "CentOS-7.2-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T21:34:50+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "42a5c5ad-8e0f-4be2-b153-8236f3be09d5",
+    "name": "vmi-centos-7.2-amd64-100gb",
+    "dist": "CentOS-7.2-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T21:34:20+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "d0b4aba5-eb57-430a-bbc5-da7c0e2120c8",
+    "name": "vmi-oraclelinux-8.3-amd64-100gb",
+    "dist": "Oracle_Linux-8.3-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:42:02+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "f58de519-b839-4e2b-9e52-b45e254a3a9a",
+    "name": "vmi-oraclelinux-8.3-amd64-30gb",
+    "dist": "Oracle_Linux-8.3-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:41:20+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "2bf325ca-9fd6-47cd-8452-fa5bb09c9023",
+    "name": "vmi-almalinux-8.3-amd64-100gb",
+    "dist": "AlmaLinux-8.3-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:40:56+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "cb3c98a9-67e0-4dc9-81b6-824de306ffcd",
+    "name": "vmi-almalinux-8.3-amd64-30gb",
+    "dist": "AlmaLinux-8.3-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:40:29+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "92b2a897-e756-47e3-9ce7-d4a764b14941",
+    "name": "vmi-almalinux-8.4-amd64-100gb",
+    "dist": "AlmaLinux-8.4-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:39:43+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "9ff4a51f-80b3-410c-bf22-412d98a97287",
+    "name": "vmi-almalinux-8.4-amd64-30gb",
+    "dist": "AlmaLinux-8.4-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:39:16+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "e7860ee5-994e-41b5-be16-1655a2b602ff",
+    "name": "vmi-oraclelinux-8.4-amd64-100gb",
+    "dist": "Oracle_Linux-8.4-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:38:49+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "8298b94a-1acd-4c91-95bb-178e010124dd",
+    "name": "vmi-oraclelinux-8.4-amd64-30gb",
+    "dist": "Oracle_Linux-8.4-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:38:19+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "5d636a8f-203c-4b35-b5f2-8eb3806aa981",
+    "name": "vmi-debian-11.0-amd64-100gb",
+    "dist": "Debian-11.0-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:37:15+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "26d5b581-ba9a-491c-8dd0-8a91490e276a",
+    "name": "vmi-debian-11.0-amd64-30gb",
+    "dist": "Debian-11.0-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:36:52+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "7f5f05f2-383e-4301-82ef-9ebba115969b",
+    "name": "vmi-centos-stream-8-latest-amd64-100gb",
+    "dist": "CentOS-Stream8-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:36:18+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "16ea2792-bc83-46db-8b93-f471d27fcfc2",
+    "name": "vmi-centos-stream-8-latest-amd64-30gb",
+    "dist": "CentOS-Stream8-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:35:40+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "78972cd6-d16c-4a57-98d7-b64491c3382f",
+    "name": "vmi-debian-10.10-amd64-100gb",
+    "dist": "Debian-10.10-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:35:17+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "fb2e503c-2799-4a47-9196-20c510021e5e",
+    "name": "vmi-debian-10.10-amd64-30gb",
+    "dist": "Debian-10.10-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:34:53+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "3afc6e51-0b21-44e4-b2b6-e36ef3948da0",
+    "name": "vmi-rockylinux-8.5-amd64-100gb",
+    "dist": "Rocky_Linux-8.5-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:34:25+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "edc2ae6a-e949-45c1-bab6-34b7a0d264e3",
+    "name": "vmi-rockylinux-8.5-amd64-30gb",
+    "dist": "Rocky_Linux-8.5-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:33:56+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "284cfd8c-0157-4873-9f6e-cdf82f37823b",
+    "name": "vmi-almalinux-8.5-amd64-100gb",
+    "dist": "AlmaLinux-8.5-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:33:28+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "9a501931-86ac-4316-a64c-37a057430c7f",
+    "name": "vmi-almalinux-8.5-amd64-30gb",
+    "dist": "AlmaLinux-8.5-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:32:56+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "39a251eb-c331-4064-8a49-e9146472d194",
+    "name": "vmi-rockylinux-8.4-amd64-100gb",
+    "dist": "Rocky_Linux-8.4-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:32:33+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "b758af3b-0747-4f94-9b8a-a84d6f3a9f3d",
+    "name": "vmi-rockylinux-8.4-amd64-30gb",
+    "dist": "Rocky_Linux-8.4-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:32:08+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "2a464a6c-8d02-4046-a5c6-cfedbe912645",
+    "name": "vmi-oraclelinux-8.5-amd64-100gb",
+    "dist": "Oracle_Linux-8.5-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:29:31+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "09f06e7f-7ee6-4194-8506-0439fca8b6a4",
+    "name": "vmi-oraclelinux-8.5-amd64-30gb",
+    "dist": "Oracle_Linux-8.5-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:28:56+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "90e91eb5-3671-4375-956b-b92558ab7db4",
+    "name": "vmi-miraclelinux-8.4-amd64-100gb",
+    "dist": "MIRACLE_LINUX-8.4-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:26:39+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "2c0a3db4-433c-474f-be3a-caf9f5085631",
+    "name": "vmi-miraclelinux-8.4-amd64-30gb",
+    "dist": "MIRACLE_LINUX-8.4-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:26:03+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "f160e285-238b-44b6-992c-4f7f0b8ff97e",
+    "name": "vmi-rockylinux-8.6-amd64-100gb",
+    "dist": "Rocky_Linux-8.6-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:23:28+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "bc0d6d6b-d548-492d-9239-b6d880534876",
+    "name": "vmi-rockylinux-8.6-amd64-30gb",
+    "dist": "Rocky_Linux-8.6-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:22:58+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "2be30d33-c625-45cc-921f-40ac98d32c38",
+    "name": "vmi-almalinux-8.6-amd64-100gb",
+    "dist": "AlmaLinux-8.6-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:22:29+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "85095c76-a5e7-4b32-8e8a-b73347d47e55",
+    "name": "vmi-almalinux-8.6-amd64-30gb",
+    "dist": "AlmaLinux-8.6-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T18:21:57+09:00",
+    "minDisk": 30
+  },
+  {
+    "image_id": "0d5e8095-12ae-4a10-b9a4-e65a43bc7846",
+    "name": "vmi-oraclelinux-8.6-amd64-100gb",
+    "dist": "Oracle_Linux-8.6-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T15:35:57+09:00",
+    "minDisk": 100
+  },
+  {
+    "image_id": "cd5cb502-cef3-44be-a82e-6c2545755d9f",
+    "name": "vmi-oraclelinux-8.6-amd64-30gb",
+    "dist": "Oracle_Linux-8.6-64bit",
+    "app": "",
+    "os": "lin",
+    "image_type": null,
+    "created": "2022-07-25T15:35:19+09:00",
+    "minDisk": 30
+  }
+]
