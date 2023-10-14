@@ -15,7 +15,7 @@ from .image import Image, ImageList
 
 
 @cache
-def models() -> ImageList:
+def fixture_models() -> ImageList:
     """All names."""
     p = Path(__file__).resolve().parent / "fixture20231014.json"
 
@@ -41,7 +41,7 @@ def models() -> ImageList:
 
 def test_valid_os() -> None:
     """OS名が含まれているか."""
-    models()
+    fixture_models()
 
 
 def test_invalid_os() -> None:
@@ -64,23 +64,23 @@ def test_invalid_os() -> None:
 
 def test_get_snapshots() -> None:
     """ユーザーが保存したVMイメージを取得する."""
-    ls = models().snapshots
+    ls = fixture_models().snapshots
     assert ls.root[0].name == "dev"
 
 
 def test_distribution() -> None:
     """Linux distを網羅できている."""
-    for m in models().priors.linux:
+    for m in fixture_models().priors.linux:
         assert Distribution.create(m) in Distribution
 
-    for m in models().priors.windows:
+    for m in fixture_models().priors.windows:
         with pytest.raises(NotLinuxError):
             Distribution.create(m)
 
 
 def test_distribution_versions() -> None:
     """ubuntuのみ確認. ついでにdebian."""
-    lins = models().priors.linux
+    lins = fixture_models().priors.linux
     u_vers = lins.dist_versions(Distribution.UBUNTU)
     assert u_vers == {"16.04", "18.04", "20.04", "20.04.2", "22.04"}
     d_vers = lins.dist_versions(Distribution.DEBIAN)

@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import itertools
 import json
-from functools import cache
 from ipaddress import IPv4Address
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -18,7 +17,7 @@ from conoha_client.add_vm.domain.errors import (
 )
 from conoha_client.features._shared.conftest import prepare
 from conoha_client.features._shared.endpoints.endpoints import Endpoints
-from conoha_client.features.image.domain import Image
+from conoha_client.features.image.domain.test_domain import fixture_models
 from conoha_client.features.plan.domain import Memory
 
 from .domain import OS, OSVersion
@@ -27,27 +26,12 @@ from .repo import AddVMCommand, ImageInfoRepo, find_added
 if TYPE_CHECKING:
     from requests_mock import Mocker
 
+    from conoha_client.features.image.domain import Image
 
-@cache
+
 def mock_list_images() -> list[Image]:
     """list_imageのモック."""
-    p = Path(__file__).resolve().parent / "fixture20231002.json"
-    return [
-        Image.model_validate(
-            {
-                "id": j["image_id"],
-                "name": j["name"],
-                "metadata": {
-                    "dst": j["dist"],
-                    "app": j["app"],
-                    "os_type": j["os"],
-                },
-                "created": "2023-07-12T04:36:33Z",
-                "minDisk": 30,
-            },
-        )
-        for j in json.loads(p.read_text())
-    ]
+    return fixture_models().root
 
 
 def test_list_available_os_versions() -> None:

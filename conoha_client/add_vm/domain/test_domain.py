@@ -12,7 +12,7 @@ from .domain import OS, Application, OSVersion
 
 
 def test_os_is_match() -> None:
-    """OS名がむくまれているか."""
+    """OS名が含まれているか."""
     assert OS.UBUNTU.is_match("xxx-ubuntu-yyy")
     assert not OS.UBUNTU.is_match("xxx-not_ubuntu-yyy")
 
