@@ -4,8 +4,6 @@ from __future__ import annotations
 from functools import cache
 
 from conoha_client.features import Endpoints
-from conoha_client.features._shared.domain import first_model_by
-from conoha_client.features._shared.view.domain import check_include_keys
 
 from .domain import Image
 
@@ -17,11 +15,5 @@ def list_images() -> list[Image]:
     return [Image.model_validate(e) for e in res["images"]]
 
 
-def find_image_by(attr_name: str, value: any) -> Image | None:
-    """key-valueにマッチしたプラン情報を返す."""
-
-    def pred(e: Image) -> bool:
-        check_include_keys(e, {attr_name})
-        return value in str(getattr(e, attr_name))
-
-    return first_model_by(list_images(), pred)
+# dist指定でバージョン一覧を取得
+# human friendlyな指定でimage id を探せるようにしたい

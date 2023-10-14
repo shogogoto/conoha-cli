@@ -1,14 +1,18 @@
 """Image DTO."""
-
+from __future__ import annotations
 
 import datetime
 from enum import Enum
+from functools import cached_property
+from typing import Iterator
 from uuid import UUID
 
-from pydantic import AliasPath, BaseModel, ConfigDict, Field, RootModel, field_validator
+from pydantic import AliasPath, BaseModel, Field, RootModel, field_validator
 
 from conoha_client.features._shared.util import utc2jst
 from conoha_client.features.image.domain.errors import NeitherWindowsNorLinuxError
+
+from .operating_system import Distribution, OperatingSystem
 
 
 class ImageType(Enum):
@@ -16,21 +20,6 @@ class ImageType(Enum):
 
     SNAPSHOT = "snapshot"
     PRIOR = None  # 所与のイメージ
-
-
-class OperatingSystem(RootModel):
-    """OS."""
-
-    model_config = ConfigDict(frozen=True)
-    root: str
-
-    def is_windows(self) -> bool:
-        """WINDOWS OS or not."""
-        return "win" in self.root[:3]
-
-    def is_linux(self) -> bool:
-        """Linux OS or not."""
-        return self.root == "lin"
 
 
 class Image(BaseModel, frozen=True):
@@ -46,7 +35,7 @@ class Image(BaseModel, frozen=True):
         alias=AliasPath("metadata", "image_type"),
     )
     created: str = Field(alias="created", description="作成日時")
-    minDisk: int = Field(  # noqa: N815
+    min_disk: int = Field(
         alias="minDisk",
         description="インスタンス化に必要なディスク容量",
     )
@@ -62,3 +51,61 @@ class Image(BaseModel, frozen=True):
         if not (v.is_windows() or v.is_linux()):
             raise NeitherWindowsNorLinuxError
         return v
+
+
+class BaseList(RootModel, frozen=True):
+    """base."""
+
+    root: list[Image]
+
+    def __iter__(self) -> Iterator:
+        """Behavior like list."""
+        return iter(self.root)
+
+    def __next__(self) -> Image:
+        """Behavior like list."""
+        return next(self.root)
+
+
+class ImageList(BaseList):
+    """イメージコンテナ."""
+
+    @cached_property
+    def priors(self) -> ImageList:
+        """所与のイメージを返す."""
+        ls = [img for img in self.root if img.image_type == ImageType.PRIOR]
+        return ImageList(ls)
+
+    @cached_property
+    def snapshots(self) -> ImageList:
+        """スナップショットを返す."""
+        ls = [img for img in self.root if img.image_type == ImageType.SNAPSHOT]
+        return ImageList(ls)
+
+    @cached_property
+    def windows(self) -> ImageList:
+        """Filter windows os."""
+        ls = [img for img in self.root if img.os.is_windows()]
+        return ImageList(ls)
+
+    @cached_property
+    def linux(self) -> LinuxImageList:
+        """Filter linux os."""
+        ls = [img for img in self.root if img.os.is_linux()]
+        return LinuxImageList(ls)
+
+
+class LinuxImageList(BaseList):
+    """linux image container."""
+
+    root: list[Image]
+
+    def dist_versions(self, dist: Distribution) -> set[str | None]:
+        """Dist versions set."""
+        ls = [img for img in self.root if Distribution.create(img) == dist]
+        return {dist.version(img) for img in ls}
+
+    def applications(self, dist: Distribution, version: str) -> set[str]:
+        """Available application for distribution."""
+        ls = [img for img in self.root if Distribution.create(img) == dist]
+        return {img.app for img in ls if dist.version(img) == version}
