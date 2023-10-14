@@ -11,8 +11,10 @@ from pydantic import BaseModel
 from requests import HTTPError
 
 from conoha_client.add_vm.domain.added_vm import AddedVM
+from conoha_client.add_vm.domain.domain import filter_memory
 from conoha_client.features._shared import view
 from conoha_client.features._shared.endpoints.endpoints import Endpoints
+from conoha_client.features.image.domain.image import ImageList, LinuxImageList
 from conoha_client.features.image.repo import list_images
 from conoha_client.features.list_vm.repo import get_dep, list_servers
 
@@ -27,11 +29,29 @@ from .domain.errors import (
 if TYPE_CHECKING:
     from conoha_client.add_vm.domain.domain import Application
     from conoha_client.features.image.domain import Image
+    from conoha_client.features.image.domain.operating_system import Distribution
     from conoha_client.features.list_vm.domain import Server
 
 from conoha_client.features.plan.domain import Memory  # noqa: TCH001
 
 from .domain import OS, OSVersion  # noqa: TCH001
+
+Callback = Callable[[], LinuxImageList]
+
+
+def list_linux_images() -> LinuxImageList:
+    """Fix in future."""
+    return ImageList(list_images()).priors.linux
+
+
+def available_dist_versions(
+    memory: Memory,
+    dist: Distribution,
+    dep: Callback = list_linux_images,
+) -> set[str]:
+    """List availabe distribution versions."""
+    lins = dep()
+    return filter_memory(lins, memory).dist_versions(dist)
 
 
 class ImageInfoRepo(BaseModel, frozen=True):

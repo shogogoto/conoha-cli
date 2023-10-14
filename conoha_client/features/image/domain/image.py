@@ -22,6 +22,17 @@ class ImageType(Enum):
     PRIOR = None  # 所与のイメージ
 
 
+class MinDisk(Enum):
+    """image container precondition."""
+
+    SMALLEST = 30
+    OTHERS = 100
+
+    def is_smallest(self) -> bool:
+        """Smallest."""
+        return self == MinDisk.SMALLEST
+
+
 class Image(BaseModel, frozen=True):
     """VPSイメージ."""
 
@@ -35,7 +46,7 @@ class Image(BaseModel, frozen=True):
         alias=AliasPath("metadata", "image_type"),
     )
     created: str = Field(alias="created", description="作成日時")
-    min_disk: int = Field(
+    min_disk: MinDisk = Field(
         alias="minDisk",
         description="インスタンス化に必要なディスク容量",
     )
@@ -100,10 +111,15 @@ class LinuxImageList(BaseList):
 
     root: list[Image]
 
-    def dist_versions(self, dist: Distribution) -> set[str | None]:
-        """Dist versions set."""
+    def filter_by_dist(self, dist: Distribution) -> LinuxImageList:
+        """Filter by dist."""
         ls = [img for img in self.root if Distribution.create(img) == dist]
-        return {dist.version(img) for img in ls}
+        return LinuxImageList(ls)
+
+    def dist_versions(self, dist: Distribution) -> set[str]:
+        """Dist versions set."""
+        imgs = self.filter_by_dist(dist).root
+        return {dist.version(img) for img in imgs}
 
     def applications(self, dist: Distribution, version: str) -> set[str]:
         """Available application for distribution."""

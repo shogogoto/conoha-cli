@@ -17,21 +17,45 @@ from conoha_client.add_vm.domain.errors import (
 )
 from conoha_client.features._shared.conftest import prepare
 from conoha_client.features._shared.endpoints.endpoints import Endpoints
+from conoha_client.features.image.domain.operating_system import Distribution
 from conoha_client.features.image.domain.test_domain import fixture_models
 from conoha_client.features.plan.domain import Memory
 
 from .domain import OS, OSVersion
-from .repo import AddVMCommand, ImageInfoRepo, find_added
+from .repo import AddVMCommand, ImageInfoRepo, available_dist_versions, find_added
 
 if TYPE_CHECKING:
     from requests_mock import Mocker
 
     from conoha_client.features.image.domain import Image
+    from conoha_client.features.image.domain.image import LinuxImageList
 
 
 def mock_list_images() -> list[Image]:
     """list_imageのモック."""
     return fixture_models().root
+
+
+def mock_dep() -> LinuxImageList:
+    """list_imageのモック."""
+    return fixture_models().priors.linux
+
+
+def test_list_available_dist_versions() -> None:
+    """Test for regression."""
+    actual1 = available_dist_versions(
+        memory=Memory.MG512,
+        dist=Distribution.UBUNTU,
+        dep=mock_dep,
+    )
+    assert actual1 == {"16.04", "20.04", "20.04.2", "22.04"}
+
+    actual2 = available_dist_versions(
+        memory=Memory.GB64,
+        dist=Distribution.UBUNTU,
+        dep=mock_dep,
+    )
+    assert actual2 == {"16.04", "18.04", "20.04", "20.04.2", "22.04"}
 
 
 def test_list_available_os_versions() -> None:

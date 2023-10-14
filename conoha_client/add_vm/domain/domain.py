@@ -4,6 +4,7 @@ from __future__ import annotations
 import re
 from enum import Enum
 from functools import cache
+from typing import TYPE_CHECKING
 
 from pydantic import BaseModel
 
@@ -12,6 +13,22 @@ from conoha_client.add_vm.domain.errors import (
     ApplicationWithoutVersionError,
     OSVersionExtractError,
 )
+from conoha_client.features.image.domain.image import LinuxImageList
+
+if TYPE_CHECKING:
+    from conoha_client.features.image.domain.image import MinDisk
+    from conoha_client.features.plan.domain import Memory
+
+
+def allows_capacity(mindisk: MinDisk, mem: Memory) -> bool:
+    """片方がsmallestの場合は許されない."""
+    return not (mindisk.is_smallest() ^ mem.is_smallest())
+
+
+def filter_memory(lins: LinuxImageList, mem: Memory) -> LinuxImageList:
+    """RAM容量でイメージをフィルターする."""
+    imgs = [img for img in lins if allows_capacity(img.min_disk, mem)]
+    return LinuxImageList(imgs)
 
 
 class OS(str, Enum):

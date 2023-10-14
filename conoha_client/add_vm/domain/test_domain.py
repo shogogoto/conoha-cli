@@ -7,8 +7,19 @@ from conoha_client.add_vm.domain.errors import (
     ApplicationWithoutVersionError,
     OSVersionExtractError,
 )
+from conoha_client.features.image.domain.image import MinDisk
+from conoha_client.features.plan.domain import Memory
 
-from .domain import OS, Application, OSVersion
+from .domain import OS, Application, OSVersion, allows_capacity
+
+
+def test_allow_capacity() -> None:
+    """cases."""
+    for mem in Memory:
+        if mem.is_smallest():
+            assert allows_capacity(MinDisk.SMALLEST, mem)
+        else:
+            assert allows_capacity(MinDisk.OTHERS, mem)
 
 
 def test_os_is_match() -> None:
