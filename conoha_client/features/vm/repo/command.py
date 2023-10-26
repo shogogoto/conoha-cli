@@ -9,12 +9,10 @@ from pydantic import BaseModel
 from requests import HTTPError
 
 from conoha_client.features._shared.endpoints.endpoints import Endpoints
-from conoha_client.features.vm.domain import VM, AddedVM
+from conoha_client.features.vm.domain import AddedVM
 from conoha_client.features.vm.errors import (
     NotFlavorProvidesError,
-    NotFoundAddedVMError,
 )
-from conoha_client.features.vm.repo.query import get_dep, list_servers
 
 
 def post_add_vm(json: dict) -> object:
@@ -38,7 +36,7 @@ class AddVMCommand(BaseModel, frozen=True):
     flavor_id: UUID
     image_id: UUID
     admin_pass: str
-    post: Callable[[dict], object] = post_add_vm
+    dep: Callable[[dict], object] = post_add_vm
 
     def __call__(self, sshkey_name: str | None = None) -> AddedVM:
         """新規VM追加."""
@@ -51,23 +49,5 @@ class AddVMCommand(BaseModel, frozen=True):
         }
         if sshkey_name is not None:
             js["server"]["key_name"] = sshkey_name
-        res = self.post(js)
+        res = self.dep(js)
         return AddedVM.model_validate(res)
-
-
-def find_added(
-    vm_id: UUID,
-    dep: Callable[[], list[object]] = get_dep,
-) -> VM:
-    """Return ipv4 of added vm."""
-
-    def pred(vm: VM) -> bool:
-        return vm.vm_id == vm_id
-
-    f = filter(pred, list_servers(dep=dep))
-
-    try:
-        return next(f)
-    except StopIteration as e:
-        msg = ""
-        raise NotFoundAddedVMError(msg) from e
