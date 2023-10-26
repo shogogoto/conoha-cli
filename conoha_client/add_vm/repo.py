@@ -41,58 +41,33 @@ class DistoQuery(BaseModel, frozen=True):
     """Linux image query to add new VM."""
 
     memory: Memory
-    disto: Distribution
+    dist: Distribution
     dep: Callback = list_linux_images
-
-    def available_vers(self) -> set[str]:
-        """List availabe distribution versions."""
-        return self._filter_mem().dist_versions(self.disto)
 
     def _filter_mem(self) -> LinuxImageList:
         return filter_memory(self.dep(), self.memory)
 
+    def available_vers(self) -> set[str]:
+        """List availabe distribution versions."""
+        return self._filter_mem().dist_versions(self.dist)
 
-def available_dist_versions(
-    memory: Memory,
-    dist: Distribution,
-    dep: Callback = list_linux_images,
-) -> set[str]:
-    """List availabe distribution versions."""
-    lins = dep()
-    return filter_memory(lins, memory).dist_versions(dist)
+    def latest_ver(self) -> str:
+        """Latest availabe distribution version."""
+        return sorted(self.available_vers())[-1]
 
+    def apps(self, dist_ver: str) -> set[str]:
+        """引数のOS,versionで利用可能なアプリ,バージョン一覧."""
+        return self._filter_mem().applications(self.dist, dist_ver)
 
-def available_dist_latest_version(
-    memory: Memory,
-    dist: Distribution,
-    dep: Callback = list_linux_images,
-) -> str:
-    """Latest availabe distribution version."""
-    vers = available_dist_versions(memory, dist, dep)
-    return sorted(vers)[-1]
-
-
-def available_apps(
-    memory: Memory,
-    dist: Distribution,
-    dist_version: str,
-    dep: Callback = list_linux_images,
-) -> set[str]:
-    """引数のOS,versionで利用可能なアプリ,バージョン一覧."""
-    lins = dep()
-    return filter_memory(lins, memory).applications(dist, dist_version)
-
-
-def identify_image(
-    memory: Memory,
-    dist: Distribution,
-    dist_version: str,
-    app: str,
-    dep: Callback = list_linux_images,
-) -> Image:
-    """imageを一意に検索する."""
-    lins = dep()
-    return select_uniq(lins, memory, dist, dist_version, app)
+    def identify(self, dist_ver: str, app: str) -> Image:
+        """Linux Imageを一意に検索する."""
+        return select_uniq(
+            self._filter_mem(),
+            self.memory,
+            self.dist,
+            dist_ver,
+            app,
+        )
 
 
 def post_add_vm(json: dict) -> object:

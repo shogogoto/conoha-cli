@@ -10,10 +10,6 @@ from conoha_client.features.plan.domain import Memory
 
 from .repo import (
     DistoQuery,
-    available_apps,
-    available_dist_latest_version,
-    available_dist_versions,
-    identify_image,
 )
 
 if TYPE_CHECKING:
@@ -31,68 +27,52 @@ def mock_dep() -> LinuxImageList:
     return fixture_models().priors.linux
 
 
+def q(mem: Memory, dist: Distribution) -> DistoQuery:
+    """Test util."""
+    return DistoQuery(
+        memory=mem,
+        dist=dist,
+        dep=mock_dep,
+    )
+
+
 def test_list_available_dist_versions() -> None:
     """Test for regression."""
-    q1 = DistoQuery(
-        memory=Memory.MB512,
-        disto=Distribution.UBUNTU,
-        dep=mock_dep,
-    )
+    q1 = q(Memory.MB512, Distribution.UBUNTU)
     assert q1.available_vers() == {"16.04", "20.04", "20.04.2", "22.04"}
 
-    q2 = DistoQuery(
-        memory=Memory.GB64,
-        disto=Distribution.UBUNTU,
-        dep=mock_dep,
-    )
+    q2 = q(Memory.GB64, Distribution.UBUNTU)
     assert q2.available_vers() == {"16.04", "18.04", "20.04", "20.04.2", "22.04"}
 
 
 def test_dist_latest_version() -> None:
     """Test for regression."""
-    actual1 = available_dist_latest_version(
-        memory=Memory.MB512,
-        dist=Distribution.UBUNTU,
-        dep=mock_dep,
-    )
-    assert actual1 == "22.04"
+    q1 = q(Memory.MB512, Distribution.UBUNTU)
+    assert q1.latest_ver() == "22.04"
 
-    actual2 = available_dist_latest_version(
-        memory=Memory.MB512,
-        dist=Distribution.ALMA,
-        dep=mock_dep,
-    )
-    assert actual2 == "9.2"
+    q2 = q(Memory.MB512, Distribution.ALMA)
+    assert q2.latest_ver() == "9.2"
 
 
 def test_list_available_apps() -> None:
     """Test for regression."""
     alma_latest = "9.2"
-    actual = available_apps(
-        Memory.MB512,
-        Distribution.ALMA,
-        alma_latest,
-        dep=mock_dep,
-    )
-    assert actual == {""}
+    q1 = q(Memory.MB512, Distribution.ALMA)
+    assert q1.apps(alma_latest) == {""}
 
 
 def test_find_image_id() -> None:
     """一意にimage idを見つける. 一番大事."""
     n_all = len(mock_dep())
     imgs = set()
-    for mem, disto in itertools.product(Memory, Distribution):
-        vers = available_dist_versions(
-            memory=mem,
-            dist=disto,
-            dep=mock_dep,
-        )
-        for v in vers:
-            apps = available_apps(mem, disto, v, dep=mock_dep)
-            for app in apps:
-                img = identify_image(mem, disto, v, app, dep=mock_dep)
+    for mem, dist in itertools.product(Memory, Distribution):
+        q_ = q(mem, dist)
+        for v in q_.available_vers():
+            for app in q_.apps(v):
+                img = q_.identify(v, app)
                 imgs.add(img)
-    # freebsdのufs 30gb, 100gbを無視した
+
+    # freebsdのufsの30gb,100gbを無視した
     assert len(imgs) == n_all - 2
 
 
