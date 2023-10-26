@@ -9,6 +9,7 @@ from conoha_client.features.image.domain.test_domain import fixture_models
 from conoha_client.features.plan.domain import Memory
 
 from .repo import (
+    DistoQuery,
     available_apps,
     available_dist_latest_version,
     available_dist_versions,
@@ -32,32 +33,32 @@ def mock_dep() -> LinuxImageList:
 
 def test_list_available_dist_versions() -> None:
     """Test for regression."""
-    actual1 = available_dist_versions(
-        memory=Memory.MG512,
-        dist=Distribution.UBUNTU,
+    q1 = DistoQuery(
+        memory=Memory.MB512,
+        disto=Distribution.UBUNTU,
         dep=mock_dep,
     )
-    assert actual1 == {"16.04", "20.04", "20.04.2", "22.04"}
+    assert q1.available_vers() == {"16.04", "20.04", "20.04.2", "22.04"}
 
-    actual2 = available_dist_versions(
+    q2 = DistoQuery(
         memory=Memory.GB64,
-        dist=Distribution.UBUNTU,
+        disto=Distribution.UBUNTU,
         dep=mock_dep,
     )
-    assert actual2 == {"16.04", "18.04", "20.04", "20.04.2", "22.04"}
+    assert q2.available_vers() == {"16.04", "18.04", "20.04", "20.04.2", "22.04"}
 
 
 def test_dist_latest_version() -> None:
     """Test for regression."""
     actual1 = available_dist_latest_version(
-        memory=Memory.MG512,
+        memory=Memory.MB512,
         dist=Distribution.UBUNTU,
         dep=mock_dep,
     )
     assert actual1 == "22.04"
 
     actual2 = available_dist_latest_version(
-        memory=Memory.MG512,
+        memory=Memory.MB512,
         dist=Distribution.ALMA,
         dep=mock_dep,
     )
@@ -68,7 +69,7 @@ def test_list_available_apps() -> None:
     """Test for regression."""
     alma_latest = "9.2"
     actual = available_apps(
-        Memory.MG512,
+        Memory.MB512,
         Distribution.ALMA,
         alma_latest,
         dep=mock_dep,

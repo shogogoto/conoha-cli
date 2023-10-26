@@ -20,7 +20,7 @@ class VMPlan(BaseModel, frozen=True):
 class Memory(str, Enum):
     """VMのメモリ容量."""
 
-    MG512 = "0.5"
+    MB512 = "0.5"
     GB1 = "1"
     GB2 = "2"
     GB4 = "4"
@@ -38,7 +38,7 @@ class Memory(str, Enum):
 
     def is_smallest(self) -> bool:
         """最小のメモリか."""
-        return self == Memory.MG512
+        return self == Memory.MB512
 
     def is_match(self, img_name: str) -> bool:
         """valueがイメージ名に含まれているか."""

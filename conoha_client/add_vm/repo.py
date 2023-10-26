@@ -22,9 +22,12 @@ from .domain.errors import (
 
 if TYPE_CHECKING:
     from conoha_client.features.image.domain import Image
-    from conoha_client.features.image.domain.operating_system import Distribution
     from conoha_client.features.list_vm.domain import Server
-    from conoha_client.features.plan.domain import Memory
+
+from conoha_client.features.image.domain.operating_system import (
+    Distribution,  # noqa: TCH001
+)
+from conoha_client.features.plan.domain import Memory  # noqa: TCH001
 
 Callback = Callable[[], LinuxImageList]
 
@@ -32,6 +35,21 @@ Callback = Callable[[], LinuxImageList]
 def list_linux_images() -> LinuxImageList:
     """Fix in future."""
     return ImageList(list_images()).priors.linux
+
+
+class DistoQuery(BaseModel, frozen=True):
+    """Linux image query to add new VM."""
+
+    memory: Memory
+    disto: Distribution
+    dep: Callback = list_linux_images
+
+    def available_vers(self) -> set[str]:
+        """List availabe distribution versions."""
+        return self._filter_mem().dist_versions(self.disto)
+
+    def _filter_mem(self) -> LinuxImageList:
+        return filter_memory(self.dep(), self.memory)
 
 
 def available_dist_versions(
