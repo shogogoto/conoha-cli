@@ -73,3 +73,20 @@ class Distribution(Enum):
     def _check(image: Image) -> None:
         if not image.os.is_linux():
             raise NotLinuxError
+
+
+class FileSystem(Enum):
+    """Imageのファイルシステム."""
+
+    UFS = "ufs"  # UNIX由来の伝統的なやつ
+    ZFS = "zfs"  # 次世代
+    UNKNOWN = ""
+
+    @classmethod
+    def parse(cls, value: str) -> FileSystem:
+        """Instantiate."""
+        if cls.UFS.value in value:
+            return cls.UFS
+        if cls.ZFS.value in value:
+            return cls.ZFS
+        return cls.UNKNOWN

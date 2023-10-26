@@ -12,7 +12,7 @@ from pydantic import AliasPath, BaseModel, Field, RootModel, field_validator
 from conoha_client.features._shared.util import utc2jst
 from conoha_client.features.image.domain.errors import NeitherWindowsNorLinuxError
 
-from .operating_system import Distribution, OperatingSystem
+from .operating_system import Distribution, FileSystem, OperatingSystem
 
 
 class ImageType(Enum):
@@ -39,7 +39,7 @@ class Image(BaseModel, frozen=True):
     image_id: UUID = Field(alias="id", description="イメージID")
     name: str = Field(alias="name", description="名前")
     dist: str = Field("", alias=AliasPath("metadata", "dst"))
-    app: str = Field("", alias=AliasPath("metadata", "app"))
+    app: str = Field(None, alias=AliasPath("metadata", "app"))
     os: OperatingSystem = Field(alias=AliasPath("metadata", "os_type"))
     image_type: ImageType = Field(
         ImageType.PRIOR,
@@ -63,19 +63,28 @@ class Image(BaseModel, frozen=True):
             raise NeitherWindowsNorLinuxError
         return v
 
+    @cached_property
+    def fs(self) -> FileSystem:
+        """File system."""
+        return FileSystem.parse(self.name)
+
 
 class BaseList(RootModel, frozen=True):
     """base."""
 
     root: list[Image]
 
-    def __iter__(self) -> Iterator:
+    def __iter__(self) -> Iterator[Image]:
         """Behavior like list."""
         return iter(self.root)
 
     def __next__(self) -> Image:
         """Behavior like list."""
         return next(self.root)
+
+    def __len__(self) -> int:
+        """Count of elements."""
+        return len(self.root)
 
 
 class ImageList(BaseList):
@@ -121,7 +130,17 @@ class LinuxImageList(BaseList):
         imgs = self.filter_by_dist(dist).root
         return {dist.version(img) for img in imgs}
 
-    def applications(self, dist: Distribution, version: str) -> set[str]:
+    def filter_by_dist_version(
+        self,
+        dist: Distribution,
+        dist_version: str,
+    ) -> LinuxImageList:
+        """Filter by dist with version."""
+        ls = self.filter_by_dist(dist).root
+        imgs = {img for img in ls if dist.version(img) == dist_version}
+        return LinuxImageList(imgs)
+
+    def applications(self, dist: Distribution, dist_version: str) -> set[str]:
         """Available application for distribution."""
-        ls = [img for img in self.root if Distribution.create(img) == dist]
-        return {img.app for img in ls if dist.version(img) == version}
+        ls = self.filter_by_dist_version(dist, dist_version)
+        return {img.app for img in ls}
