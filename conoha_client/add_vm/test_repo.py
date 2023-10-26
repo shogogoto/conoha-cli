@@ -9,7 +9,7 @@ from conoha_client.features.image.domain.test_domain import fixture_models
 from conoha_client.features.plan.domain import Memory
 
 from .repo import (
-    DistoQuery,
+    DistQuery,
 )
 
 if TYPE_CHECKING:
@@ -27,9 +27,9 @@ def mock_dep() -> LinuxImageList:
     return fixture_models().priors.linux
 
 
-def q(mem: Memory, dist: Distribution) -> DistoQuery:
+def q(mem: Memory, dist: Distribution) -> DistQuery:
     """Test util."""
-    return DistoQuery(
+    return DistQuery(
         memory=mem,
         dist=dist,
         dep=mock_dep,

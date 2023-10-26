@@ -37,7 +37,7 @@ def list_linux_images() -> LinuxImageList:
     return ImageList(list_images()).priors.linux
 
 
-class DistoQuery(BaseModel, frozen=True):
+class DistQuery(BaseModel, frozen=True):
     """Linux image query to add new VM."""
 
     memory: Memory
@@ -62,7 +62,7 @@ class DistoQuery(BaseModel, frozen=True):
     def identify(self, dist_ver: str, app: str) -> Image:
         """Linux Imageを一意に検索する."""
         return select_uniq(
-            self._filter_mem(),
+            self.dep(),
             self.memory,
             self.dist,
             dist_ver,
