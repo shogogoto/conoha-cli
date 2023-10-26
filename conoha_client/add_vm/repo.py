@@ -2,8 +2,6 @@
 from __future__ import annotations
 
 import http
-import operator
-from functools import cached_property
 from typing import TYPE_CHECKING, Callable
 from uuid import UUID
 
@@ -11,30 +9,22 @@ from pydantic import BaseModel
 from requests import HTTPError
 
 from conoha_client.add_vm.domain.added_vm import AddedVM
-from conoha_client.add_vm.domain.domain import filter_memory
-from conoha_client.features._shared import view
+from conoha_client.add_vm.domain.domain import filter_memory, select_uniq
 from conoha_client.features._shared.endpoints.endpoints import Endpoints
 from conoha_client.features.image.domain.image import ImageList, LinuxImageList
 from conoha_client.features.image.repo import list_images
 from conoha_client.features.list_vm.repo import get_dep, list_servers
 
 from .domain.errors import (
-    ImageIdMappingMismatchWarning,
     NotFlavorProvidesError,
     NotFoundAddedVMError,
-    NotFoundApplicationError,
-    NotFoundOSVersionError,
 )
 
 if TYPE_CHECKING:
-    from conoha_client.add_vm.domain.domain import Application
     from conoha_client.features.image.domain import Image
     from conoha_client.features.image.domain.operating_system import Distribution
     from conoha_client.features.list_vm.domain import Server
-
-from conoha_client.features.plan.domain import Memory  # noqa: TCH001
-
-from .domain import OS, OSVersion  # noqa: TCH001
+    from conoha_client.features.plan.domain import Memory
 
 Callback = Callable[[], LinuxImageList]
 
@@ -54,76 +44,37 @@ def available_dist_versions(
     return filter_memory(lins, memory).dist_versions(dist)
 
 
-class ImageInfoRepo(BaseModel, frozen=True):
-    """VM Imageに関するリポジトリ."""
+def available_dist_latest_version(
+    memory: Memory,
+    dist: Distribution,
+    dep: Callback = list_linux_images,
+) -> str:
+    """Latest availabe distribution version."""
+    vers = available_dist_versions(memory, dist, dep)
+    return sorted(vers)[-1]
 
-    memory: Memory
-    os: OS
-    list_images: Callable[[], list[str]] = list_images
 
-    @cached_property
-    def image_names(self) -> list[str]:
-        """イメージ名一覧."""
-        return [img.name for img in self.list_images()]
+def available_apps(
+    memory: Memory,
+    dist: Distribution,
+    dist_version: str,
+    dep: Callback = list_linux_images,
+) -> set[str]:
+    """引数のOS,versionで利用可能なアプリ,バージョン一覧."""
+    lins = dep()
+    return filter_memory(lins, memory).applications(dist, dist_version)
 
-    @cached_property
-    def available_os_versions(self) -> list[OSVersion]:
-        """利用可能なOSバージョンを取得."""
-        mem_names = filter(self.memory.is_match, self.image_names)
-        s = set(filter(self.os.is_match, mem_names))
-        return sorted({self.os.version(n) for n in s}, key=operator.attrgetter("value"))
 
-    @cached_property
-    def available_os_latest_version(self) -> OSVersion:
-        """利用可能な最新OSバージョンを取得."""
-        vers = self.available_os_versions
-        if len(vers) == 0:
-            raise NotFoundOSVersionError
-        return vers[-1]
-
-    def list_available_apps(self, os_version: OSVersion) -> list[Application]:
-        """引数のOS,versionで利用可能なアプリ,バージョン一覧."""
-        os_versions = self.available_os_versions
-        if os_version.is_latest():
-            os_version = self.available_os_latest_version
-        if os_version not in os_versions:
-            msg = (
-                f"{self.os}のバージョン{os_version.value}は利用できません."
-                f"利用可能なバージョンは{[v.value for v in os_versions]}です"
-            )
-            raise NotFoundOSVersionError(msg)
-        mem_names = filter(self.memory.is_match, self.image_names)
-        os_names = filter(self.os.is_match, mem_names)
-        ver_names = filter(os_version.is_match, os_names)
-        appsv = [self.os.app_with_version(n) for n in ver_names]
-        return sorted(appsv, key=operator.attrgetter("name"))
-
-    def find_image_id(self, os_version: OSVersion, app: Application) -> UUID:
-        """指定条件からimage idを一意に検索する."""
-        if os_version.is_latest():
-            os_version = self.available_os_latest_version
-        if os_version not in self.available_os_versions:
-            raise NotFoundOSVersionError
-
-        if app not in self.list_available_apps(os_version):
-            raise NotFoundApplicationError
-
-        def pred(img: Image) -> bool:
-            n = img.name
-
-            return (
-                self.memory.is_match(n)
-                and self.os.is_match(n)
-                and os_version.is_match(n)
-                and app.is_match(n, self.os)
-            )
-
-        res = list(filter(pred, self.list_images()))
-        if len(res) != 1:
-            view(res, keys={}, style="table", pass_command=False)
-            raise ImageIdMappingMismatchWarning
-
-        return res[0].image_id
+def identify_image(
+    memory: Memory,
+    dist: Distribution,
+    dist_version: str,
+    app: str,
+    dep: Callback = list_linux_images,
+) -> Image:
+    """imageを一意に検索する."""
+    lins = dep()
+    return select_uniq(lins, memory, dist, dist_version, app)
 
 
 def post_add_vm(json: dict) -> object:

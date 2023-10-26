@@ -3,9 +3,9 @@
 
 import pytest
 
-from conoha_client.features.plan.domain import Memory
-from conoha_client.features.plan.errors import FlavorIdentificationError
-from conoha_client.features.plan.repo import find_vmplan
+from .domain import Memory
+from .errors import FlavorIdentificationError
+from .repo import find_vmplan
 
 
 def test_invalid_find_vmplan() -> None:
