@@ -3,16 +3,25 @@ from __future__ import annotations
 
 import itertools
 from typing import TYPE_CHECKING
+from uuid import UUID, uuid4
 
+import pytest
+
+from conoha_client.add_vm.domain.errors import NotFlavorProvidesError
+from conoha_client.features._shared.conftest import prepare
+from conoha_client.features._shared.endpoints.endpoints import Endpoints
 from conoha_client.features.image.domain.operating_system import Distribution
 from conoha_client.features.image.domain.test_domain import fixture_models
 from conoha_client.features.plan.domain import Memory
 
 from .repo import (
+    AddVMCommand,
     DistQuery,
 )
 
 if TYPE_CHECKING:
+    from requests_mock import Mocker
+
     from conoha_client.features.image.domain import Image
     from conoha_client.features.image.domain.image import LinuxImageList
 
@@ -76,59 +85,59 @@ def test_find_image_id() -> None:
     assert len(imgs) == n_all - 2
 
 
-# VM_ID = "d9302160-27f5-42f8-8993-d2735d2b0c24"
+VM_ID = "d9302160-27f5-42f8-8993-d2735d2b0c24"
 
 
-# def test_add_vm() -> None:
-#     """VM追加."""
+def test_add_vm() -> None:
+    """VM追加."""
 
-#     def mock_post(_dummy: any) -> object:
-#         """add_vm mock."""
-#         return {
-#             "security_groups": [{"name": "default"}],
-#             "OS-DCF:diskConfig": "MANUAL",
-#             "id": VM_ID,
-#             "links": [
-#                 {
-#                     "href": "https://compute.tyo3.conoha.io/v2/49756f55e53248df82e2e4cf080d6ceb/servers/d9302160-27f5-42f8-8993-d2735d2b0c24",
-#                     "rel": "self",
-#                 },
-#                 {
-#                     "href": "https://compute.tyo3.conoha.io/49756f55e53248df82e2e4cf080d6ceb/servers/d9302160-27f5-42f8-8993-d2735d2b0c24",
-#                     "rel": "bookmark",
-#                 },
-#             ],
-#             "adminPass": "xxx",
-#         }
+    def mock_post(_dummy: any) -> object:
+        """add_vm mock."""
+        return {
+            "security_groups": [{"name": "default"}],
+            "OS-DCF:diskConfig": "MANUAL",
+            "id": VM_ID,
+            "links": [
+                {
+                    "href": "https://compute.tyo3.conoha.io/v2/49756f55e53248df82e2e4cf080d6ceb/servers/d9302160-27f5-42f8-8993-d2735d2b0c24",
+                    "rel": "self",
+                },
+                {
+                    "href": "https://compute.tyo3.conoha.io/49756f55e53248df82e2e4cf080d6ceb/servers/d9302160-27f5-42f8-8993-d2735d2b0c24",
+                    "rel": "bookmark",
+                },
+            ],
+            "adminPass": "xxx",
+        }
 
-#     cmd = AddVMCommand(
-#         flavor_id=uuid4(),
-#         image_id=uuid4(),
-#         admin_pass="xxx",
-#         sshkey_name=None,
-#         post=mock_post,
-#     )
+    cmd = AddVMCommand(
+        flavor_id=uuid4(),
+        image_id=uuid4(),
+        admin_pass="xxx",  # noqa: S106
+        sshkey_name=None,
+        post=mock_post,
+    )
 
-#     added = cmd()
-#     assert added.vm_id == UUID(VM_ID)
+    added = cmd()
+    assert added.vm_id == UUID(VM_ID)
 
 
-# def test_invalid_add_vm(
-#     requests_mock: Mocker,
-#     monkeypatch: pytest.MonkeyPatch,
-# ) -> None:
-#     """Invalid case."""
-#     prepare(requests_mock, monkeypatch)
-#     requests_mock.post(Endpoints.COMPUTE.tenant_id_url("servers"), status_code=400)
+def test_invalid_add_vm(
+    requests_mock: Mocker,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Invalid case."""
+    prepare(requests_mock, monkeypatch)
+    requests_mock.post(Endpoints.COMPUTE.tenant_id_url("servers"), status_code=400)
 
-#     cmd = AddVMCommand(
-#         flavor_id=uuid4(),
-#         image_id=uuid4(),
-#         admin_pass="xxx",
-#         sshkey_name=None,
-#     )
-#     with pytest.raises(NotFlavorProvidesError):
-#         cmd()
+    cmd = AddVMCommand(
+        flavor_id=uuid4(),
+        image_id=uuid4(),
+        admin_pass="xxx",  # noqa: S106
+        sshkey_name=None,
+    )
+    with pytest.raises(NotFlavorProvidesError):
+        cmd()
 
 
 # def test_find_ipv4() -> None:

@@ -13,7 +13,7 @@ from conoha_client.add_vm.domain.domain import filter_memory, select_uniq
 from conoha_client.features._shared.endpoints.endpoints import Endpoints
 from conoha_client.features.image.domain.image import ImageList, LinuxImageList
 from conoha_client.features.image.repo import list_images
-from conoha_client.features.list_vm.repo import get_dep, list_servers
+from conoha_client.features.vm.repo import get_dep, list_servers
 
 from .domain.errors import (
     NotFlavorProvidesError,
@@ -22,7 +22,7 @@ from .domain.errors import (
 
 if TYPE_CHECKING:
     from conoha_client.features.image.domain import Image
-    from conoha_client.features.list_vm.domain import Server
+    from conoha_client.features.vm.domain import Server
 
 from conoha_client.features.image.domain.operating_system import (
     Distribution,  # noqa: TCH001
