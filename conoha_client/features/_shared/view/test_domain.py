@@ -8,7 +8,7 @@ import pytest
 from click.testing import CliRunner
 from pydantic import AliasPath, BaseModel, Field
 
-from .domain import ExtraKeyError, model_filter, view_options
+from .domain import ExtraKeyError, model_extract, model_filter, view_options
 
 
 class ExampleModel(BaseModel):
@@ -19,27 +19,34 @@ class ExampleModel(BaseModel):
     dist: str = Field("", alias=AliasPath("metadata", "dst"))
 
 
-def test_model_filter() -> None:
+def test_model_extract() -> None:
     """Valid test."""
     m = ExampleModel(x="x", y=uuid4())
-    assert model_filter(m, {"x"}) == {"x": "x"}
-    assert model_filter(m, {"y"}) == {"y": str(m.y)}
-    assert model_filter(m) == {"x": "x", "y": str(m.y), "dist": ""}
+    assert model_extract(m, {"x"}) == {"x": "x"}
+    assert model_extract(m, {"y"}) == {"y": str(m.y)}
+    assert model_extract(m) == {"x": "x", "y": str(m.y), "dist": ""}
 
 
 def test_invalid_model_filter() -> None:
     """Invalid test."""
     m = ExampleModel(x="x", y=uuid4())
     with pytest.raises(ExtraKeyError):
-        model_filter(m, {"extra"})
+        model_extract(m, {"extra"})
     with pytest.raises(ExtraKeyError):
-        model_filter(m, {"x", "extra"})
+        model_extract(m, {"x", "extra"})
 
 
 t1 = ExampleModel(x="name1", y=uuid4())
 t2 = ExampleModel(x="name2", y=uuid4())
 t3 = ExampleModel(x="name3", y=uuid4())
 tm = [t1, t2, t3]
+
+
+def test_model_filter() -> None:
+    """モデルをフィルターする."""
+    assert [t1] == model_filter(tm, key="x", value="1")
+    with pytest.raises(ExtraKeyError):
+        model_filter(tm, key="unknown", value="1")
 
 
 @click.command()
@@ -59,6 +66,14 @@ def test_view_option_json() -> None:
 def test_view_option_table() -> None:
     """Table view test."""
     runner = CliRunner()
-    result = runner.invoke(cli, ["x", "-s", "table", "-p"])
+    result = runner.invoke(cli, ["-k", "x", "-s", "table", "-p"])
     assert result.exit_code == 0
     assert result.stdout.split() == [t.x for t in tm]
+
+
+def test_view_filter_option() -> None:
+    """Table view test."""
+    runner = CliRunner()
+    result = runner.invoke(cli, ["-k", "x", "--where", "x", "1", "-s", "table", "-p"])
+    assert result.exit_code == 0
+    assert result.stdout.split() == [t1.x]

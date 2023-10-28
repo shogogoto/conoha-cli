@@ -21,7 +21,7 @@ class VMStatus(Enum):
         return self == VMStatus.SHUTOFF
 
 
-class Server(BaseModel, frozen=True):
+class VM(BaseModel, frozen=True):
     """契約中のサーバー."""
 
     name: str = Field(alias="name")
@@ -39,3 +39,9 @@ class Server(BaseModel, frozen=True):
     def ipv4(self) -> IPv4Address:
         """ipv4 from name."""
         return IPv4Address(self.name.replace("-", "."))
+
+
+class AddedVM(BaseModel, frozen=True):
+    """新規追加されたVM."""
+
+    vm_id: UUID = Field(alias="id")
