@@ -74,13 +74,13 @@ class DistQuery(BaseModel, frozen=True):
 def add_vm_command(
     memory: Memory,
     dist: Distribution,
-    ver: str,
-    app: str | None,
+    ver: DistVersion,
+    app: Application,
     admin_pass: str,
 ) -> AddVMCommand:
-    """Add VM."""
+    """Add VM Command with identified Image."""
     q = DistQuery(memory=memory, dist=dist)
-    if ver == "latest":
+    if ver.is_latest():
         ver = q.latest_ver()
 
     img = q.identify(ver, app)

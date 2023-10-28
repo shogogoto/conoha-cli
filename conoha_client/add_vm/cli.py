@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 
 import click
 
-from conoha_client.add_vm.repo import DistQuery
+from conoha_client.add_vm.repo import DistQuery, add_vm_command
 from conoha_client.features._shared.view.domain import view_options
 from conoha_client.features.image.domain import (
     Application,
@@ -17,9 +17,7 @@ from conoha_client.features.image.domain import (
 from conoha_client.features.plan.domain import Memory
 
 if TYPE_CHECKING:
-    from conoha_client.features.vm.domain import VM
-
-    pass
+    from conoha_client.features.vm.domain import AddedVM
 
 
 @click.group("add", invoke_without_command=True)
@@ -76,31 +74,37 @@ def add_vm_cli(  # noqa: PLR0913
     app: str,
     admin_password: str | None,
     keypair_name: str | None,
-) -> list[VM]:
+) -> list[AddedVM]:
     """Add VM CLI."""
     ctx.ensure_object(dict)
     query = DistQuery(memory=memory, dist=dist)
-    # a = Application.parse(app)
     ctx.obj["q"] = query
     ctx.obj["version"] = version
     ctx.obj["app"] = app
     if ctx.invoked_subcommand is None:
-        click.echo(admin_password)
-        click.echo(keypair_name)
-        # cmd = add_vm_command(
-        #     memory=memory,
-        #     dist=dist,
-        #     ver=version,
-        #     app=app,
-        #     admin_pass=admin_password,
-        # )
-        # click.echo(cmd)
-    #     click.echo(":以下のVMが新規追加されました")
-    #     return [added]
+
+        def pw_prompt() -> str:
+            msg = "VMのroot userのパスワードを入力してくだいさい"
+            return click.prompt(msg, hide_input=True, confirmation_prompt=True)
+
+        def key_prompt() -> str:
+            msg = "VMに紐付けるsshkey名を入力してくだいさい"
+            return click.prompt(msg, hide_input=True, confirmation_prompt=True)
+
+        cmd = add_vm_command(
+            memory=memory,
+            dist=dist,
+            ver=version,
+            app=app,
+            admin_pass=admin_password or pw_prompt(),
+        )
+        added = cmd(keypair_name or key_prompt())
+        click.echo("VM was added newly")
+        return [added]
     return []
 
 
-@add_vm_cli.command(name="dist-vers")
+@add_vm_cli.command(name="vers")
 @view_options
 @click.pass_obj
 def list_os_versions(obj: object) -> list[DistVersion]:
