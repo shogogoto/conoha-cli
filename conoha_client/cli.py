@@ -13,6 +13,7 @@ from conoha_client.features import (
 )
 
 from .add_vm import add_vm_cli
+from .snapshot import snapshot_cli
 
 
 # @click.group()
@@ -36,4 +37,5 @@ def main() -> None:
     cli.add_command(vm_image_cli)
     cli.add_command(sshkey_cli)
     cli.add_command(billing_cli)
+    cli.add_command(snapshot_cli)
     cli()
