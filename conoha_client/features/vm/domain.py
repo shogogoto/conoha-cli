@@ -5,7 +5,9 @@ from enum import Enum
 from ipaddress import IPv4Address
 from uuid import UUID
 
-from pydantic import AliasPath, BaseModel, Field
+from pydantic import AliasPath, BaseModel, Field, field_validator
+
+from conoha_client.features._shared.util import TOKYO_TZ
 
 
 class VMStatus(Enum):
@@ -27,8 +29,8 @@ class VM(BaseModel, frozen=True):
     name: str = Field(alias="name")
     vm_id: UUID = Field(alias="id", description="このIDに請求が紐づいている")
     status: VMStatus = Field(alias="status")
-    created_at: datetime = Field(alias="created")
-    updated_at: datetime = Field(alias="updated")
+    created: datetime = Field(alias="created")
+    updated: datetime = Field(alias="updated")
     image_id: UUID = Field(alias=AliasPath("image", "id"))
     flavor_id: UUID = Field(alias=AliasPath("flavor", "id"))
 
@@ -39,6 +41,16 @@ class VM(BaseModel, frozen=True):
     def ipv4(self) -> IPv4Address:
         """ipv4 from name."""
         return IPv4Address(self.name.replace("-", "."))
+
+    @field_validator("created")
+    def validate_created(cls, v: datetime) -> datetime:  # noqa: N805
+        """Validate created datetime."""
+        return v.astimezone(TOKYO_TZ)
+
+    @field_validator("updated")
+    def validate_updated(cls, v: datetime) -> datetime:  # noqa: N805
+        """Validate created datetime."""
+        return v.astimezone(TOKYO_TZ)
 
 
 class AddedVM(BaseModel, frozen=True):
