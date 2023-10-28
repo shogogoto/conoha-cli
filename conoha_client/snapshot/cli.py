@@ -2,10 +2,12 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+from uuid import UUID
 
 import click
 
 from conoha_client.features._shared.view.domain import view_options
+from conoha_client.features.vm_actions.repo import VMActionCommands
 from conoha_client.snapshot.repo import list_snapshots
 
 if TYPE_CHECKING:
@@ -25,8 +27,13 @@ def list_() -> list[Image]:
 
 
 @snapshot_cli.command()
-def save() -> None:
-    """スナップショットを名前をつけて保存."""
+@click.argument("vm_id", nargs=1, type=click.UUID)
+@click.argument("name", nargs=1, type=click.STRING)
+def save(vm_id: UUID, name: str) -> None:
+    """VMをイメージとして保存."""
+    cmd = VMActionCommands(vm_id=vm_id)
+    cmd.snapshot(name)
+    click.echo(f"{vm_id} was snapshot as {name}.")
 
 
 @snapshot_cli.command()

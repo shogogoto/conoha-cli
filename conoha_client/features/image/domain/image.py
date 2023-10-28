@@ -1,15 +1,21 @@
 """Image DTO."""
 from __future__ import annotations
 
-import datetime
+from datetime import datetime
 from enum import Enum
 from functools import cached_property
 from typing import Iterator
 from uuid import UUID
 
-from pydantic import AliasPath, BaseModel, Field, RootModel, field_validator
+from pydantic import (
+    AliasPath,
+    BaseModel,
+    Field,
+    RootModel,
+    field_validator,
+)
 
-from conoha_client.features._shared.util import utc2jst
+from conoha_client.features._shared.util import TOKYO_TZ
 from conoha_client.features.image.domain.errors import NeitherWindowsNorLinuxError
 
 from .distribution import (
@@ -53,16 +59,16 @@ class Image(BaseModel, frozen=True):
         ImageType.PRIOR,
         alias=AliasPath("metadata", "image_type"),
     )
-    created: str = Field(alias="created", description="作成日時")
+    created: datetime = Field(alias="created", description="作成日時")
     min_disk: MinDisk = Field(
         alias="minDisk",
         description="インスタンス化に必要なディスク容量",
     )
 
     @field_validator("created")
-    def validate_created(cls, v: str) -> datetime:  # noqa: N805
+    def validate_created(cls, v: datetime) -> datetime:  # noqa: N805
         """Validate created datetime."""
-        return utc2jst(v)
+        return v.astimezone(TOKYO_TZ)
 
     @field_validator("os")
     def validate_os(cls, v: OperatingSystem) -> OperatingSystem:  # noqa: N805
