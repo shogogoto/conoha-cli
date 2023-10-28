@@ -8,11 +8,10 @@ from uuid import uuid4
 
 import pytest
 
-from conoha_client.features.image.domain.operating_system import (
+from .distribution import (
     Distribution,
     DistVersion,
 )
-
 from .errors import NeitherWindowsNorLinuxError, NotLinuxError
 from .image import Image, ImageList
 
@@ -89,6 +88,4 @@ def test_distribution_versions() -> None:
         DistVersion(value=v) for v in ["16.04", "18.04", "20.04", "20.04.2", "22.04"]
     }
     d_vers = lins.dist_versions(Distribution.DEBIAN)
-    # assert d_vers == {"10.10", "11.0", "12.0"}
-
     assert d_vers == {DistVersion(value=v) for v in ["10.10", "11.0", "12.0"]}

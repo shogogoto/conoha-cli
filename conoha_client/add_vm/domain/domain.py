@@ -6,13 +6,13 @@ from typing import TYPE_CHECKING
 from conoha_client.add_vm.domain.errors import (
     ImageIdentifyError,
 )
-from conoha_client.features.image.domain.image import Image, LinuxImageList
-from conoha_client.features.image.domain.operating_system import (
+from conoha_client.features.image.domain import (
     Application,
     Distribution,
     DistVersion,
     FileSystem,
 )
+from conoha_client.features.image.domain.image import Image, LinuxImageList
 
 if TYPE_CHECKING:
     from conoha_client.features.image.domain.image import MinDisk

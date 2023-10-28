@@ -13,13 +13,13 @@ from conoha_client.features.plan.repo import find_vmplan
 from conoha_client.features.vm.repo.command import AddVMCommand
 
 if TYPE_CHECKING:
-    from conoha_client.features.image.domain import Image
-    from conoha_client.features.image.domain.operating_system import (
+    from conoha_client.features.image.domain import (
         Application,
         DistVersion,
+        Image,
     )
 
-from conoha_client.features.image.domain.operating_system import (
+from conoha_client.features.image.domain import (
     Distribution,  # noqa: TCH001
 )
 from conoha_client.features.plan.domain import Memory  # noqa: TCH001

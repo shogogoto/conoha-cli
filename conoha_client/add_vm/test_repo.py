@@ -4,7 +4,7 @@ from __future__ import annotations
 import itertools
 from typing import TYPE_CHECKING
 
-from conoha_client.features.image.domain.operating_system import (
+from conoha_client.features.image.domain import (
     Application,
     Distribution,
     DistVersion,

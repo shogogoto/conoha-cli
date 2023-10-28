@@ -12,10 +12,12 @@ from pydantic import AliasPath, BaseModel, Field, RootModel, field_validator
 from conoha_client.features._shared.util import utc2jst
 from conoha_client.features.image.domain.errors import NeitherWindowsNorLinuxError
 
-from .operating_system import (
+from .distribution import (
     Application,
     Distribution,
     DistVersion,
+)
+from .operating_system import (
     FileSystem,
     OperatingSystem,
 )
