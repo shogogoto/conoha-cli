@@ -47,13 +47,3 @@ def reboot_cli(vm_id: UUID) -> None:
     cmd = VMActionCommands(vm_id=vm_id)
     cmd.reboot()
     click.echo(f"{vm_id} was rebooted.")
-
-
-@vm_actions_cli.command(name="snapshot")
-@click.argument("vm_id", nargs=1, type=click.UUID)
-@click.argument("name", nargs=1, type=click.STRING)
-def snapshot_cli(vm_id: UUID, name: str) -> None:
-    """VMをイメージとして保存."""
-    cmd = VMActionCommands(vm_id=vm_id)
-    cmd.snapshot(name)
-    click.echo(f"{vm_id} was snapshot.")

@@ -9,13 +9,13 @@ from pydantic import BaseModel
 from requests import Response
 
 from conoha_client.features._shared.endpoints.endpoints import Endpoints
+from conoha_client.features.vm_actions.domain.checking import check_snapshot
 from conoha_client.features.vm_actions.domain.errors import (
     VMActionTargetNotFoundError,
     VMBootError,
     VMDeleteError,
     VMRebootError,
     VMShutdownError,
-    VMSnapshotError,
 )
 
 
@@ -88,7 +88,4 @@ class VMActionCommands(BaseModel, frozen=True):
         """VMの状態をイメージとして保存."""
         params = {"createImage": {"name": name}}
         res = self.dep(self.vm_id, params)
-
-        if res.status_code != HTTPStatus.ACCEPTED:
-            msg = f"{self.vm_id}をスナップショットできませんでした"
-            raise VMSnapshotError(msg)
+        check_snapshot(self.vm_id, res)
