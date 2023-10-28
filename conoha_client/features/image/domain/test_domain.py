@@ -8,7 +8,10 @@ from uuid import uuid4
 
 import pytest
 
-from conoha_client.features.image.domain.operating_system import Distribution
+from conoha_client.features.image.domain.operating_system import (
+    Distribution,
+    DistVersion,
+)
 
 from .errors import NeitherWindowsNorLinuxError, NotLinuxError
 from .image import Image, ImageList
@@ -82,25 +85,10 @@ def test_distribution_versions() -> None:
     """ubuntuのみ確認. ついでにdebian."""
     lins = fixture_models().priors.linux
     u_vers = lins.dist_versions(Distribution.UBUNTU)
-    assert u_vers == {"16.04", "18.04", "20.04", "20.04.2", "22.04"}
+    assert u_vers == {
+        DistVersion(value=v) for v in ["16.04", "18.04", "20.04", "20.04.2", "22.04"]
+    }
     d_vers = lins.dist_versions(Distribution.DEBIAN)
-    assert d_vers == {"10.10", "11.0", "12.0"}
+    # assert d_vers == {"10.10", "11.0", "12.0"}
 
-
-def test_dist_applications() -> None:
-    """ubuntuのみ確認."""
-    # lins = models().priors.linux
-    # apps1 = lins.applications(Distribution.UBUNTU, "16.04")
-    # print(apps1)
-
-    # apps2 = lins.applications(Distribution.UBUNTU, "18.04")
-    # print(apps2)
-
-    # apps3 = lins.applications(Distribution.UBUNTU, "20.04")
-    # print(apps3)
-
-    # apps4 = lins.applications(Distribution.UBUNTU, "20.04.2")
-    # print(apps4)
-
-    # apps5 = lins.applications(Distribution.UBUNTU, "22.04")
-    # print(apps5)
+    assert d_vers == {DistVersion(value=v) for v in ["10.10", "11.0", "12.0"]}

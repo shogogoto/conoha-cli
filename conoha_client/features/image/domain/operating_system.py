@@ -2,9 +2,10 @@
 from __future__ import annotations
 
 from enum import Enum
+from functools import cache
 from typing import TYPE_CHECKING
 
-from pydantic import RootModel
+from pydantic import BaseModel, RootModel
 
 from conoha_client.features.image.domain.errors import (
     DistributionNotFoundInImageNameError,
@@ -35,7 +36,7 @@ class OperatingSystem(RootModel, frozen=True):
         return self.root == "lin"
 
 
-class Distribution(Enum):
+class Distribution(str, Enum):
     """linux distribution."""
 
     CENTOS = "centos"
@@ -62,17 +63,46 @@ class Distribution(Enum):
         msg = f"{image.name}からlinuxディストリビューションが見つかりませんでした"
         raise DistributionNotFoundInImageNameError(msg)
 
-    def version(self, image: Image) -> str:
+    def version(self, image: Image) -> DistVersion:
         """Return version string."""
         self._check(image)
         sp = image.name.split("-")
         i = sp.index(self.value)
-        return sp[i + 1]
+        return DistVersion(value=sp[i + 1])
 
     @staticmethod
     def _check(image: Image) -> None:
         if not image.os.is_linux():
             raise NotLinuxError
+
+
+class DistVersion(BaseModel, frozen=True):
+    """Distribution version."""
+
+    value: str
+
+    def is_latest(self) -> bool:
+        """Is latest version."""
+        return self.value == "latest"
+
+
+class Application(BaseModel, frozen=True):
+    """Application."""
+
+    value: str
+
+    @classmethod
+    @cache
+    def null(cls) -> Application:
+        """Null object pattern."""
+        return cls(value="")
+
+    @classmethod
+    def parse(cls, image: Image) -> Application:
+        """Create."""
+        if image.app == "null":
+            return cls.null()
+        return cls(value=image.app)
 
 
 class FileSystem(Enum):

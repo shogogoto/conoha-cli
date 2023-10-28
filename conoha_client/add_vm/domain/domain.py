@@ -8,7 +8,9 @@ from conoha_client.add_vm.domain.errors import (
 )
 from conoha_client.features.image.domain.image import Image, LinuxImageList
 from conoha_client.features.image.domain.operating_system import (
+    Application,
     Distribution,
+    DistVersion,
     FileSystem,
 )
 
@@ -32,12 +34,12 @@ def select_uniq(
     lins: LinuxImageList,
     mem: Memory,
     dist: Distribution,
-    dist_version: str,
-    app: str,
+    dist_version: DistVersion,
+    app: Application,
 ) -> Image:
     """Select uniq Image."""
     lins = filter_memory(lins, mem).filter_by_dist_version(dist, dist_version)
-    lins_app = [img for img in lins if img.app == app]
+    lins_app = [img for img in lins if img.app == app.value]
     cnt_hits = len(lins_app)
 
     if cnt_hits != 1:
@@ -47,7 +49,7 @@ def select_uniq(
             return next(im for im in lins if im.fs == FileSystem.ZFS)
         msg = (
             "検索結果が一意になりませんでした"
-            f":hits={cnt_hits}:{mem},{dist}v{dist_version},app={app}"
+            f":hits={cnt_hits}:{mem},{dist}:{dist_version},app={app}"
         )
         raise ImageIdentifyError(msg)
     return lins_app[0]

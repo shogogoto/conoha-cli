@@ -12,7 +12,13 @@ from pydantic import AliasPath, BaseModel, Field, RootModel, field_validator
 from conoha_client.features._shared.util import utc2jst
 from conoha_client.features.image.domain.errors import NeitherWindowsNorLinuxError
 
-from .operating_system import Distribution, FileSystem, OperatingSystem
+from .operating_system import (
+    Application,
+    Distribution,
+    DistVersion,
+    FileSystem,
+    OperatingSystem,
+)
 
 
 class ImageType(Enum):
@@ -39,7 +45,7 @@ class Image(BaseModel, frozen=True):
     image_id: UUID = Field(alias="id", description="イメージID")
     name: str = Field(alias="name", description="名前")
     dist: str = Field("", alias=AliasPath("metadata", "dst"))
-    app: str = Field(None, alias=AliasPath("metadata", "app"))
+    app: str = Field("null", alias=AliasPath("metadata", "app"))
     os: OperatingSystem = Field(alias=AliasPath("metadata", "os_type"))
     image_type: ImageType = Field(
         ImageType.PRIOR,
@@ -125,7 +131,7 @@ class LinuxImageList(BaseList):
         ls = [img for img in self.root if Distribution.create(img) == dist]
         return LinuxImageList(ls)
 
-    def dist_versions(self, dist: Distribution) -> set[str]:
+    def dist_versions(self, dist: Distribution) -> set[DistVersion]:
         """Dist versions set."""
         imgs = self.filter_by_dist(dist).root
         return {dist.version(img) for img in imgs}
@@ -133,14 +139,18 @@ class LinuxImageList(BaseList):
     def filter_by_dist_version(
         self,
         dist: Distribution,
-        dist_version: str,
+        dist_version: DistVersion,
     ) -> LinuxImageList:
         """Filter by dist with version."""
         ls = self.filter_by_dist(dist).root
         imgs = {img for img in ls if dist.version(img) == dist_version}
         return LinuxImageList(imgs)
 
-    def applications(self, dist: Distribution, dist_version: str) -> set[str]:
+    def applications(
+        self,
+        dist: Distribution,
+        dist_version: DistVersion,
+    ) -> set[Application]:
         """Available application for distribution."""
         ls = self.filter_by_dist_version(dist, dist_version)
-        return {img.app for img in ls}
+        return {Application.parse(img) for img in ls}
