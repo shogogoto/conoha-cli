@@ -45,7 +45,7 @@ class Image(BaseModel, frozen=True):
     image_id: UUID = Field(alias="id", description="イメージID")
     name: str = Field(alias="name", description="名前")
     dist: str = Field("", alias=AliasPath("metadata", "dst"))
-    app: str = Field("null", alias=AliasPath("metadata", "app"))
+    app: str = Field("", alias=AliasPath("metadata", "app"))
     os: OperatingSystem = Field(alias=AliasPath("metadata", "os_type"))
     image_type: ImageType = Field(
         ImageType.PRIOR,
@@ -73,6 +73,11 @@ class Image(BaseModel, frozen=True):
     def fs(self) -> FileSystem:
         """File system."""
         return FileSystem.parse(self.name)
+
+    @cached_property
+    def application(self) -> Application:
+        """Not primitive."""
+        return Application.parse(self.app)
 
 
 class BaseList(RootModel, frozen=True):
@@ -153,4 +158,4 @@ class LinuxImageList(BaseList):
     ) -> set[Application]:
         """Available application for distribution."""
         ls = self.filter_by_dist_version(dist, dist_version)
-        return {Application.parse(img) for img in ls}
+        return {Application.parse(img.app) for img in ls}

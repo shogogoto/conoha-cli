@@ -85,6 +85,11 @@ class DistVersion(BaseModel, frozen=True):
         """Is latest version."""
         return self.value == "latest"
 
+    @classmethod
+    def parse(cls, v: str) -> DistVersion:
+        """Create from str."""
+        return cls(value=v)
+
 
 class Application(BaseModel, frozen=True):
     """Application."""
@@ -95,14 +100,16 @@ class Application(BaseModel, frozen=True):
     @cache
     def null(cls) -> Application:
         """Null object pattern."""
-        return cls(value="")
+        return cls(value="null")
 
     @classmethod
-    def parse(cls, image: Image) -> Application:
-        """Create."""
-        if image.app == "null":
+    def parse(cls, v: str) -> Application:
+        """Create from str."""
+        if v == "null":
             return cls.null()
-        return cls(value=image.app)
+        if v == "":
+            return cls.null()
+        return cls(value=v)
 
 
 class FileSystem(Enum):

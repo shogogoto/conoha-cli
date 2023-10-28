@@ -39,7 +39,7 @@ def select_uniq(
 ) -> Image:
     """Select uniq Image."""
     lins = filter_memory(lins, mem).filter_by_dist_version(dist, dist_version)
-    lins_app = [img for img in lins if img.app == app.value]
+    lins_app = [img for img in lins if img.application == app]
     cnt_hits = len(lins_app)
 
     if cnt_hits != 1:
