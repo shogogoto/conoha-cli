@@ -9,7 +9,7 @@ import pytest
 from conoha_client.features._shared.conftest import prepare
 from conoha_client.features._shared.endpoints.endpoints import Endpoints
 from conoha_client.features.vm.errors import (
-    NotFlavorProvidesError,
+    VMMemoryShortageError,
 )
 from conoha_client.features.vm.repo.command import AddVMCommand
 
@@ -65,5 +65,5 @@ def test_invalid_add_vm(
         image_id=uuid4(),
         admin_pass="xxx",  # noqa: S106
     )
-    with pytest.raises(NotFlavorProvidesError):
+    with pytest.raises(VMMemoryShortageError):
         cmd(None)

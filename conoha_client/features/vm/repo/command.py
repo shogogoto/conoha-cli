@@ -11,7 +11,7 @@ from requests import HTTPError
 from conoha_client.features._shared.endpoints.endpoints import Endpoints
 from conoha_client.features.vm.domain import AddedVM
 from conoha_client.features.vm.errors import (
-    NotFlavorProvidesError,
+    VMMemoryShortageError,
 )
 
 
@@ -19,11 +19,8 @@ def post_add_vm(json: dict) -> object:
     """Post func for DI."""
     res = Endpoints.COMPUTE.post("servers", json=json)
     if res.status_code == http.HTTPStatus.BAD_REQUEST:
-        msg = (
-            "そのイメージとプランの組み合わせは提供されていません."
-            "別の組み合わせをお試しください"
-        )
-        raise NotFlavorProvidesError(msg)
+        msg = res.json()["badRequest"]["message"]
+        raise VMMemoryShortageError(msg)
     if res.status_code != http.HTTPStatus.ACCEPTED:
         msg = "なんか想定外のエラーが起きた"
         raise HTTPError(msg)
