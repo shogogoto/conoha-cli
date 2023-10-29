@@ -16,13 +16,13 @@ from pydantic import (
 )
 
 from conoha_client.features._shared.util import TOKYO_TZ
-from conoha_client.features.image.domain.errors import NeitherWindowsNorLinuxError
 
 from .distribution import (
     Application,
     Distribution,
     DistVersion,
 )
+from .errors import ImageIdMatchNotUniqueError, NeitherWindowsNorLinuxError
 from .operating_system import (
     FileSystem,
     OperatingSystem,
@@ -104,6 +104,13 @@ class BaseList(RootModel, frozen=True):
     def __len__(self) -> int:
         """Count of elements."""
         return len(self.root)
+
+    def find_by_id(self, image_id: UUID) -> Image:
+        """Find image."""
+        ls = [img for img in self.root if img.image_id == image_id]
+        if len(ls) != 1:
+            raise ImageIdMatchNotUniqueError
+        return ls[0]
 
 
 class ImageList(BaseList):

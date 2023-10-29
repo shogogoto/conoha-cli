@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 
 from pydantic import BaseModel
 
-from conoha_client.features.image.domain.errors import (
+from .errors import (
     DistributionNotFoundInImageNameError,
     NotLinuxError,
 )
