@@ -30,7 +30,6 @@ class VM(BaseModel, frozen=True):
     vm_id: UUID = Field(alias="id", description="このIDに請求が紐づいている")
     status: VMStatus = Field(alias="status")
     created: datetime = Field(alias="created")
-    updated: datetime = Field(alias="updated")
     image_id: UUID = Field(alias=AliasPath("image", "id"))
     flavor_id: UUID = Field(alias=AliasPath("flavor", "id"))
 
@@ -44,11 +43,6 @@ class VM(BaseModel, frozen=True):
 
     @field_validator("created")
     def validate_created(cls, v: datetime) -> datetime:  # noqa: N805
-        """Validate created datetime."""
-        return v.astimezone(TOKYO_TZ)
-
-    @field_validator("updated")
-    def validate_updated(cls, v: datetime) -> datetime:  # noqa: N805
         """Validate created datetime."""
         return v.astimezone(TOKYO_TZ)
 
