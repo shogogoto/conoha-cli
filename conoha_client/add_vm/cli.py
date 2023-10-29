@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 import click
 
 from conoha_client.add_vm.repo import DistQuery, add_vm_command
+from conoha_client.features._shared.prompt import pw_prompt, sshkey_prompt
 from conoha_client.features._shared.view.domain import view_options
 from conoha_client.features.image.domain import (
     Application,
@@ -26,6 +27,7 @@ if TYPE_CHECKING:
     "-m",
     type=click.Choice(Memory),
     required=True,
+    help="VMのRAM容量[GB]",
 )
 @click.option(
     "--dist",
@@ -82,15 +84,6 @@ def add_vm_cli(  # noqa: PLR0913
     ctx.obj["version"] = version
     ctx.obj["app"] = app
     if ctx.invoked_subcommand is None:
-
-        def pw_prompt() -> str:
-            msg = "VMのroot userのパスワードを入力してくだいさい"
-            return click.prompt(msg, hide_input=True, confirmation_prompt=True)
-
-        def key_prompt() -> str:
-            msg = "VMに紐付けるsshkey名を入力してくだいさい"
-            return click.prompt(msg, hide_input=True, confirmation_prompt=True)
-
         cmd = add_vm_command(
             memory=memory,
             dist=dist,
@@ -98,7 +91,7 @@ def add_vm_cli(  # noqa: PLR0913
             app=app,
             admin_pass=admin_password or pw_prompt(),
         )
-        added = cmd(keypair_name or key_prompt())
+        added = cmd(keypair_name or sshkey_prompt())
         click.echo("VM was added newly")
         return [added]
     return []
