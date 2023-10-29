@@ -10,7 +10,6 @@ import click
 from conoha_client.features._shared.prompt import pw_prompt, sshkey_prompt
 from conoha_client.features._shared.view.domain import view_options
 from conoha_client.features.image.repo import (
-    list_images,
     remove_snapshot,
 )
 from conoha_client.features.plan.domain import Memory
@@ -70,7 +69,7 @@ def restore(
     keypair_name: str | None,
 ) -> None:
     """スナップショットからVM起動."""
-    img = list_images().snapshots.find_by_id(image_id)
+    img = list_snapshots.find_by_id(image_id)
     cmd = AddVMCommand(
         flavor_id=find_vmplan(memory).flavor_id,
         image_id=img.image_id,
@@ -84,6 +83,6 @@ def restore(
 @click.argument("image_id", nargs=1, type=click.UUID)
 def remove(image_id: UUID) -> None:
     """スナップショットを削除."""
-    img = list_images().snapshots.find_by_id(image_id)
+    img = list_snapshots.find_by_id(image_id)
     remove_snapshot(img)
     click.echo(f"{img.name} snapshot was deleted.")
