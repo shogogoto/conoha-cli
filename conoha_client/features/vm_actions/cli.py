@@ -29,6 +29,7 @@ def shutdown_cli(vm_id: UUID) -> None:
     """VMシャットダウン."""
     cmd = VMActionCommands(vm_id=vm_id)
     cmd.shutdown()
+    click.echo(f"{vm_id} was shutdowned.")
 
 
 @vm_actions_cli.command(name="boot")

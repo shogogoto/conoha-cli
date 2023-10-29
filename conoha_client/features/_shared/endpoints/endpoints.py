@@ -80,7 +80,7 @@ class Endpoints(Enum):
         return requests.post(
             url,
             headers=token_headers(),
-            timeout=TIMEOUT * 2,  # VM addでタイムアウトしたから延長
+            timeout=TIMEOUT * 3,  # VM addでタイムアウトしたから延長
             json=json,
         )
 
@@ -95,5 +95,5 @@ class Endpoints(Enum):
         return requests.delete(
             url,
             headers=token_headers(),
-            timeout=TIMEOUT * 2,
+            timeout=TIMEOUT * 3,
         )
