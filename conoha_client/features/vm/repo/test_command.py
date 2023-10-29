@@ -58,7 +58,15 @@ def test_invalid_add_vm(
 ) -> None:
     """Invalid case error code 400. 課金に関わるから慎重."""
     prepare(requests_mock, monkeypatch)
-    requests_mock.post(Endpoints.COMPUTE.tenant_id_url("servers"), status_code=400)
+    requests_mock.post(
+        Endpoints.COMPUTE.tenant_id_url("servers"),
+        status_code=400,
+        json={
+            "badRequest": {
+                "message": "Flavor's disk is too small for requested image.",
+            },
+        },
+    )
 
     cmd = AddVMCommand(
         flavor_id=uuid4(),
