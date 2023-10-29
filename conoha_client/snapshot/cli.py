@@ -8,8 +8,6 @@ import click
 
 from conoha_client.features._shared import (
     add_vm_options,
-    pw_prompt,
-    sshkey_prompt,
     view_options,
 )
 from conoha_client.features.image.repo import (
@@ -50,8 +48,8 @@ def save(vm_id: UUID, name: str) -> None:
 @click.argument("memory", nargs=1, type=click.Choice(Memory))
 @add_vm_options
 def restore(
-    admin_password: str | None,
-    keypair_name: str | None,
+    admin_password: str,
+    keypair_name: str,
     image_id: UUID,
     memory: Memory,
 ) -> None:
@@ -60,9 +58,9 @@ def restore(
     cmd = AddVMCommand(
         flavor_id=find_vmplan(memory).flavor_id,
         image_id=img.image_id,
-        admin_pass=admin_password or pw_prompt(),
+        admin_pass=admin_password,
     )
-    added = cmd(keypair_name or sshkey_prompt())
+    added = cmd(keypair_name)
     click.echo(f"VM(uuid={added.vm_id}) was restored from {img.name} snapshot")
 
 
