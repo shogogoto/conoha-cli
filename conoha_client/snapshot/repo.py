@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Callable
 from uuid import UUID
 
-from conoha_client.features._shared.model_list.domain import by
+from conoha_client.features._shared.model_list.domain import by, startswith
 from conoha_client.features.image.domain.image import Image, ImageList
 from conoha_client.features.image.repo import list_images, remove_image
 from conoha_client.features.plan.repo import find_vmplan
@@ -40,14 +40,14 @@ def save_snapshot(
 
 
 def restore_snapshot(
-    image_id: UUID,
+    pre_image_id: str,
     memory: Memory,
     admin_password: str,
     keypair_name: str,
     dep: Dependency = list_snapshots,
 ) -> tuple[AddedVM, Image]:
     """スナップショットからVMを復元する."""
-    img = dep().find_one_by(by("image_id", image_id))
+    img = dep().find_one_by(startswith("image_id", pre_image_id))
     cmd = AddVMCommand(
         flavor_id=find_vmplan(memory).flavor_id,
         image_id=img.image_id,
@@ -57,10 +57,10 @@ def restore_snapshot(
 
 
 def remove_snapshot(
-    image_id: UUID,
+    pre_image_id: str,
     dep: Dependency = list_snapshots,
 ) -> Image:
     """スナップショットをID指定で削除."""
-    one = dep().find_one_by(by("image_id", image_id))
+    one = dep().find_one_by(startswith("image_id", pre_image_id))
     remove_image(one)
     return one
