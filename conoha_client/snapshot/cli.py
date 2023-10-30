@@ -10,7 +10,7 @@ from conoha_client.features._shared import (
     view_options,
 )
 from conoha_client.features.plan.domain import Memory
-from conoha_client.features.vm.repo.query import complete_vm_id
+from conoha_client.features.vm.repo.query import complete_vm
 
 from .repo import (
     list_snapshots,
@@ -40,7 +40,7 @@ def list_() -> list[Image]:
 @click.argument("name", nargs=1, type=click.STRING)
 def save(vm_id: str, name: str) -> None:
     """VMをイメージとして保存."""
-    vm = complete_vm_id(vm_id)
+    vm = complete_vm(vm_id)
     overridden = save_snapshot(vm.vm_id, name)
     if overridden:
         click.echo("old snapshot was deleted.")

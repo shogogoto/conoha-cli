@@ -26,7 +26,7 @@ def list_vms(
     return [VM.model_validate(e) for e in res]
 
 
-def complete_vm_id(s: str) -> VM:
+def complete_vm(s: str) -> VM:
     """uuidを補完して検索."""
     return ModelList[VM](list_vms()).find_one_by(startswith("vm_id", s))
 
