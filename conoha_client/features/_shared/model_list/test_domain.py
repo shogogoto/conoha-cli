@@ -10,40 +10,40 @@ from conoha_client.features._shared.model_list.domain import (
 from conoha_client.features._shared.view.domain import ExtraKeyError
 
 
-class TestModel(BaseModel, frozen=True):
+class OneModel(BaseModel, frozen=True):
     """test model."""
 
     x: str
     y: str
 
 
-class TestList(BaseList[TestModel]):
+class OneList(BaseList[OneModel]):
     """test model list."""
 
 
 @pytest.fixture()
-def nums() -> TestList:
+def nums() -> OneList:
     """Fixture."""
     ls = []
     for i, e in enumerate(range(5)):
-        ls.append(TestModel(x=str(i), y=str(e * 2)))
-    return TestList(root=ls)
+        ls.append(OneModel(x=str(i), y=str(e * 2)))
+    return OneList(root=ls)
 
 
 @pytest.fixture()
-def duplicate() -> TestList:
+def duplicate() -> OneList:
     """Fixture."""
-    ls = [(TestModel(x="dup", y="same")) for _ in range(3)]
-    return TestList(root=ls)
+    ls = [(OneModel(x="dup", y="same")) for _ in range(3)]
+    return OneList(root=ls)
 
 
-def test_find_one_by(nums: TestList) -> None:
+def test_find_one_by(nums: OneList) -> None:
     """Valid case."""
     assert nums.find_one_by(by("x", "1")) == nums[1]
     assert nums.find_one_or_none_by(by("x", "1")) == nums[1]
 
 
-def test_no_one(nums: TestList) -> None:
+def test_no_one(nums: OneList) -> None:
     """Test case."""
     pred = by("x", "999")
     with pytest.raises(NotMatchError):
@@ -52,7 +52,7 @@ def test_no_one(nums: TestList) -> None:
     assert nums.find_one_or_none_by(pred) is None
 
 
-def test_extra_attr(nums: TestList) -> None:
+def test_extra_attr(nums: OneList) -> None:
     """Invalid case."""
     with pytest.raises(ExtraKeyError):
         nums.find_one_by(by("extra", 999))
@@ -60,7 +60,7 @@ def test_extra_attr(nums: TestList) -> None:
         nums.find_one_or_none_by(by("extra", 999))
 
 
-def test_multi_match(duplicate: TestList) -> None:
+def test_multi_match(duplicate: OneList) -> None:
     """Invalid case."""
     with pytest.raises(MultipleMatchError):
         duplicate.find_one_by(by("y", "same"))
