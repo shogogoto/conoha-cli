@@ -17,15 +17,15 @@ class ExtraKeyError(Exception):
 R = TypeVar("R", bound=BaseModel)
 
 
-def check_include_keys(model: R, keys: set[str]) -> None:
+def check_include_keys(t: type[R], keys: set[str]) -> None:
     """キーがmodelに含まれていなければエラー."""
-    all_keys = set(model.__class__.model_fields)
+    all_keys = set(t.model_fields)
     if keys is None:
         keys = all_keys
     extra = keys - all_keys
     if len(extra) > 0:
         msg = (
-            f"{extra}は{model.__class__}に含まれていないキーです."
+            f"{extra}は{t.__class__}に含まれていないキーです."
             f"{all_keys}に含まれるキーのみを入力してください"
         )
         raise ExtraKeyError(msg)
@@ -38,7 +38,7 @@ def model_extract(model: R, keys: set[str] | None = None) -> dict:
     :param keys: 抽出したいプロパティ名のリスト
     :return: JSONable object
     """
-    check_include_keys(model, keys)
+    check_include_keys(model.__class__, keys)
     return model.model_dump(mode="json", include=keys)
 
 
@@ -46,7 +46,7 @@ def model_filter(models: list[R], key: str, value: str) -> list[R]:
     """modelをフィルターする."""
 
     def pred(e: R) -> bool:
-        check_include_keys(e, {key})
+        check_include_keys(e.__class__, {key})
         return value in str(getattr(e, key))
 
     return list(filter(pred, models))
