@@ -20,25 +20,6 @@ def list_images() -> ImageList:
     return ImageList([Image.model_validate(e) for e in res["images"]])
 
 
-# def find_image_by_starts_with(
-#     starts: str,
-#     attr: str,
-#     dep: Callable[[], ImageList] = list_images,
-# ) -> Image:
-#     """前方一致で検索."""
-
-#     def pred(img: Image) -> bool:
-#         val = getattr(img, attr)
-#         return str(val).startswith(starts)
-
-#     ls = [img for img in dep().root if pred(img)]
-#     n = len(ls)
-#     if n != 1:
-#         msg = f"「{starts}」で前方一致検索で{n}件がヒットしました"
-#         raise ImageIdMatchNotUniqueError(msg)
-#     return ls[0]
-
-
 def remove_image(image: Image) -> None:
     """イメージを削除."""
     res = Endpoints.IMAGE.delete(f"images/{image.image_id}")

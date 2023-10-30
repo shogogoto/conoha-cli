@@ -2,7 +2,7 @@ import pytest
 from pydantic import BaseModel
 
 from conoha_client.features._shared.model_list.domain import (
-    BaseList,
+    ModelList,
     MultipleMatchError,
     NotMatchError,
     by,
@@ -17,7 +17,7 @@ class OneModel(BaseModel, frozen=True):
     y: str
 
 
-class OneList(BaseList[OneModel]):
+class OneList(ModelList[OneModel]):
     """test model list."""
 
 

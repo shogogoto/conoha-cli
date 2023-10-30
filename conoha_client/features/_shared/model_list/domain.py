@@ -25,7 +25,7 @@ def by(attr: str, value: Any) -> Callable[[T], bool]:  # noqa: ANN401
     return pred
 
 
-class BaseList(RootModel[list[T]], frozen=True):
+class ModelList(RootModel[list[T]], frozen=True):
     """base."""
 
     root: list[T]
