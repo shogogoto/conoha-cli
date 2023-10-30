@@ -15,12 +15,23 @@ T = TypeVar("T", bound=BaseModel)
 Predicate = Callable[[T], bool]
 
 
-def by(attr: str, value: Any) -> Callable[[T], bool]:  # noqa: ANN401
+def by(attr: str, value: Any) -> Predicate:  # noqa: ANN401
     """Create image predicate."""
 
     def pred(model: T) -> bool:
         check_include_keys(model.__class__, {attr})
         return getattr(model, attr) == value
+
+    return pred
+
+
+def startswith(attr: str, starts: str) -> Predicate:
+    """前方一致."""
+
+    def pred(model: T) -> bool:
+        check_include_keys(model.__class__, {attr})
+        val = getattr(model, attr)
+        return str(val).startswith(starts)
 
     return pred
 

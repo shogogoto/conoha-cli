@@ -6,6 +6,7 @@ from conoha_client.features._shared.model_list.domain import (
     MultipleMatchError,
     NotMatchError,
     by,
+    startswith,
 )
 from conoha_client.features._shared.view.domain import ExtraKeyError
 
@@ -67,3 +68,15 @@ def test_multi_match(duplicate: OneList) -> None:
 
     with pytest.raises(MultipleMatchError):
         duplicate.find_one_or_none_by(by("y", "same"))
+
+
+def test_startswith() -> None:
+    """Test case."""
+    one = OneModel(x="1234567890", y="any")
+    ls = OneList([one])
+
+    assert ls.find_one_by(startswith("x", "1")) == one
+    assert ls.find_one_by(startswith("x", "12")) == one
+
+    with pytest.raises(NotMatchError):
+        ls.find_one_by(startswith("x", "0"))
