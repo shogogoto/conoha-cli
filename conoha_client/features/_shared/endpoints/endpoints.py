@@ -77,11 +77,10 @@ class Endpoints(Enum):
         :param json: リクエストボディ(jsonable object)
         """
         url = self.tenant_id_url(relative)
-        # VM addでタイムアウトしたから延長
         return requests.post(
             url,
             headers=token_headers(),
-            timeout=TIMEOUT * 2,
+            timeout=TIMEOUT * 3,  # VM addでタイムアウトしたから延長
             json=json,
         )
 
@@ -91,8 +90,10 @@ class Endpoints(Enum):
         :param relative: テナントID以降の文字列
         """
         url = self.tenant_id_url(relative)
+        if self == Endpoints.IMAGE:
+            url = self.url(relative)
         return requests.delete(
             url,
             headers=token_headers(),
-            timeout=TIMEOUT * 2,
+            timeout=TIMEOUT * 3,
         )

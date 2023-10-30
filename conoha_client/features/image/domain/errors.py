@@ -13,13 +13,21 @@ class DistributionNotFoundInImageNameError(Exception):
     """イメージ名からLinux Distributionを特定できなかった."""
 
 
-class OSIdentificationError(Exception):
-    """OSを一意に特定できなかった."""
+class ImageIdMatchNotUniqueError(Exception):
+    """image idが一意にマッチしなかった."""
 
 
-class OSVersionExtractError(Exception):
-    """Image名にOS名やバージョン情報が入っていない訳がない."""
+class DeleteImageError(Exception):
+    """image削除に失敗した."""
 
 
-class ApplicationWithoutVersionError(Exception):
-    """Image名にアプリ名やバージョン情報が入っていない訳がない."""
+class DeletePriorImageForbiddenError(Exception):
+    """所与のイメージ削除は禁止."""
+
+
+class ImageNotUniqueMatchError(Exception):
+    """ひとつだけマッチすることを期待したのに."""
+
+
+class MultipleImagesMatchError(Exception):
+    """複数のイメージがマッチするの許さないお."""

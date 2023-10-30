@@ -1,13 +1,12 @@
 """add VM CLI."""
 from __future__ import annotations
 
-import os
 from operator import attrgetter
-from typing import TYPE_CHECKING
 
 import click
 
 from conoha_client.add_vm.repo import DistQuery, add_vm_command
+from conoha_client.features._shared.command_option import add_vm_options
 from conoha_client.features._shared.view.domain import view_options
 from conoha_client.features.image.domain import (
     Application,
@@ -16,16 +15,14 @@ from conoha_client.features.image.domain import (
 )
 from conoha_client.features.plan.domain import Memory
 
-if TYPE_CHECKING:
-    from conoha_client.features.vm.domain import AddedVM
 
-
-@click.group("add", invoke_without_command=True)
+@click.group("add", invoke_without_command=True, help="VM新規追加")
 @click.option(
     "--memory",
     "-m",
     type=click.Choice(Memory),
     required=True,
+    help="VMのRAM容量[GB]",
 )
 @click.option(
     "--dist",
@@ -50,31 +47,17 @@ if TYPE_CHECKING:
     show_default=True,
     type=Application.parse,
 )
-@click.option(
-    "--admin-password",
-    "-pw",
-    default=lambda: os.getenv("OS_ADMIN_PASSWORD", None),
-    help="VMのrootユーザーのパスワード:OS_ADMIN_PASSWORD環境変数の値が設定される",
-    show_default=True,
-)
-@click.option(
-    "--keypair-name",
-    "-k",
-    default=lambda: os.getenv("OS_SSHKEY_NAME", None),
-    help="sshkeyのペア名:OS_SSHKEY_NAME環境変数の値が設定される",
-    show_default=True,
-)
-@view_options
+@add_vm_options
 @click.pass_context
 def add_vm_cli(  # noqa: PLR0913
     ctx: click.Context,
+    admin_password: str,
+    keypair_name: str,
     memory: Memory,
     dist: Distribution,
-    version: str,
-    app: str,
-    admin_password: str | None,
-    keypair_name: str | None,
-) -> list[AddedVM]:
+    version: DistVersion,
+    app: Application,
+) -> None:
     """Add VM CLI."""
     ctx.ensure_object(dict)
     query = DistQuery(memory=memory, dist=dist)
@@ -82,26 +65,15 @@ def add_vm_cli(  # noqa: PLR0913
     ctx.obj["version"] = version
     ctx.obj["app"] = app
     if ctx.invoked_subcommand is None:
-
-        def pw_prompt() -> str:
-            msg = "VMのroot userのパスワードを入力してくだいさい"
-            return click.prompt(msg, hide_input=True, confirmation_prompt=True)
-
-        def key_prompt() -> str:
-            msg = "VMに紐付けるsshkey名を入力してくだいさい"
-            return click.prompt(msg, hide_input=True, confirmation_prompt=True)
-
         cmd = add_vm_command(
             memory=memory,
             dist=dist,
             ver=version,
             app=app,
-            admin_pass=admin_password or pw_prompt(),
+            admin_pass=admin_password,
         )
-        added = cmd(keypair_name or key_prompt())
-        click.echo("VM was added newly")
-        return [added]
-    return []
+        added = cmd(keypair_name)
+        click.echo(f"VM(uuid={added.vm_id}) was added newly")
 
 
 @add_vm_cli.command(name="vers")

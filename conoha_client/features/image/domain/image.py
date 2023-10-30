@@ -1,21 +1,31 @@
 """Image DTO."""
 from __future__ import annotations
 
-import datetime
+from datetime import datetime
 from enum import Enum
 from functools import cached_property
-from typing import Iterator
+from typing import Callable, Iterator
 from uuid import UUID
 
-from pydantic import AliasPath, BaseModel, Field, RootModel, field_validator
+from pydantic import (
+    AliasPath,
+    BaseModel,
+    Field,
+    RootModel,
+    field_validator,
+)
 
-from conoha_client.features._shared.util import utc2jst
-from conoha_client.features.image.domain.errors import NeitherWindowsNorLinuxError
+from conoha_client.features._shared.util import TOKYO_TZ
 
 from .distribution import (
     Application,
     Distribution,
     DistVersion,
+)
+from .errors import (
+    ImageNotUniqueMatchError,
+    MultipleImagesMatchError,
+    NeitherWindowsNorLinuxError,
 )
 from .operating_system import (
     FileSystem,
@@ -53,16 +63,16 @@ class Image(BaseModel, frozen=True):
         ImageType.PRIOR,
         alias=AliasPath("metadata", "image_type"),
     )
-    created: str = Field(alias="created", description="作成日時")
+    created: datetime = Field(alias="created", description="作成日時")
     min_disk: MinDisk = Field(
         alias="minDisk",
         description="インスタンス化に必要なディスク容量",
     )
 
     @field_validator("created")
-    def validate_created(cls, v: str) -> datetime:  # noqa: N805
+    def validate_created(cls, v: datetime) -> datetime:  # noqa: N805
         """Validate created datetime."""
-        return utc2jst(v)
+        return v.astimezone(TOKYO_TZ)
 
     @field_validator("os")
     def validate_os(cls, v: OperatingSystem) -> OperatingSystem:  # noqa: N805
@@ -98,6 +108,23 @@ class BaseList(RootModel, frozen=True):
     def __len__(self) -> int:
         """Count of elements."""
         return len(self.root)
+
+    def find_one_by(self, pred: Callable[[Image], bool]) -> Image:
+        """Find only image by predicate."""
+        one = self.find_one_or_none_by(pred)
+        if one is None:
+            raise ImageNotUniqueMatchError
+        return one
+
+    def find_one_or_none_by(self, pred: Callable[[Image], bool]) -> Image | None:
+        """Find one or not found."""
+        founds = list(filter(pred, self.root))
+        n = len(founds)
+        if n == 0:
+            return None
+        if n == 1:
+            return founds[0]
+        raise MultipleImagesMatchError
 
 
 class ImageList(BaseList):

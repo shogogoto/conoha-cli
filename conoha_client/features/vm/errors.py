@@ -1,7 +1,7 @@
 """VM errors."""
 
 
-class NotFlavorProvidesError(Exception):
+class VMMemoryShortageError(Exception):
     """そのImageとFlavorの組み合わせは提供されていない."""
 
 

@@ -9,7 +9,7 @@ import pytest
 from conoha_client.features._shared.conftest import prepare
 from conoha_client.features._shared.endpoints.endpoints import Endpoints
 from conoha_client.features.vm.errors import (
-    NotFlavorProvidesError,
+    VMMemoryShortageError,
 )
 from conoha_client.features.vm.repo.command import AddVMCommand
 
@@ -58,12 +58,20 @@ def test_invalid_add_vm(
 ) -> None:
     """Invalid case error code 400. 課金に関わるから慎重."""
     prepare(requests_mock, monkeypatch)
-    requests_mock.post(Endpoints.COMPUTE.tenant_id_url("servers"), status_code=400)
+    requests_mock.post(
+        Endpoints.COMPUTE.tenant_id_url("servers"),
+        status_code=400,
+        json={
+            "badRequest": {
+                "message": "Flavor's disk is too small for requested image.",
+            },
+        },
+    )
 
     cmd = AddVMCommand(
         flavor_id=uuid4(),
         image_id=uuid4(),
         admin_pass="xxx",  # noqa: S106
     )
-    with pytest.raises(NotFlavorProvidesError):
+    with pytest.raises(VMMemoryShortageError):
         cmd(None)

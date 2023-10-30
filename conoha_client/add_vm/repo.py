@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Callable
 from pydantic import BaseModel
 
 from conoha_client.add_vm.domain.domain import filter_memory, select_uniq
-from conoha_client.features.image.domain.image import ImageList, LinuxImageList
+from conoha_client.features.image.domain.image import LinuxImageList
 from conoha_client.features.image.repo import list_images
 from conoha_client.features.plan.repo import find_vmplan
 from conoha_client.features.vm.repo.command import AddVMCommand
@@ -28,8 +28,8 @@ Callback = Callable[[], LinuxImageList]
 
 
 def list_linux_images() -> LinuxImageList:
-    """Fix in future."""
-    return ImageList(list_images()).priors.linux
+    """Find linux images."""
+    return list_images().priors.linux
 
 
 class DistQuery(BaseModel, frozen=True):
