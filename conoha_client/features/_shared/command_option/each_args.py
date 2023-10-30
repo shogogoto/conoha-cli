@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import functools
-from typing import Callable, Concatenate, ParamSpec, TextIO, TypeAlias, TypeVar
+from typing import Callable, Concatenate, Generic, ParamSpec, TextIO, TypeAlias, TypeVar
 
 import click
-from pydantic import RootModel
+from pydantic import BaseModel
 
 P = ParamSpec("P")
 T = TypeVar("T")
@@ -14,15 +14,16 @@ Return: TypeAlias = Callable[Param, None]
 Converter: TypeAlias = Callable[[str], T]
 
 
-class Wrapper(RootModel[T], frozen=True):
+class Wrapper(BaseModel, Generic[T], frozen=True):
     """wrap command."""
 
     root: Converter[T]
+    arg_name: str
 
     def __call__(self, func: Wrapped) -> Return:
         """標準入力からもuuidを取得できるオプション."""
 
-        @click.argument("params", nargs=-1, type=click.STRING)
+        @click.argument(self.arg_name, nargs=-1, type=click.STRING)
         @click.option(
             "--file",
             "-f",
@@ -50,7 +51,8 @@ class Wrapper(RootModel[T], frozen=True):
 
 
 def each_args(
-    converter: Converter,
+    arg_name: str = "params",
+    converter: Converter = lambda x: x,
 ) -> Callable[[Wrapped], Return]:
     """Decorate with uuid completion."""
-    return Wrapper(root=converter)
+    return Wrapper(root=converter, arg_name=arg_name)

@@ -14,7 +14,7 @@ def complete(_: str) -> UUID:
 
 
 @click.command()
-@each_args(complete)
+@each_args(converter=complete)
 def cli(uid: UUID) -> None:
     """Testee cli."""
     click.echo(f"{uid} was input")
@@ -22,7 +22,7 @@ def cli(uid: UUID) -> None:
 
 @click.command()
 @click.option("--option", "-o")
-@each_args(complete)
+@each_args(converter=complete)
 def cli_with_other_options(uid: UUID, option: str) -> None:
     """Testee cli2."""
     click.echo(f"{uid} and {option}")
