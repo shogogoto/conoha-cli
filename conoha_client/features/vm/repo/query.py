@@ -1,6 +1,7 @@
 """契約中VM API."""
 from __future__ import annotations
 
+from functools import cache
 from typing import Callable
 from uuid import UUID
 
@@ -16,6 +17,7 @@ def get_dep() -> list[object]:
     return res["servers"]
 
 
+@cache
 def list_vms(
     dep: Callable[[], list[object]] = get_dep,
 ) -> list[VM]:

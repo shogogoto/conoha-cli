@@ -6,8 +6,10 @@ from uuid import UUID
 
 import click
 
+from conoha_client.features.vm.repo.query import complete_vm_id
+
 P = ParamSpec("P")
-Param = Concatenate[tuple[UUID], TextIO, P]
+Param = Concatenate[tuple[str], TextIO, P]
 
 
 def uuid_targets_options(
@@ -15,7 +17,7 @@ def uuid_targets_options(
 ) -> Callable[Param, None]:
     """標準入力からもuuidを取得できるオプション."""
 
-    @click.argument("vm_ids", nargs=-1, type=click.UUID)
+    @click.argument("vm_ids", nargs=-1, type=click.STRING)
     @click.option(
         "--file",
         "-f",
@@ -24,7 +26,7 @@ def uuid_targets_options(
         help="対象のUUIDをファイル入力(default:標準入力)",
     )
     def wrapper(
-        vm_ids: tuple[UUID],
+        vm_ids: tuple[str],
         file: TextIO,
         *args: P.args,
         **kwargs: P.kwargs,
@@ -35,7 +37,7 @@ def uuid_targets_options(
             _uids = [UUID(line) for line in lines]
             uids.extend(_uids)
 
-        for vm_id in uids:
-            func(vm_id, *args, **kwargs)
+        for vm in [complete_vm_id(u) for u in uids]:
+            func(vm.vm_id, *args, **kwargs)
 
     return wrapper

@@ -15,7 +15,7 @@ def vm_actions_cli() -> None:
     """VM操作関連."""
 
 
-@vm_actions_cli.command(name="rm")
+@vm_actions_cli.command(name="rm", help="VM削除")
 @uuid_targets_options
 def remove_cli(vm_id: UUID) -> None:
     """VM削除."""
@@ -23,7 +23,7 @@ def remove_cli(vm_id: UUID) -> None:
     click.echo(f"{vm_id} was removed.")
 
 
-@vm_actions_cli.command(name="shutdown")
+@vm_actions_cli.command(name="shutdown", help="VMシャットダウン")
 @uuid_targets_options
 def shutdown_cli(vm_id: UUID) -> None:
     """VMシャットダウン."""
@@ -32,7 +32,7 @@ def shutdown_cli(vm_id: UUID) -> None:
     click.echo(f"{vm_id} was shutdowned.")
 
 
-@vm_actions_cli.command(name="boot")
+@vm_actions_cli.command(name="boot", help="VM起動")
 @uuid_targets_options
 def boot_cli(vm_id: UUID) -> None:
     """VM起動."""
@@ -41,7 +41,7 @@ def boot_cli(vm_id: UUID) -> None:
     click.echo(f"{vm_id} was booted.")
 
 
-@vm_actions_cli.command(name="reboot")
+@vm_actions_cli.command(name="reboot", help="VM再起動")
 @uuid_targets_options
 def reboot_cli(vm_id: UUID) -> None:
     """VM再起動."""
