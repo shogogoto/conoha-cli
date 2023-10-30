@@ -11,9 +11,13 @@ from conoha_client.features._shared import (
     view_options,
 )
 from conoha_client.features.plan.domain import Memory
-from conoha_client.features.plan.repo import find_vmplan
-from conoha_client.features.vm.repo.command import AddVMCommand
-from conoha_client.snapshot.repo import list_snapshots, remove_snapshot, save_snapshot
+
+from .repo import (
+    list_snapshots,
+    remove_snapshot,
+    restore_snapshot,
+    save_snapshot,
+)
 
 if TYPE_CHECKING:
     from conoha_client.features.image.domain.image import Image
@@ -53,13 +57,12 @@ def restore(
     memory: Memory,
 ) -> None:
     """スナップショットからVM起動."""
-    img = list_snapshots().find_by_id(image_id)
-    cmd = AddVMCommand(
-        flavor_id=find_vmplan(memory).flavor_id,
-        image_id=img.image_id,
-        admin_pass=admin_password,
+    added, img = restore_snapshot(
+        image_id,
+        memory,
+        admin_password,
+        keypair_name,
     )
-    added = cmd(keypair_name)
     click.echo(f"VM(uuid={added.vm_id}) was restored from {img.name} snapshot")
 
 
