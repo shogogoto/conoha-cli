@@ -7,7 +7,7 @@ import click
 
 from conoha_client.features._shared import view_options
 
-from .repo import list_servers
+from .repo import list_vms
 
 if TYPE_CHECKING:
     from .domain import VM
@@ -17,4 +17,4 @@ if TYPE_CHECKING:
 @view_options
 def list_vm_cli() -> list[VM]:
     """契約中サーバー一覧取得コマンド."""
-    return list_servers()
+    return list_vms()

@@ -15,7 +15,7 @@ def get_dep() -> list[object]:
     return res["servers"]
 
 
-def list_servers(
+def list_vms(
     dep: Callable[[], list[object]] = get_dep,
 ) -> list[VM]:
     """契約中のサーバー情報一覧を取得する."""
@@ -32,7 +32,7 @@ def find_added(
     def pred(vm: VM) -> bool:
         return vm.vm_id == vm_id
 
-    f = filter(pred, list_servers(dep=dep))
+    f = filter(pred, list_vms(dep=dep))
 
     try:
         return next(f)
