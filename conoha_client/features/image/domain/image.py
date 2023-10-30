@@ -23,7 +23,6 @@ from .distribution import (
     DistVersion,
 )
 from .errors import (
-    ImageIdMatchNotUniqueError,
     ImageNotUniqueMatchError,
     MultipleImagesMatchError,
     NeitherWindowsNorLinuxError,
@@ -109,13 +108,6 @@ class BaseList(RootModel, frozen=True):
     def __len__(self) -> int:
         """Count of elements."""
         return len(self.root)
-
-    def find_by_id(self, image_id: UUID) -> Image:
-        """Find image."""
-        ls = [img for img in self.root if img.image_id == image_id]
-        if len(ls) != 1:
-            raise ImageIdMatchNotUniqueError
-        return ls[0]
 
     def find_one_by(self, pred: Callable[[Image], bool]) -> Image:
         """Find only image by predicate."""

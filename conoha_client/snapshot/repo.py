@@ -47,7 +47,7 @@ def restore_snapshot(
     dep: Dependency = list_snapshots,
 ) -> tuple[AddedVM, Image]:
     """スナップショットからVMを復元する."""
-    img = dep().find_by_id(image_id)
+    img = dep().find_one_by(by("image_id", image_id))
     cmd = AddVMCommand(
         flavor_id=find_vmplan(memory).flavor_id,
         image_id=img.image_id,
