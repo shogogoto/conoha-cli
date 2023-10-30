@@ -5,10 +5,8 @@ from uuid import UUID
 
 import click
 
+from conoha_client.features._shared.command_option import each_args
 from conoha_client.features.vm.repo.query import complete_vm_id
-from conoha_client.features.vm_actions.command_option import (
-    each_args,
-)
 
 from .repo import VMActionCommands, remove_vm
 

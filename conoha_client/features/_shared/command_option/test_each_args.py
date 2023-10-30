@@ -1,13 +1,9 @@
-"""VM Actions CLI test."""
-
 from uuid import UUID, uuid4
 
 import click
 from click.testing import CliRunner
 
-from conoha_client.features.vm_actions.command_option import (
-    each_args,
-)
+from .each_args import each_args
 
 ONE = uuid4()
 

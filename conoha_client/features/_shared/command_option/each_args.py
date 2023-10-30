@@ -1,4 +1,3 @@
-"""VM Action CLI option."""
 from __future__ import annotations
 
 import functools
