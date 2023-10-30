@@ -4,7 +4,7 @@ from __future__ import annotations
 from datetime import datetime
 from enum import Enum
 from functools import cached_property
-from typing import Iterator
+from typing import Callable, Iterator
 from uuid import UUID
 
 from pydantic import (
@@ -22,7 +22,12 @@ from .distribution import (
     Distribution,
     DistVersion,
 )
-from .errors import ImageIdMatchNotUniqueError, NeitherWindowsNorLinuxError
+from .errors import (
+    ImageIdMatchNotUniqueError,
+    ImageNotUniqueMatchError,
+    MultipleImagesMatchError,
+    NeitherWindowsNorLinuxError,
+)
 from .operating_system import (
     FileSystem,
     OperatingSystem,
@@ -111,6 +116,23 @@ class BaseList(RootModel, frozen=True):
         if len(ls) != 1:
             raise ImageIdMatchNotUniqueError
         return ls[0]
+
+    def find_one_by(self, pred: Callable[[Image], bool]) -> Image:
+        """Find only image by predicate."""
+        one = self.find_one_or_none_by(pred)
+        if one is None:
+            raise ImageNotUniqueMatchError
+        return one
+
+    def find_one_or_none_by(self, pred: Callable[[Image], bool]) -> Image | None:
+        """Find one or not found."""
+        founds = list(filter(pred, self.root))
+        n = len(founds)
+        if n == 0:
+            return None
+        if n == 1:
+            return founds[0]
+        raise MultipleImagesMatchError
 
 
 class ImageList(BaseList):

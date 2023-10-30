@@ -23,3 +23,11 @@ class DeleteImageError(Exception):
 
 class DeletePriorImageForbiddenError(Exception):
     """所与のイメージ削除は禁止."""
+
+
+class ImageNotUniqueMatchError(Exception):
+    """ひとつだけマッチすることを期待したのに."""
+
+
+class MultipleImagesMatchError(Exception):
+    """複数のイメージがマッチするの許さないお."""

@@ -39,7 +39,7 @@ def list_images() -> ImageList:
 #     return ls[0]
 
 
-def remove_snapshot(image: Image) -> None:
+def remove_image(image: Image) -> None:
     """イメージを削除."""
     res = Endpoints.IMAGE.delete(f"images/{image.image_id}")
     if res.status_code == HTTPStatus.FORBIDDEN:
