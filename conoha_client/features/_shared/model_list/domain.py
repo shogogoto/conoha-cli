@@ -1,13 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Callable, Iterator, TypeVar
+from typing import Any, Callable, Iterator, TypeVar
 
 from pydantic import BaseModel, RootModel
 
 from conoha_client.features._shared.view.domain import check_include_keys
-
-if TYPE_CHECKING:
-    from conoha_client.features.image.domain.image import Image
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -57,7 +54,7 @@ class ModelList(RootModel[list[T]], frozen=True):
         """Indexing."""
         return self.root[i]
 
-    def find_one_by(self, pred: Callable[[T], bool]) -> Image:
+    def find_one_by(self, pred: Callable[[T], bool]) -> T:
         """Find only image by predicate."""
         one = self.find_one_or_none_by(pred)
         if one is None:
