@@ -3,35 +3,27 @@ from __future__ import annotations
 
 import functools
 from typing import Callable, Concatenate, ParamSpec, TextIO, TypeAlias, TypeVar
-from uuid import UUID
 
 import click
-from pydantic import BaseModel
-
-from conoha_client.features.vm.repo.query import complete_vm
+from pydantic import RootModel
 
 P = ParamSpec("P")
-Wrapped: TypeAlias = Callable[Concatenate[UUID, P], None]
+T = TypeVar("T")
+Wrapped: TypeAlias = Callable[Concatenate[T, P], None]
 Param: TypeAlias = Concatenate[tuple[str], TextIO, P]
 Return: TypeAlias = Callable[Param, None]
-Complete: TypeAlias = Callable[[str], UUID]
-T = TypeVar("T", bound=BaseModel)
+Converter: TypeAlias = Callable[[str], T]
 
 
-def default_complete(pre_uuid: str) -> UUID:
-    """Complete uuid as default."""
-    return complete_vm(pre_uuid).vm_id
-
-
-class Wrapper(BaseModel, frozen=True):
+class Wrapper(RootModel[T], frozen=True):
     """wrap command."""
 
-    dep: Complete
+    root: Converter[T]
 
     def __call__(self, func: Wrapped) -> Return:
         """標準入力からもuuidを取得できるオプション."""
 
-        @click.argument("vm_ids", nargs=-1, type=click.STRING)
+        @click.argument("params", nargs=-1, type=click.STRING)
         @click.option(
             "--file",
             "-f",
@@ -41,25 +33,25 @@ class Wrapper(BaseModel, frozen=True):
         )
         @functools.wraps(func)
         def wrapper(
-            vm_ids: tuple[str],
+            params: tuple[str],
             file: TextIO,
             *args: P.args,
             **kwargs: P.kwargs,
         ) -> None:
-            uuids = list(vm_ids)
+            _params = list(params)
             if not file.isatty():
                 lines = file.read().splitlines()
-                uuids.extend(lines)
+                _params.extend(lines)
 
-            completed = [self.dep(u) for u in uuids]
+            completed = [self.root(p) for p in _params]
             for uid in completed:
                 func(uid, *args, **kwargs)
 
         return wrapper
 
 
-def uuid_complete_options(
-    complete: Complete = default_complete,
+def each_args(
+    converter: Converter,
 ) -> Callable[[Wrapped], Return]:
     """Decorate with uuid completion."""
-    return Wrapper(dep=complete)
+    return Wrapper(root=converter)

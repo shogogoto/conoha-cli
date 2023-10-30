@@ -5,8 +5,9 @@ from uuid import UUID
 
 import click
 
+from conoha_client.features.vm.repo.query import complete_vm_id
 from conoha_client.features.vm_actions.command_option import (
-    uuid_complete_options,
+    each_args,
 )
 
 from .repo import VMActionCommands, remove_vm
@@ -18,7 +19,7 @@ def vm_actions_cli() -> None:
 
 
 @vm_actions_cli.command(name="rm", help="VM削除")
-@uuid_complete_options()
+@each_args(complete_vm_id)
 def remove_cli(vm_id: UUID) -> None:
     """VM削除."""
     remove_vm(vm_id)
@@ -26,7 +27,7 @@ def remove_cli(vm_id: UUID) -> None:
 
 
 @vm_actions_cli.command(name="shutdown", help="VMシャットダウン")
-@uuid_complete_options()
+@each_args(complete_vm_id)
 def shutdown_cli(vm_id: UUID) -> None:
     """VMシャットダウン."""
     cmd = VMActionCommands(vm_id=vm_id)
@@ -35,7 +36,7 @@ def shutdown_cli(vm_id: UUID) -> None:
 
 
 @vm_actions_cli.command(name="boot", help="VM起動")
-@uuid_complete_options()
+@each_args(complete_vm_id)
 def boot_cli(vm_id: UUID) -> None:
     """VM起動."""
     cmd = VMActionCommands(vm_id=vm_id)
@@ -44,7 +45,7 @@ def boot_cli(vm_id: UUID) -> None:
 
 
 @vm_actions_cli.command(name="reboot", help="VM再起動")
-@uuid_complete_options()
+@each_args(complete_vm_id)
 def reboot_cli(vm_id: UUID) -> None:
     """VM再起動."""
     cmd = VMActionCommands(vm_id=vm_id)

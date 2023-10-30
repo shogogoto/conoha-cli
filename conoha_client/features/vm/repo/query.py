@@ -31,6 +31,11 @@ def complete_vm(s: str) -> VM:
     return ModelList[VM](list_vms()).find_one_by(startswith("vm_id", s))
 
 
+def complete_vm_id(s: str) -> UUID:
+    """uuidを補完して検索."""
+    return complete_vm(s).vm_id
+
+
 def find_added(
     vm_id: UUID,
     dep: Callable[[], list[object]] = get_dep,
