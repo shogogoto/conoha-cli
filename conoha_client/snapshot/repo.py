@@ -4,12 +4,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Callable
 from uuid import UUID
 
+from conoha_client.features._shared.model_list.domain import by
 from conoha_client.features.image.domain.image import Image, ImageList
 from conoha_client.features.image.repo import list_images, remove_image
 from conoha_client.features.plan.repo import find_vmplan
 from conoha_client.features.vm.repo.command import AddVMCommand
 from conoha_client.features.vm_actions.repo import VMActionCommands
-from conoha_client.snapshot.domain import by
 
 if TYPE_CHECKING:
     from conoha_client.features.plan.domain import Memory
