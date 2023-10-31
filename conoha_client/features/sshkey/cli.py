@@ -5,8 +5,7 @@ from typing import TYPE_CHECKING
 
 import click
 
-from conoha_client.features._shared import view_options
-from conoha_client.features._shared.command_option import each_args
+from conoha_client.features._shared import each_args, view_options
 
 from .repo import create_keypair, find_all, remove_keypair
 
@@ -24,9 +23,6 @@ def sshkey_cli() -> None:
 def _list() -> list[KeyPair]:
     """キーペア一覧."""
     return find_all()
-    # view(models, keys=None, style="json")
-    # view(models, keys={"name"}, style="table")
-    # return None
 
 
 @sshkey_cli.command()
