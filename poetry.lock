@@ -713,6 +713,17 @@ attrs = ">=21.3.0"
 cattrs = "*"
 
 [[package]]
+name = "makefun"
+version = "1.15.1"
+description = "Small library to dynamically create python functions."
+optional = false
+python-versions = "*"
+files = [
+    {file = "makefun-1.15.1-py2.py3-none-any.whl", hash = "sha256:a63cfc7b47a539c76d97bd4fdb833c7d0461e759fd1225f580cb4be6200294d4"},
+    {file = "makefun-1.15.1.tar.gz", hash = "sha256:40b0f118b6ded0d8d78c78f1eb679b8b6b2462e3c1b3e05fb1b2da8cd46b48a5"},
+]
+
+[[package]]
 name = "msgpack"
 version = "1.0.6"
 description = "MessagePack serializer"
@@ -2068,4 +2079,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "6113a421590671ea4301ce6e5a933c73e13783546f95c4a80455684a31dc9b45"
+content-hash = "f002f3e6c1d27c440e1e2a64b284be9ca3fe3415c6f4cbc0978f2faa4f31c3b7"

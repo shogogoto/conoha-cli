@@ -4,17 +4,16 @@ from __future__ import annotations
 from datetime import datetime
 from enum import Enum
 from functools import cached_property
-from typing import Callable, Iterator
 from uuid import UUID
 
 from pydantic import (
     AliasPath,
     BaseModel,
     Field,
-    RootModel,
     field_validator,
 )
 
+from conoha_client.features._shared.model_list.domain import ModelList
 from conoha_client.features._shared.util import TOKYO_TZ
 
 from .distribution import (
@@ -23,8 +22,6 @@ from .distribution import (
     DistVersion,
 )
 from .errors import (
-    ImageNotUniqueMatchError,
-    MultipleImagesMatchError,
     NeitherWindowsNorLinuxError,
 )
 from .operating_system import (
@@ -92,42 +89,7 @@ class Image(BaseModel, frozen=True):
         return Application.parse(self.app)
 
 
-class BaseList(RootModel, frozen=True):
-    """base."""
-
-    root: list[Image]
-
-    def __iter__(self) -> Iterator[Image]:
-        """Behavior like list."""
-        return iter(self.root)
-
-    def __next__(self) -> Image:
-        """Behavior like list."""
-        return next(self.root)
-
-    def __len__(self) -> int:
-        """Count of elements."""
-        return len(self.root)
-
-    def find_one_by(self, pred: Callable[[Image], bool]) -> Image:
-        """Find only image by predicate."""
-        one = self.find_one_or_none_by(pred)
-        if one is None:
-            raise ImageNotUniqueMatchError
-        return one
-
-    def find_one_or_none_by(self, pred: Callable[[Image], bool]) -> Image | None:
-        """Find one or not found."""
-        founds = list(filter(pred, self.root))
-        n = len(founds)
-        if n == 0:
-            return None
-        if n == 1:
-            return founds[0]
-        raise MultipleImagesMatchError
-
-
-class ImageList(BaseList):
+class ImageList(ModelList):
     """イメージコンテナ."""
 
     @cached_property
@@ -155,7 +117,7 @@ class ImageList(BaseList):
         return LinuxImageList(ls)
 
 
-class LinuxImageList(BaseList):
+class LinuxImageList(ModelList):
     """linux image container."""
 
     root: list[Image]

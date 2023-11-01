@@ -5,7 +5,7 @@ from typing import Callable, Concatenate, ParamSpec, TypeVar
 
 import click
 
-from .prompt import pw_prompt, sshkey_prompt
+from conoha_client.features._shared.prompt import pw_prompt, sshkey_prompt
 
 P = ParamSpec("P")
 T = TypeVar("T")
