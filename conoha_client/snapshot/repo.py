@@ -21,6 +21,14 @@ def list_snapshots() -> ImageList:
     return list_images().snapshots
 
 
+def complete_snapshot(
+    pre_uid: str,
+    dep: Dependency = list_snapshots,
+) -> Image:
+    """Search snapshot by uuid prefix match."""
+    return dep().find_one_by(startswith("image_id", pre_uid))
+
+
 Dependency = Callable[[], ImageList]
 
 
@@ -47,20 +55,10 @@ def restore_snapshot(
     dep: Dependency = list_snapshots,
 ) -> tuple[AddedVM, Image]:
     """スナップショットからVMを復元する."""
-    img = dep().find_one_by(startswith("image_id", pre_image_id))
+    img = complete_snapshot(pre_image_id, dep)
     cmd = AddVMCommand(
         flavor_id=find_vmplan(memory).flavor_id,
         image_id=img.image_id,
         admin_pass=admin_password,
     )
     return cmd(keypair_name), img
-
-
-def remove_snapshot(
-    pre_image_id: str,
-    dep: Dependency = list_snapshots,
-) -> Image:
-    """スナップショットをID指定で削除."""
-    one = dep().find_one_by(startswith("image_id", pre_image_id))
-    remove_image(one)
-    return one

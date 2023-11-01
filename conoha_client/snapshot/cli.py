@@ -9,12 +9,14 @@ from conoha_client.features._shared import (
     add_vm_options,
     view_options,
 )
+from conoha_client.features._shared.command_option import each_args
+from conoha_client.features.image.repo import remove_image
 from conoha_client.features.plan.domain import Memory
 from conoha_client.features.vm.repo.query import complete_vm
 
 from .repo import (
+    complete_snapshot,
     list_snapshots,
-    remove_snapshot,
     restore_snapshot,
     save_snapshot,
 )
@@ -68,8 +70,8 @@ def restore(
 
 
 @snapshot_cli.command("rm")
-@click.argument("image_id", nargs=1, type=click.STRING)
-def remove(image_id: str) -> None:
+@each_args("image_ids", converter=complete_snapshot)
+def remove(image: Image) -> None:
     """スナップショットを削除."""
-    img = remove_snapshot(image_id)
-    click.echo(f"{img.name} snapshot was deleted.")
+    remove_image(image)
+    click.echo(f"{image.name} snapshot was deleted.")
