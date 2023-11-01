@@ -60,11 +60,12 @@ class Image(BaseModel, frozen=True):
         ImageType.PRIOR,
         alias=AliasPath("metadata", "image_type"),
     )
-    created: datetime = Field(alias="created", description="作成日時")
     min_disk: MinDisk = Field(
         alias="minDisk",
         description="インスタンス化に必要なディスク容量",
     )
+    progress: int = Field(description="保存進捗率")
+    created: datetime = Field(alias="created", description="作成日時")
 
     @field_validator("created")
     def validate_created(cls, v: datetime) -> datetime:  # noqa: N805
