@@ -1,87 +1,80 @@
 """billing API."""
 from __future__ import annotations
 
+from http import HTTPStatus
+from operator import attrgetter
+from typing import Callable
 from uuid import UUID
 
 from conoha_client.features._shared import Endpoints
 
-from .domain import Order, VPSOrder
+from .domain import (
+    ConcatedInvoiceItem,
+    Deposit,
+    Invoice,
+    InvoiceItem,
+    Order,
+    VPSOrder,
+    is_uuid,
+)
 
 
 def list_orders() -> list[Order]:
-    """請求情報一覧."""
+    """請求一覧."""
     res = Endpoints.ACCOUNT.get("order-items").json()
     return [Order.model_validate(e) for e in res["order_items"]]
 
 
 def detail_order(order_id: UUID) -> VPSOrder:
-    """請求情報詳細を取得する."""
+    """請求詳細を取得する."""
     res = Endpoints.ACCOUNT.get(f"order-items/{order_id}").json()
     return VPSOrder.model_validate(res["order_item"])
-    # .json()["billing_invoices"]
 
 
-# def payment_history() -> dict:
-#     """入金履歴.
-
-#     :return: [{
-#         "deposit_amount",
-#         "money_type",
-#         "received_data"}]
-#     """
-#     return Endpoints.ACCOUNT.get("payment-history").json()["payment_history"]
+def list_vps_orders(
+    list_dep: Callable[[], list[Order]] = list_orders,
+    detail_dep: Callable[[UUID], VPSOrder] = detail_order,
+) -> list[VPSOrder]:
+    """VPS請求詳細一覧."""
+    order_ids = {o.order_id for o in list_dep()}
+    return [detail_dep(id_) for id_ in order_ids if is_uuid(id_)]
 
 
-# def payment_total() -> dict:
-#     """入金額合計.
-
-#     :return: {"total_deposit_amount"}
-#     """
-#     return Endpoints.ACCOUNT.get("payment-summary").json()["payment_summary"]
+def list_payment() -> list[Deposit]:
+    """入金履歴."""
+    res = Endpoints.ACCOUNT.get("payment-history").json()
+    return [Deposit.model_validate(e) for e in res["payment_history"]]
 
 
-# def billing_invoices(offset: int | None = 0, limit: int | None = 1000) -> dict:
-#     r"""課金一覧.
-
-#     https://www.conoha.jp/docs/account-billing-invoices-list.php
-#     :param offset: 取得開始位置
-#     :param limit: 取得数
-#     :return: [{
-#           "bill_plus_tax"\: 0,
-#           "due_date"\: "2023-04-30T15\:00\:00Z",
-#           "invoice_date"\: "2023-04-30T15\:00\:00Z",
-#           "invoice_id"\: 1359752607,
-#           "payment_method_type"\: "Charge"}]
-#     """
-#     params = {
-#         "offset": offset,
-#         "limit": limit,
-#     }
-#     return Endpoints.ACCOUNT.get("billing-invoices", params) \
+def list_invoices(
+    offset: int = 0,
+    limit: int = 1000,
+) -> list[Invoice]:
+    """課金一覧."""
+    params = {
+        "offset": offset,
+        "limit": limit,
+    }
+    res = Endpoints.ACCOUNT.get("billing-invoices", params)
+    return [Invoice.model_validate(e) for e in res.json()["billing_invoices"]]
 
 
-# def detail_invoice(invoice_id: str) -> dict:
-#     """課金詳細.
+def invoice_items(invoice_id: int) -> list[InvoiceItem]:
+    """課金項目."""
+    res = Endpoints.ACCOUNT.get(f"billing-invoices/{invoice_id}")
+    if res.status_code == HTTPStatus.INTERNAL_SERVER_ERROR:
+        # 課金項目が存在しないっぽい
+        return []
+    items = res.json()["billing_invoice"]["items"]
+    ls = [InvoiceItem.model_validate(e) for e in items]
+    return sorted(ls, key=attrgetter("detail_id"))
 
-#     :return: {
-#          'bill_plus_tax': 0,
-#          'due_date': '2023-04-30T15:00:00Z',
-#          'invoice_date': '2023-04-30T15:00:00Z',
-#          'invoice_id': 1359752607,
-#          'items': [{'end_date': '2023-04-30T14:59:59Z',
-#                     'invoice_detail_id': 433591413,
-#                     'product_name': 'VPSService SSD 30GB Memory 512M CPU 1Core',
-#                     'quantity': 720,
-#                     'start_date': '2023-03-31T15:00:00Z',
-#                     'unit_price': 1},
-#                    {'end_date': None,
-#                     'invoice_detail_id': 433591415,
-#                     'product_name': 'VPS割引きっぷ(100.00%)',
-#                     'quantity': 1,
-#                     'start_date': None,
-#                     'unit_price': 1}],
-#          'payment_method_type': 'Charge'}
-#     """
-#     return Endpoints.ACCOUNT.get(f"billing-invoices/{invoice_id}").json()[
-#         "billing_invoice"
-#     ]
+
+def list_invoice_items() -> list[ConcatedInvoiceItem]:
+    """課金項目一覧."""
+    ls = list_invoices()
+    _items = []
+    for e in ls:
+        items = invoice_items(e.invoice_id)
+        _items.extend([e.concat(i) for i in items])
+    return sorted(_items, key=attrgetter("detail_id"))

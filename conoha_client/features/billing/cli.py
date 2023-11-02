@@ -2,16 +2,27 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-from uuid import UUID
 
 import click
 
 from conoha_client.features._shared import view_options
 
-from .repo import VPSOrder, detail_order, list_orders
+from .repo import (
+    VPSOrder,
+    list_invoice_items,
+    list_invoices,
+    list_orders,
+    list_payment,
+    list_vps_orders,
+)
 
 if TYPE_CHECKING:
-    from conoha_client.features.billing.domain import Order
+    from conoha_client.features.billing.domain import (
+        ConcatedInvoiceItem,
+        Deposit,
+        Invoice,
+        Order,
+    )
 
 
 @click.group(name="bill")
@@ -21,13 +32,34 @@ def billing_cli() -> None:
 
 @billing_cli.command(name="ls")
 @view_options
-def _list() -> list[Order]:
+def _list() -> list[VPSOrder]:
+    """VPS請求一覧."""
+    return list_vps_orders()
+
+
+@billing_cli.command(name="ls-all")
+@view_options
+def _list_all() -> list[Order]:
+    """請求一覧."""
     return list_orders()
 
 
-@billing_cli.command()
-@click.argument("vm_id")
+@billing_cli.command(name="history")
 @view_options
-def find(vm_id: UUID) -> list[VPSOrder]:
-    """VMのIDから請求情報を取得."""
-    return [detail_order(vm_id)]
+def _history() -> list[Deposit]:
+    """入金履歴."""
+    return list_payment()
+
+
+@billing_cli.command(name="invoice")
+@view_options
+def _invoices() -> list[Invoice]:
+    """課金一覧."""
+    return list_invoices()
+
+
+@billing_cli.command(name="invoice-items")
+@view_options
+def _invoices_items() -> list[ConcatedInvoiceItem]:
+    """課金一覧."""
+    return list_invoice_items()
