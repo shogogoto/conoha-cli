@@ -7,6 +7,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field, field_validator
 
+from conoha_client.features._shared.model_list.domain import ModelList
 from conoha_client.features._shared.util import TOKYO_TZ
 
 
@@ -26,7 +27,7 @@ def is_uuid(v: Any) -> TypeGuard[UUID]:  # noqa: ANN401
 
 
 class Order(BaseModel, frozen=True):
-    """一般請求情報."""
+    """契約."""
 
     order_id: UUID | int | None = Field(None, alias="uu_id")
     service_name: str
@@ -38,13 +39,9 @@ class Order(BaseModel, frozen=True):
         """Validate start at."""
         return v.astimezone(TOKYO_TZ)
 
-    def is_vps(self) -> bool:
-        """order_idがUUID形式ならVPSの請求とみなす."""
-        return is_uuid(self.order_id)
 
-
-class VPSOrder(BaseModel, frozen=True):
-    """VPS請求情報."""
+class DetailOrder(BaseModel, frozen=True):
+    """契約詳細."""
 
     vm_id: UUID = Field(alias="uu_id", description="order_idと同一")
     product_name: str
@@ -57,6 +54,14 @@ class VPSOrder(BaseModel, frozen=True):
     def validate(cls, v: datetime) -> datetime:  # noqa: N805
         """Validate start at."""
         return v.astimezone(TOKYO_TZ)
+
+
+class OrderList(ModelList[Order], frozen=True):
+    """契約一覧."""
+
+    def filter_vps(self) -> OrderList:
+        """VPS契約を抽出."""
+        return OrderList(root=[o for o in self if is_uuid(o.order_id)])
 
 
 class Deposit(BaseModel, frozen=True):

@@ -11,33 +11,34 @@ from conoha_client.features._shared import Endpoints
 from .domain import (
     ConcatedInvoiceItem,
     Deposit,
+    DetailOrder,
     Invoice,
     InvoiceItem,
     Order,
-    VPSOrder,
-    is_uuid,
+    OrderList,
 )
 
 
-def list_orders() -> list[Order]:
-    """請求一覧."""
+def list_orders() -> OrderList:
+    """契約一覧."""
     res = Endpoints.ACCOUNT.get("order-items").json()
-    return [Order.model_validate(e) for e in res["order_items"]]
+    ls = [Order.model_validate(e) for e in res["order_items"]]
+    return OrderList(root=ls)
 
 
-def detail_order(order_id: UUID) -> VPSOrder:
-    """請求詳細を取得する."""
+def detail_order(order_id: UUID) -> DetailOrder:
+    """契約詳細を取得する."""
     res = Endpoints.ACCOUNT.get(f"order-items/{order_id}").json()
-    return VPSOrder.model_validate(res["order_item"])
+    return DetailOrder.model_validate(res["order_item"])
 
 
 def list_vps_orders(
-    list_dep: Callable[[], list[Order]] = list_orders,
-    detail_dep: Callable[[UUID], VPSOrder] = detail_order,
-) -> list[VPSOrder]:
-    """VPS請求詳細一覧."""
-    order_ids = {o.order_id for o in list_dep()}
-    return [detail_dep(id_) for id_ in order_ids if is_uuid(id_)]
+    list_dep: Callable[[], OrderList] = list_orders,
+    detail_dep: Callable[[UUID], DetailOrder] = detail_order,
+) -> list[DetailOrder]:
+    """VPS契約詳細一覧."""
+    ids = {o.order_id for o in list_dep().filter_vps()}
+    return [detail_dep(uid) for uid in ids]
 
 
 def list_payment() -> list[Deposit]:
