@@ -91,7 +91,13 @@ def view_options(func: Callable[P, list[R]]) -> Callable[P, None]:
     参考: https://qiita.com/ainamori/items/5e68ec8dde4a46da104d
     """
 
-    @click.option("--keys", "-k", multiple=True, default=None)
+    @click.option(
+        "--keys",
+        "-k",
+        multiple=True,
+        default=None,
+        help="表示キー[複数指定可]",
+    )
     @click.option(
         "--where",
         "-w",
@@ -100,11 +106,19 @@ def view_options(func: Callable[P, list[R]]) -> Callable[P, None]:
         help="マッチした行をkey-valueでフィルターする",
     )
     @click.option(
-        "--style",
-        "-s",
-        type=click.Choice(["table", "json"]),
-        default="table",
-        help="print style",
+        "--table",
+        "style",
+        flag_value="table",
+        default=True,
+        help="table style print",
+        show_default=True,
+    )
+    @click.option(
+        "--json",
+        "style",
+        flag_value="json",
+        help="json style print",
+        show_default=True,
     )
     @click.option(
         "--pass-command",

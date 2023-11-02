@@ -58,7 +58,7 @@ def cli() -> list[ExampleModel]:
 def test_view_option_json() -> None:
     """Json view test."""
     runner = CliRunner()
-    result = runner.invoke(cli, ["-s", "json"])
+    result = runner.invoke(cli, ["--json"])
     assert result.exit_code == 0
     assert json.loads(result.stdout) == [t.model_dump(mode="json") for t in tm]
 
@@ -66,7 +66,7 @@ def test_view_option_json() -> None:
 def test_view_option_table() -> None:
     """Table view test."""
     runner = CliRunner()
-    result = runner.invoke(cli, ["-k", "x", "-s", "table", "-p"])
+    result = runner.invoke(cli, ["-k", "x", "--table", "-p"])
     assert result.exit_code == 0
     assert result.stdout.split() == [t.x for t in tm]
 
@@ -74,6 +74,6 @@ def test_view_option_table() -> None:
 def test_view_filter_option() -> None:
     """Table view test."""
     runner = CliRunner()
-    result = runner.invoke(cli, ["-k", "x", "--where", "x", "1", "-s", "table", "-p"])
+    result = runner.invoke(cli, ["-k", "x", "--where", "x", "1", "-p"])
     assert result.exit_code == 0
     assert result.stdout.split() == [t1.x]

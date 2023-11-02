@@ -18,7 +18,7 @@ from .image import Image, ImageList
 
 @cache
 def fixture_models() -> ImageList:
-    """All names."""
+    """fixture."""
     p = Path(__file__).resolve().parent / "fixture20231014.json"
 
     ls = [
@@ -34,6 +34,7 @@ def fixture_models() -> ImageList:
                 },
                 "created": j["created"],
                 "minDisk": j["minDisk"],
+                "progress": 100,
             },
         )
         for j in json.loads(p.read_text())
@@ -60,6 +61,7 @@ def test_invalid_os() -> None:
                 },
                 "created": "2023-09-27T14:22:50+09:00",
                 "minDisk": 30,
+                "progress": 100,
             },
         )
 

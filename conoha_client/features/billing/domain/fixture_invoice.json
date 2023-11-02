@@ -1,0 +1,93 @@
+[
+  {
+    "invoice_id": 1353358081,
+    "bill_plus_tax": 2214,
+    "payment_method_type": "Unknown",
+    "invoice_date": "2023-03-23T16:39:07+09:00",
+    "due_date": "2023-03-30T16:39:07+09:00"
+  },
+  {
+    "invoice_id": 1354015507,
+    "bill_plus_tax": 0,
+    "payment_method_type": "Charge",
+    "invoice_date": "2023-04-01T00:00:00+09:00",
+    "due_date": "2023-04-01T00:00:00+09:00"
+  },
+  {
+    "invoice_id": 1359752607,
+    "bill_plus_tax": 0,
+    "payment_method_type": "Charge",
+    "invoice_date": "2023-05-01T00:00:00+09:00",
+    "due_date": "2023-05-01T00:00:00+09:00"
+  },
+  {
+    "invoice_id": 1378685199,
+    "bill_plus_tax": 0,
+    "payment_method_type": "Charge",
+    "invoice_date": "2023-06-01T00:00:00+09:00",
+    "due_date": "2023-06-01T00:00:00+09:00"
+  },
+  {
+    "invoice_id": 1398354933,
+    "bill_plus_tax": 0,
+    "payment_method_type": "Charge",
+    "invoice_date": "2023-07-01T00:00:00+09:00",
+    "due_date": "2023-07-01T00:00:00+09:00"
+  },
+  {
+    "invoice_id": 1451279299,
+    "bill_plus_tax": 1078,
+    "payment_method_type": "Charge",
+    "invoice_date": "2023-08-24T21:56:37+09:00",
+    "due_date": "2023-08-31T21:56:37+09:00"
+  },
+  {
+    "invoice_id": 1451294741,
+    "bill_plus_tax": 1996,
+    "payment_method_type": "Unknown",
+    "invoice_date": "2023-08-24T22:22:25+09:00",
+    "due_date": "2023-08-31T22:22:25+09:00"
+  },
+  {
+    "invoice_id": 1454934827,
+    "bill_plus_tax": 968,
+    "payment_method_type": "Charge",
+    "invoice_date": "2023-08-30T14:59:01+09:00",
+    "due_date": "2023-09-06T14:59:01+09:00"
+  },
+  {
+    "invoice_id": 1451697979,
+    "bill_plus_tax": 0,
+    "payment_method_type": "Charge",
+    "invoice_date": "2023-09-01T00:00:00+09:00",
+    "due_date": "2023-09-01T00:00:00+09:00"
+  },
+  {
+    "invoice_id": 1456833673,
+    "bill_plus_tax": 36,
+    "payment_method_type": "Charge",
+    "invoice_date": "2023-10-01T00:00:00+09:00",
+    "due_date": "2023-10-01T00:00:00+09:00"
+  },
+  {
+    "invoice_id": 1487961181,
+    "bill_plus_tax": 1996,
+    "payment_method_type": "Charge",
+    "invoice_date": "2023-10-26T00:11:06+09:00",
+    "due_date": "2023-11-24T23:59:59+09:00"
+  },
+  {
+    "invoice_id": 1474990095,
+    "bill_plus_tax": 22,
+    "payment_method_type": "Charge",
+    "invoice_date": "2023-11-01T00:00:00+09:00",
+    "due_date": "2023-11-01T00:00:00+09:00"
+  },
+  {
+    "invoice_id": 1492783489,
+    "bill_plus_tax": 4,
+    "payment_method_type": "Charge",
+    "invoice_date": "2023-12-01T00:00:00+09:00",
+    "due_date": "2023-12-01T00:00:00+09:00"
+  }
+]
