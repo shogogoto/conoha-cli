@@ -100,11 +100,19 @@ def view_options(func: Callable[P, list[R]]) -> Callable[P, None]:
         help="マッチした行をkey-valueでフィルターする",
     )
     @click.option(
-        "--style",
-        "-s",
-        type=click.Choice(["table", "json"]),
-        default="table",
-        help="print style",
+        "--table",
+        "style",
+        flag_value="table",
+        default=True,
+        help="table style print",
+        show_default=True,
+    )
+    @click.option(
+        "--json",
+        "style",
+        flag_value="json",
+        help="json style print",
+        show_default=True,
     )
     @click.option(
         "--pass-command",
