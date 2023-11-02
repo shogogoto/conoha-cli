@@ -7,6 +7,7 @@ from typing import Callable
 from uuid import UUID
 
 from conoha_client.features._shared import Endpoints
+from conoha_client.features.billing.domain.invoice import InvoiceList, Term
 
 from .domain import (
     ConcatedInvoiceItem,
@@ -61,9 +62,10 @@ def list_invoices(
     offset: int = 0,
     limit: int = 1000,
     dep: Callable[[int, int], list[object]] = dep_invoice_json,
-) -> list[Invoice]:
+) -> InvoiceList:
     """課金一覧."""
-    return [Invoice.model_validate(e) for e in dep(offset, limit)]
+    ls = [Invoice.model_validate(e) for e in dep(offset, limit)]
+    return InvoiceList(root=ls)
 
 
 def invoice_items(invoice_id: int) -> list[InvoiceItem]:
@@ -77,9 +79,11 @@ def invoice_items(invoice_id: int) -> list[InvoiceItem]:
     return sorted(ls, key=attrgetter("detail_id"))
 
 
-def list_invoice_items() -> list[ConcatedInvoiceItem]:
+def list_invoice_items(term: Term | None = None) -> list[ConcatedInvoiceItem]:
     """課金項目一覧."""
     ls = list_invoices()
+    if term is not None:
+        ls = ls.filter_by_term(term)
     _items = []
     for e in ls:
         items = invoice_items(e.invoice_id)
