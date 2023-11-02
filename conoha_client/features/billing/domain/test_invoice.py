@@ -6,7 +6,7 @@ from functools import cache
 from pathlib import Path
 
 from conoha_client.features._shared.util import TOKYO_TZ
-from conoha_client.features.billing.domain import Invoice, InvoiceList
+from conoha_client.features.billing.domain.invoice import Invoice, InvoiceList
 
 
 @cache
