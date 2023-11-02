@@ -35,7 +35,6 @@ class EachArgsWrapper(BaseModel, Generic[T], frozen=True):
         """標準入力からもuuidを取得できるオプション."""
 
         @click.argument(self.arg_name, nargs=-1, type=click.STRING)
-        # @click.argument("params", nargs=-1, type=click.STRING)
         @click.option(
             "--file",
             "-f",
