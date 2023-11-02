@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import Any, TypeGuard
 from uuid import UUID
 
+from dateutil.relativedelta import relativedelta
 from pydantic import BaseModel, Field, field_validator
 
 from conoha_client.features._shared.model_list.domain import ModelList
@@ -78,7 +79,7 @@ class Deposit(BaseModel, frozen=True):
 
 
 class Invoice(BaseModel, frozen=True):
-    """課金."""
+    """請求."""
 
     invoice_id: int = Field(alias="invoice_id")
     tax_included: int = Field(alias="bill_plus_tax")
@@ -102,8 +103,18 @@ class Invoice(BaseModel, frozen=True):
         return ConcatedInvoiceItem.model_validate(d)
 
 
+class InvoiceList(ModelList[Invoice], frozen=True):
+    """invoice container."""
+
+    def next_month_dues(self, now: datetime) -> InvoiceList:
+        """来月の請求."""
+        next_month = now + relativedelta(months=+1)
+        ls = [e for e in self if e.due.month == next_month.month]
+        return InvoiceList(root=ls)
+
+
 class InvoiceItem(BaseModel, frozen=True):
-    """課金項目."""
+    """請求項目."""
 
     detail_id: int = Field(alias="invoice_detail_id")
     product_name: str = Field(alias="product_name")

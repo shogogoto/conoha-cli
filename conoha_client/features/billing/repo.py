@@ -47,17 +47,23 @@ def list_payment() -> list[Deposit]:
     return [Deposit.model_validate(e) for e in res["payment_history"]]
 
 
-def list_invoices(
-    offset: int = 0,
-    limit: int = 1000,
-) -> list[Invoice]:
-    """課金一覧."""
+def dep_invoice_json(offset: int, limit: int) -> list[object]:
+    """Invoice request dependency."""
     params = {
         "offset": offset,
         "limit": limit,
     }
     res = Endpoints.ACCOUNT.get("billing-invoices", params)
-    return [Invoice.model_validate(e) for e in res.json()["billing_invoices"]]
+    return res.json()["billing_invoices"]
+
+
+def list_invoices(
+    offset: int = 0,
+    limit: int = 1000,
+    dep: Callable[[int, int], list[object]] = dep_invoice_json,
+) -> list[Invoice]:
+    """課金一覧."""
+    return [Invoice.model_validate(e) for e in dep(offset, limit)]
 
 
 def invoice_items(invoice_id: int) -> list[InvoiceItem]:

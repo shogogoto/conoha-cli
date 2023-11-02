@@ -18,7 +18,7 @@ from .image import Image, ImageList
 
 @cache
 def fixture_models() -> ImageList:
-    """All names."""
+    """fixture."""
     p = Path(__file__).resolve().parent / "fixture20231014.json"
 
     ls = [
