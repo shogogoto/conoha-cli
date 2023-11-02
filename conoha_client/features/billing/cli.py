@@ -59,6 +59,7 @@ def _history() -> list[Deposit]:
     is_flag=True,
     show_default=True,
     default=False,
+    help="請求項目詳細",
 )
 @click.option(
     "--offset-monthly",
