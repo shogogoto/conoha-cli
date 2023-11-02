@@ -91,7 +91,13 @@ def view_options(func: Callable[P, list[R]]) -> Callable[P, None]:
     参考: https://qiita.com/ainamori/items/5e68ec8dde4a46da104d
     """
 
-    @click.option("--keys", "-k", multiple=True, default=None)
+    @click.option(
+        "--keys",
+        "-k",
+        multiple=True,
+        default=None,
+        help="表示キー[複数指定可]",
+    )
     @click.option(
         "--where",
         "-w",
