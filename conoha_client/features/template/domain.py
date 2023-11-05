@@ -55,8 +55,10 @@ def template_io(func: Callable[P, T]) -> Callable:
         *args: P.args,
         **kwargs: P.kwargs,
     ) -> T:
-        t = TemplateRepo[T](read_from=rpath, map_to=dict(mapping))
         model = func(*args, **kwargs)
+        if rpath is None:
+            return model
+        t = TemplateRepo[T](read_from=rpath, map_to=dict(mapping))
         if wpath is None:
             click.echo(t.apply(model))
         else:
