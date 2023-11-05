@@ -1,6 +1,7 @@
 """VM Create API."""
 from __future__ import annotations
 
+from functools import cache
 from operator import attrgetter
 from typing import TYPE_CHECKING, Callable
 
@@ -32,6 +33,25 @@ def list_linux_images() -> LinuxImageList:
     return list_images().priors.linux
 
 
+@cache
+def _filter_memory(
+    dep: Callable,
+    memory: Memory,
+) -> LinuxImageList:
+    """For cache without memory leak."""
+    return filter_memory(dep(), memory)
+
+
+@cache
+def _available_vers(
+    dep: Callable,
+    memory: Memory,
+    dist: Distribution,
+) -> set[DistVersion]:
+    """For cache without memory leak."""
+    return _filter_memory(dep, memory).dist_versions(dist)
+
+
 class DistQuery(BaseModel, frozen=True):
     """Linux image query to add new VM."""
 
@@ -40,11 +60,12 @@ class DistQuery(BaseModel, frozen=True):
     dep: Callback = list_linux_images
 
     def _filter_mem(self) -> LinuxImageList:
-        return filter_memory(self.dep(), self.memory)
+        return _filter_memory(self.dep, self.memory)
 
     def available_vers(self) -> set[DistVersion]:
         """List availabe distribution versions."""
-        return self._filter_mem().dist_versions(self.dist)
+        return _available_vers(self.dep, self.memory, self.dist)
+        # return self._filter_mem().dist_versions(self.dist)
 
     def latest_ver(self) -> DistVersion:
         """Latest availabe distribution version."""

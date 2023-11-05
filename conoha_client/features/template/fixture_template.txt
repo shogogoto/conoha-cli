@@ -1,0 +1,8 @@
+Host dev
+  HostName ${x}
+  Port 22
+  User user
+  IdentityFile ${y}
+  ServerAliveInterval 60 #sshの自動切断を防ぐために記述
+  ForwardX11 yes
+  ForwardAgent yes
