@@ -17,15 +17,19 @@ class TemplateRepo(BaseModel, Generic[T], frozen=True):
 
     @cached_property
     def text(self) -> str:
-        """Read text."""
+        """Read template."""
         return self.read_from.read_text()
 
     @cached_property
     def template(self) -> Template:
-        """Read template."""
+        """Template object."""
         return Template(self.text)
 
     def apply(self, model: T) -> str:
-        """Write by template."""
+        """Write from template."""
         d = model.model_dump(mode="json") | self.map_to
         return self.template.safe_substitute(d)
+
+    def write(self, model: T, write_to: Path) -> None:
+        """Write applied template."""
+        write_to.write_text(self.apply(model))
