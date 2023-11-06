@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from datetime import timedelta
 from ipaddress import IPv4Address
+from uuid import UUID
 
 from pydantic import BaseModel, Field, field_serializer
 
@@ -19,6 +20,7 @@ class ReinforcedVM(BaseModel, frozen=True):
     n_cpu: int = Field(alias="n_core")
     storageGB: int = Field(alias="disk_gb")  # noqa: N815
     sshkey: str | None
+    vm_id: UUID = Field(exclude=True)
 
     @field_serializer("elapsed")
     def _serialize(self, v: timedelta) -> str:

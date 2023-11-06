@@ -3,6 +3,7 @@
 import click
 from click_shell import shell
 
+from conoha_client._shared.renforced_vm import reinforced_vm_cli
 from conoha_client.features import (
     billing_cli,
     list_vm_cli,
@@ -38,4 +39,5 @@ def main() -> None:
     cli.add_command(sshkey_cli)
     cli.add_command(billing_cli)
     cli.add_command(snapshot_cli)
+    cli.add_command(reinforced_vm_cli)
     cli()
