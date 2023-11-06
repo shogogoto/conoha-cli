@@ -1,13 +1,14 @@
 """VM Domain."""
+from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from enum import Enum
 from ipaddress import IPv4Address
 from uuid import UUID
 
 from pydantic import AliasPath, BaseModel, Field, field_validator
 
-from conoha_client.features._shared.util import TOKYO_TZ
+from conoha_client.features._shared.util import TOKYO_TZ, now_jst
 
 
 class VMStatus(Enum):
@@ -32,10 +33,12 @@ class VM(BaseModel, frozen=True):
     created: datetime = Field(alias="created")
     image_id: UUID = Field(alias=AliasPath("image", "id"))
     flavor_id: UUID = Field(alias=AliasPath("flavor", "id"))
+    sshkey: str | None = Field(alias="key_name")
 
-    # def elapsed_from_created(self) -> timedelta:
-    #     """作成時からの経過時間を秒以下を省いて計算する."""
-    #     return now_jst() - self.created_at
+    def elapsed_from_created(self) -> timedelta:
+        """作成時からの経過時間を秒以下を省いて計算する."""
+        return now_jst() - self.created
+
     @property
     def ipv4(self) -> IPv4Address:
         """ipv4 from name."""
