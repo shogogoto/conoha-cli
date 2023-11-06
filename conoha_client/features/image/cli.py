@@ -13,12 +13,8 @@ if TYPE_CHECKING:
     from .domain import Image
 
 
-@click.group(name="image")
-def vm_image_cli() -> None:
-    """VM Image CLI."""
-
-
-@vm_image_cli.command(name="ls")
+@click.command(name="lsimg", help="list image")
 @view_options
-def _list() -> list[Image]:
-    return list_images()
+def vm_image_cli() -> list[Image]:
+    """VM Image CLI."""
+    return list_images().root

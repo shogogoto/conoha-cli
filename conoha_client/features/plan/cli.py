@@ -13,12 +13,8 @@ if TYPE_CHECKING:
     from .domain import VMPlan
 
 
-@click.group(name="plan")
-def vm_plan_cli() -> None:
-    """VM Plan CLI."""
-
-
-@vm_plan_cli.command(name="ls")
+@click.command(name="lsplan")
 @view_options
-def _list() -> list[VMPlan]:
+def vm_plan_cli() -> list[VMPlan]:
+    """List vm plan."""
     return list_vmplans()
