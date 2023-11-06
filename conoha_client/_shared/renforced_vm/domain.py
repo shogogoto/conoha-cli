@@ -20,7 +20,7 @@ class ReinforcedVM(BaseModel, frozen=True):
     n_cpu: int = Field(alias="n_core")
     storageGB: int = Field(alias="disk_gb")  # noqa: N815
     sshkey: str | None
-    vm_id: UUID = Field(exclude=True)
+    vm_id: UUID
 
     @field_serializer("elapsed")
     def _serialize(self, v: timedelta) -> str:
