@@ -83,7 +83,7 @@ class Image(BaseModel, frozen=True):
         return v
 
     @field_serializer("sizeGB")
-    def _serialize(self, v: int) -> int:
+    def _serialize(self, v: int) -> float:
         """B to GB."""
         return v / pow(1024, 3)
 
