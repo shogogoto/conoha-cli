@@ -3,9 +3,8 @@
 import click
 from click_shell import shell
 
-from conoha_client._shared.renforced_vm import reinforced_vm_cli
+from conoha_client._shared.renforced_vm import list_vm_cli, reinforced_vm_cli
 from conoha_client.features import (
-    list_vm_cli,
     sshkey_cli,
     vm_actions_cli,
     vm_image_cli,
