@@ -35,6 +35,7 @@ def fixture_models() -> ImageList:
                 "created": j["created"],
                 "minDisk": j["minDisk"],
                 "progress": 100,
+                "OS-EXT-IMG-SIZE:size": 999,
             },
         )
         for j in json.loads(p.read_text())
