@@ -1,6 +1,7 @@
 """template test."""
 
 
+import os
 from pathlib import Path
 
 import click
@@ -23,7 +24,9 @@ def test_template_read(monkeypatch: MonkeyPatch) -> None:
     """Test case."""
     p = Path(__file__).parent / "fixture_template.txt"
     monkeypatch.setenv("OS_TEMPLATE_READ", str(p))
-    monkeypatch.delenv("OS_TEMPLATE_WRITE")
+    write_env = "OS_TEMPLATE_WRITE"
+    if write_env in os.environ:
+        monkeypatch.delenv(write_env)
 
     y = "aaaaaaaaaa"
     extra = "oooooooohhhhhhhhhh"
