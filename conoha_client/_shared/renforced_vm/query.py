@@ -32,6 +32,12 @@ def list_reinforced_vms() -> list[ReinforcedVM]:
     return ls
 
 
+def find_reinforced_vm_by_id(vm_id: UUID) -> ReinforcedVM:
+    return ModelList[ReinforcedVM](root=list_reinforced_vms()).find_one_by(
+        by("vm_id", vm_id),
+    )
+
+
 def find_image(image_id: UUID) -> Image:
     """Find image by id."""
     return list_images().find_one_by(by("image_id", image_id))

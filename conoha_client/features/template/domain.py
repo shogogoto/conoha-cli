@@ -1,6 +1,7 @@
 """template domain."""
 from __future__ import annotations
 
+import functools
 from pathlib import Path
 from typing import Callable, ParamSpec, TypeVar
 
@@ -13,7 +14,9 @@ P = ParamSpec("P")
 T = TypeVar("T", bound=BaseModel)
 
 
-def template_io(func: Callable[P, T]) -> Callable:
+def template_io(
+    func: Callable[P, T | None],
+) -> Callable:
     """Template cli options."""
 
     @click.option(
@@ -26,7 +29,7 @@ def template_io(func: Callable[P, T]) -> Callable:
             path_type=Path,
         ),
         envvar="OS_TEMPLATE_READ",
-        help="テンプレートパス",
+        help="テンプレートパス[default: $OS_TEMPLATE_READ]",
     )
     @click.option(
         "--write-template",
@@ -37,25 +40,29 @@ def template_io(func: Callable[P, T]) -> Callable:
             writable=True,
             path_type=Path,
         ),
-        envvar="OS_TEMPLATE_write",
-        help="書き出し先",
+        envvar="OS_TEMPLATE_WRITE",
+        help="書き出し先[default: OS_TEMPLATE_WRITE]",
     )
     @click.option(
         "--mapping",
-        "-m",
+        "-map",
+        "mapping",
         nargs=2,
         multiple=True,
         type=click.Tuple([str, str]),
-        default=None,
+        default=[],
     )
+    @functools.wraps(func)
     def wrapper(
         rpath: Path,
         wpath: Path,
         mapping: list[tuple[str, str]],
         *args: P.args,
         **kwargs: P.kwargs,
-    ) -> T:
+    ) -> T | None:
         model = func(*args, **kwargs)
+        if model is None:
+            return model
         if rpath is None:
             return model
         t = TemplateRepo[T](read_from=rpath, map_to=dict(mapping))

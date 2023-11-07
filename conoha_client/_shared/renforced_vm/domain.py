@@ -24,4 +24,5 @@ class ReinforcedVM(BaseModel, frozen=True):
 
     @field_serializer("elapsed")
     def _serialize(self, v: timedelta) -> str:
+        """表示を整える."""
         return str(v)

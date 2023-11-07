@@ -2,9 +2,11 @@
 from __future__ import annotations
 
 from operator import attrgetter
+from typing import TYPE_CHECKING
 
 import click
 
+from conoha_client._shared.renforced_vm.query import find_reinforced_vm_by_id
 from conoha_client.add_vm.repo import DistQuery, add_vm_command
 from conoha_client.features._shared.command_option import add_vm_options
 from conoha_client.features._shared.view.domain import view_options
@@ -14,6 +16,10 @@ from conoha_client.features.image.domain import (
     DistVersion,
 )
 from conoha_client.features.plan.domain import Memory
+from conoha_client.features.template.domain import template_io
+
+if TYPE_CHECKING:
+    from conoha_client._shared.renforced_vm.domain import ReinforcedVM
 
 
 @click.group("add", invoke_without_command=True, help="VM新規追加")
@@ -47,6 +53,7 @@ from conoha_client.features.plan.domain import Memory
     show_default=True,
     type=Application.parse,
 )
+@template_io
 @add_vm_options
 @click.pass_context
 def add_vm_cli(  # noqa: PLR0913
@@ -57,7 +64,7 @@ def add_vm_cli(  # noqa: PLR0913
     dist: Distribution,
     version: DistVersion,
     app: Application,
-) -> None:
+) -> ReinforcedVM | None:
     """Add VM CLI."""
     ctx.ensure_object(dict)
     query = DistQuery(memory=memory, dist=dist)
@@ -73,7 +80,10 @@ def add_vm_cli(  # noqa: PLR0913
             admin_pass=admin_password,
         )
         added = cmd(keypair_name)
-        click.echo(f"VM(uuid={added.vm_id}) was added newly")
+        vm = find_reinforced_vm_by_id(added.vm_id)
+        click.echo(f"VM(uuid={vm.vm_id}) was added newly")
+        return vm
+    return None
 
 
 @add_vm_cli.command(name="vers")
