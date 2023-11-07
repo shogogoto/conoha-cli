@@ -42,6 +42,10 @@ class AddVMCommand(BaseModel, frozen=True):
                 "flavorRef": str(self.flavor_id),
                 "imageRef": str(self.image_id),
                 "adminPass": self.admin_pass,
+                "security_groups": [
+                    {"name": "default"},
+                    {"name": "gncs-ipv4-ssh"},
+                ],
             },
         }
         if sshkey_name is not None:
