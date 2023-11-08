@@ -24,7 +24,7 @@ def remove_cli(vm_id: UUID) -> None:
     click.echo(f"{vm_id} was removed.")
 
 
-@vm_actions_cli.command(name="shutdown", help="VMシャットダウン")
+@vm_actions_cli.command(name="stop", help="VMシャットダウン")
 @each_args("vm_ids", converter=complete_vm_id)
 def shutdown_cli(vm_id: UUID) -> None:
     """VMシャットダウン."""
