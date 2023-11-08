@@ -1,35 +1,305 @@
-# 開発環境構築
+# conoha-client
 
-## リポジトリのインストール
+[ConoHa API](https://www.conoha.jp/docs/?btn_id=docs-image-get_quota--sidebar_docs)
+をいい感じに組み合わせて叩く「ConoHa VPS」用 CLI です。  
+開発用 Linux サーバーを安価に利用するために作りました。
+
+## 主な機能
+
+- 見やすく強化された VM 一覧 e.g. 作成からの経過時間が確認できる
+
+  ```bash
+  $ ccli lsvm
+      ipv4           status    elapsed              memoryMB    n_cpu    storageGB  sshkey                vm_id
+  --  -------------  --------  -----------------  ----------  -------  -----------  --------------------  ------------------------------------
+   0  xxx.x.xxx.xxx  ACTIVE    75 days, 19:07:47        1024        2          100  key-2023-08-24-23-09  27c3379a-6510-4757-8b1c-069981be3b35
+  ```
+
+- VM(=サーバー)のライフサイクルの操作 e.g. 作成・削除・停止・再起動 etc  
+   vm_id や image_id を前方一致で検索するため、値全てを入力しなくてもよい
+
+  ```bash
+  # 512MB = 0.5GBのメモリ、ubuntuのバージョン20.04でVMを新規追加
+  $ ccli vm add -m 0.5 -d ubuntu -v 20.04
+  VM(uuid=5f11867c-d01f-4dde-a8cb-00ffb8e1eacb) was added newly
+  $ ccli lsvm # 追加されたことを確認
+     ipv4           status    elapsed              memoryMB    n_cpu    storageGB  sshkey                          vm_id
+  -- -------------  --------  -----------------  ----------  -------  -----------  ------------------------------  ------------------------------------
+  0  xxx.x.xxx.xxx  ACTIVE    75 days, 19:17:47        1024        2          100  key-2023-08-24-23-09            27c3379a-6510-4757-8b1c-069981be3b35
+  1  yyy.y.yy.yy    BUILD     -1 day, 23:59:48          512        1           30  conoha-client-2023-11-07-15-45  5f11867c-d01f-4dde-a8cb-00ffb8e1eacb
+
+  # VMを停止
+  $ ccli vm stop 5f
+  5f11867c-d01f-4dde-a8cb-00ffb8e1eacb was shutdowned.
+  $ ccli lsvm
+      ipv4           status    elapsed              memoryMB    n_cpu    storageGB  sshkey                          vm_id
+  --  -------------  --------  -----------------  ----------  -------  -----------  ------------------------------  ------------------------------------
+   0  xxx.x.xxx.xxx  ACTIVE    75 days, 19:22:47        1024        2          100  key-2023-08-24-23-09            27c3379a-6510-4757-8b1c-069981be3b35
+   1  yyy.y.yy.yy    SHUTOFF   0:04:48                   512        1           30  conoha-client-2023-11-07-15-45  5f11867c-d01f-4dde-a8cb-00ffb8e1eacb
+
+  # VMを起動
+  $ ccli vm boot 5f
+  5f11867c-d01f-4dde-a8cb-00ffb8e1eacb was booted.
+  $ ccli lsvm
+      ipv4           status    elapsed              memoryMB    n_cpu    storageGB  sshkey                          vm_id
+  --  -------------  --------  -----------------  ----------  -------  -----------  ------------------------------  ------------------------------------
+   0  xxx.x.xxx.xxx  ACTIVE    75 days, 19:22:47        1024        2          100  key-2023-08-24-23-09            27c3379a-6510-4757-8b1c-069981be3b35
+   1  yyy.y.yy.yy    ACTIVE    0:04:48                   512        1           30  conoha-client-2023-11-07-15-45  5f11867c-d01f-4dde-a8cb-00ffb8e1eacb
+  ```
+
+- スナップショット(VM 由来の docker image)の保存
+
+  ```bash
+  # VMを停止しておかないとスナップショットを保存できない
+  $ ccli vm stop 5f
+  5f11867c-d01f-4dde-a8cb-00ffb8e1eacb was shutdowned.
+  $ ccli lsvm
+      ipv4           status    elapsed              memoryMB    n_cpu    storageGB  sshkey                          vm_id
+  --  -------------  --------  -----------------  ----------  -------  -----------  ------------------------------  ------------------------------------
+   0  xxx.x.xxx.xxx  ACTIVE    75 days, 19:22:47        1024        2          100  key-2023-08-24-23-09            27c3379a-6510-4757-8b1c-069981be3b35
+   1  yyy.y.yy.yy    SHUTOFF   0:04:48                   512        1           30  conoha-client-2023-11-07-15-45  5f11867c-d01f-4dde-a8cb-00ffb8e1eacb
+
+  # スナップショット名「test」としてimage_id=5f...を保存
+  $ ccli snapshot save 5f test
+  5f11867c-d01f-4dde-a8cb-00ffb8e1eacb was snapshot as test.
+  $ ccli snapshot ls
+      image_id                              name    dist                app      min_disk    progress  created                      sizeGB
+  --  ------------------------------------  ------  ------------------  -----  ----------  ----------  -------------------------  --------
+   0  7abc6c4c-935d-4a4a-a4e9-a02cd80c74f5  test    Ubuntu-20.04-64bit                 30          25  2023-11-08T17:56:00+09:00         0
+
+  # しばらくすると、progress:100となり、スナップショットの保存が完了する
+  $ ccli snapshot ls
+      image_id                              name    dist                app      min_disk    progress  created                      sizeGB
+  --  ------------------------------------  ------  ------------------  -----  ----------  ----------  -------------------------  --------
+   0  7abc6c4c-935d-4a4a-a4e9-a02cd80c74f5  test    Ubuntu-20.04-64bit                 30         100  2023-11-08T17:56:00+09:00    7.9245
+  ```
+
+- スナップショットから VM を復元
+
+  ```bash
+  # スナップショットを保存したのでVMを削除
+  $ ccli vm rm 5f
+  5f11867c-d01f-4dde-a8cb-00ffb8e1eacb was removed.
+  $ ccli lsvm
+      ipv4           status    elapsed              memoryMB    n_cpu    storageGB  sshkey                vm_id
+  --  -------------  --------  -----------------  ----------  -------  -----------  --------------------  ------------------------------------
+   0  xxx.x.xxx.xxx  ACTIVE    75 days, 19:39:47        1024        2          100  key-2023-08-24-23-09  27c3379a-6510-4757-8b1c-069981be3b35
+
+  # image_id=7a...のスナップショット、メモリ0.5GBでVMを作成
+  $ ccli snapshot restore 7a 0.5
+  VM(uuid=f73538f7-cc42-427b-aae8-e9222f7b76e7) was restored from test snapshot
+  $ ccli lsvm
+      ipv4           status    elapsed              memoryMB    n_cpu    storageGB  sshkey                          vm_id
+  --  -------------  --------  -----------------  ----------  -------  -----------  ------------------------------  ------------------------------------
+   0  xxx.x.xxx.xxx  ACTIVE    75 days, 19:40:47        1024        2          100  key-2023-08-24-23-09            27c3379a-6510-4757-8b1c-069981be3b35
+   1  yyy.y.yyy.yy   BUILD     -1 day, 23:59:44          512        1           30  conoha-client-2023-11-07-15-45  f73538f7-cc42-427b-aae8-e9222f7b76e7
+
+  # しばらくするとステータスがACTIVEになる
+  $ ccli lsvm
+      ipv4           status    elapsed              memoryMB    n_cpu    storageGB  sshkey                          vm_id
+  --  -------------  --------  -----------------  ----------  -------  -----------  ------------------------------  ------------------------------------
+   0  xxx.x.xxx.xxx  ACTIVE    75 days, 19:41:47        1024        2          100  key-2023-08-24-23-09            27c3379a-6510-4757-8b1c-069981be3b35
+   1  yyy.y.yyy.yy   ACTIVE    0:00:44                   512        1           30  conoha-client-2023-11-07-15-45  f73538f7-cc42-427b-aae8-e9222f7b76e7
+  ```
+
+- リスト系コマンドの様々な表示形式  
+   grep や jq コマンドなどのパイプ処理に便利
+
+  ```bash
+  # json形式
+  $ ccli lsvm --json
+  [
+    {
+      "ipv4": "xxx.x.xxx.xxx",
+      "status": "ACTIVE",
+      "elapsed": "75 days, 19:53:47",
+      "memoryMB": 1024,
+      "n_cpu": 2,
+      "storageGB": 100,
+      "sshkey": "key-2023-08-24-23-09",
+      "vm_id": "27c3379a-6510-4757-8b1c-069981be3b35"
+    },
+    {
+      "ipv4": "yyy.y.yyy.yy",
+      "status": "ACTIVE",
+      "elapsed": "0:12:44",
+      "memoryMB": 512,
+      "n_cpu": 1,
+      "storageGB": 30,
+      "sshkey": "conoha-client-2023-11-07-15-45",
+      "vm_id": "f73538f7-cc42-427b-aae8-e9222f7b76e7"
+    }
+  ]
+
+  # tableのカラム名などを削除
+  $ ccli lsvm -p
+  xxx.x.xxx.xxx  ACTIVE  75 days, 19:53:47  1024  2  100  key-2023-08-24-23-09            27c3379a-6510-4757-8b1c-069981be3b35
+  yyy.y.yyy.yy   ACTIVE  0:12:44             512  1   30  conoha-client-2023-11-07-15-45  f73538f7-cc42-427b-aae8-e9222f7b76e7
+
+  # 表示カラムを絞る
+  $ ccli lsvm -k ipv4 -k elapsed
+      ipv4           elapsed
+  --  -------------  -----------------
+   0  xxx.x.xxx.xxx  75 days, 19:54:47
+   1  yyy.y.yyy.yy   0:13:44
+
+  # where句みたいにstorageGB = 30 の行を表示
+  $ ccli lsvm -w storageGB 30
+      ipv4          status    elapsed      memoryMB    n_cpu    storageGB  sshkey                          vm_id
+  --  ------------  --------  ---------  ----------  -------  -----------  ------------------------------  ------------------------------------
+   0  yyy.y.yyy.yy  ACTIVE    0:13:44           512        1           30  conoha-client-2023-11-07-15-45  f73538f7-cc42-427b-aae8-e9222f7b76e7
+  ```
+
+## 使い方
+
+### インストール
+
+PyPI からインストール
+
 ```bash
-git clone https://github.com/shogogoto/conoha-client.git
+pip3 intall conoha-client
 ```
 
-## パッケージのインストール
+すると、bin に ccli が追加される  
+対応バージョンは Python3.10
+
+### help オプション
+
+本ツールは python の[click](https://click.palletsprojects.com/en/8.1.x/)を利用しています。
+使い方は help オプションで逐次確認できます。
+コマンドやサブコマンドに対しても help オプションを使用可能です。
+
+```bash
+// 例
+$ ccli --help
+Usage: ccli [OPTIONS] COMMAND [ARGS]...
+
+  root.
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  lsimg      list image
+  lsinvoice  課金一覧.
+  lsorder    契約一覧.
+  lspaid     入金履歴.
+  lsplan     List vm plan.
+  lsvm       list VM as human friendly
+  snapshot   スナップショット=ユーザーがVMから作成したイメージ.
+  sshkey     キーペアCRUD.
+  vm         VM追加・削除など
+```
+
+### 環境変数の設定
+
+[API を使用するためのトークンを取得する](https://support.conoha.jp/v/apitokens/)
+を参考に ConoHa のダッシュボードから環境変数を設定する
+
+```bash
+# ConoHa VPSのダッシュボード由来の情報 must
+export OS_USERNAME=***       # APIユーザー > ユーザー名
+export OS_PASSWORD=***       # APIユーザー > パスワード
+export OS_TENANT_ID=***      # テナント情報 > テナントID
+export OS_CONOHA_REGION_NO=? # エンドポイントのtyo?の数字 e.g. https://account.tyo3.conoha.io/v1/... => 3
+
+# VM作成に関わる環境変数 optional
+export OS_ADMIN_PASSWORD=***        # VMのrootユーザーのパスワード
+export OS_SSHKEY_NAME=***           # VMに登録するsshのキーペア名
+export OS_TEMPLATE_READ=~/.ssh/...  # 新規作成したVMの情報を適用するテンプレート
+export OS_TEMPLATE_WRITE=~/.ssh/... # 適用したテンプレートの出力先
+```
+
+### テンプレートの例
+
+${ipv4}の部分が作成した VM の値で置き換わり
+OS_TEMPLATE_WRITE に出力される  
+${key}の key には`ccli lsvm`のカラム名が使用できる
+
+```
+# ~/.ssh/conf.d/dev/template
+
+Host dev
+  HostName ${ipv4}
+  Port 22
+  User gotoh
+  IdentityFile ~/.ssh/conf.d/dev/id_ed25519
+  ServerAliveInterval 60 #sshの自動切断を防ぐために記述
+  ForwardX11 yes
+  ForwardAgent yes
+```
+
+## 開発動機
+
+### PC はシンクライアントに限る
+
+低スペック PC で個人開発するのに限界を感じた私は VPS を開発環境として利用することを考えました。  
+PC くらい買えって？時代はシェアリングエコノミー。
+自分が専有する資源は、自分が使用していない間には場所を奪うだけの置物と化します。
+クラウド時代において、PC は低スペックなシンクライアントに徹するべきです。  
+そうすれば、スペースと費用が節約できるはずです。
+
+### なぜ「ConoHa VPS」なのか
+
+いろんな VPS がある中で ConoHa VPS を選んだ理由は以下です。
+
+- １時間毎の時間課金で VPS が利用可能  
+  多くの VPS は月額課金であり、寝ている間にも課金されるのはいただけない
+- GMO(9449)の株主優待が使える(年間 1 万円分)
+
+### なぜ既存ツールを使わなかったのか
+
+時間課金を意識した既存ツールが見当たらなかったためです。  
+[ConoHa API](https://www.conoha.jp/docs/?btn_id=docs-image-get_quota--sidebar_docs)
+と１対１対応しただけの単純な CLI では不満がありました。
+サーバーを起動・停止・削除＋ α だけではなく、
+
+- サーバー作成からの時間経過を知りたい
+- 次の 1 時間に突入して追加で課金される前にサーバー削除を予約したい
+- サーバーの状態を保存・復元を簡単したい
+
+などの要求は頻繁にサーバーを削除する時間課金では重要です。
+
+## 開発環境構築
+
+### パッケージのインストール
+
 プロジェクトルートで以下を実行
+
 ```bash
 poetry install
 ```
 
-## vimで編集準備
-jediのpython補完が効くようにjedi-language-server packageがあるvenv環境に入ってからvi編集を始める
-```bash
-poetry shell
-vi ???
-```
+### pre-commit 設定
 
-## pre-commit設定
-git commit前にlinterを動かす準備
+git commit 前に linter を動かす準備
+
 ```bash
 poetry run task pre-commit
 ```
 
-# テスト実行
+### テスト実行
+
 プロジェクトルートで以下を実行
+
 ```bash
 poetry run task test
 ```
+
 ファイルを追加・更新することを検知して、自動でユニットテストを実行したい場合は以下
+
 ```bash
 poetry run task test-watch
+```
+
+### リリース方法
+
+poetry 経由で PyPI にリリースする
+poetry 拡張の poetry-dynamic-versioning によって、
+git tag を PyPI のバージョンとして動的に設定・リリースする
+
+```bash
+git tag vx.x.x
+poetry build
+git tag push origin
 ```

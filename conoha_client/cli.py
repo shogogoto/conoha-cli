@@ -31,7 +31,14 @@ def main() -> None:
     """CLI設定用."""
     vm_cli.add_command(list_vm_cli)
     vm_cli.add_command(add_vm_cli)
-    vm_merged = click.CommandCollection(name="vm", sources=[vm_cli, vm_actions_cli])
+    vm_merged = click.CommandCollection(
+        name="vm",
+        sources=[
+            vm_cli,
+            vm_actions_cli,
+        ],
+        help="VM追加・削除など",
+    )
     cli.add_command(vm_merged)
     cli.add_command(vm_plan_cli)
     cli.add_command(vm_image_cli)
