@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 import click
 
+from conoha_client._shared.renforced_vm.query import find_reinforced_vm_by_id
 from conoha_client.features._shared import (
     add_vm_options,
     view_options,
@@ -12,6 +13,7 @@ from conoha_client.features._shared import (
 from conoha_client.features._shared.command_option import each_args
 from conoha_client.features.image.repo import remove_image
 from conoha_client.features.plan.domain import Memory
+from conoha_client.features.template.domain import template_io
 from conoha_client.features.vm.repo.query import complete_vm
 
 from .repo import (
@@ -22,6 +24,7 @@ from .repo import (
 )
 
 if TYPE_CHECKING:
+    from conoha_client._shared.renforced_vm.domain import ReinforcedVM
     from conoha_client.features.image.domain.image import Image
 
 
@@ -52,13 +55,14 @@ def save(vm_id: str, name: str) -> None:
 @snapshot_cli.command(name="restore", help="スナップショットからVM起動")
 @click.argument("image_id", nargs=1, type=click.STRING)
 @click.argument("memory", nargs=1, type=click.Choice(Memory))
+@template_io
 @add_vm_options
 def restore(
     admin_password: str,
     keypair_name: str,
     image_id: str,
     memory: Memory,
-) -> None:
+) -> ReinforcedVM:
     """スナップショットからVM起動."""
     added, img = restore_snapshot(
         image_id,
@@ -67,6 +71,7 @@ def restore(
         keypair_name,
     )
     click.echo(f"VM(uuid={added.vm_id}) was restored from {img.name} snapshot")
+    return find_reinforced_vm_by_id(added.vm_id)
 
 
 @snapshot_cli.command("rm")

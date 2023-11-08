@@ -10,6 +10,7 @@ from pydantic import (
     AliasPath,
     BaseModel,
     Field,
+    field_serializer,
     field_validator,
 )
 
@@ -55,10 +56,11 @@ class Image(BaseModel, frozen=True):
     name: str = Field(alias="name", description="名前")
     dist: str = Field("", alias=AliasPath("metadata", "dst"))
     app: str = Field("", alias=AliasPath("metadata", "app"))
-    os: OperatingSystem = Field(alias=AliasPath("metadata", "os_type"))
+    os: OperatingSystem = Field(alias=AliasPath("metadata", "os_type"), exclude=True)
     image_type: ImageType = Field(
         ImageType.PRIOR,
         alias=AliasPath("metadata", "image_type"),
+        exclude=True,
     )
     min_disk: MinDisk = Field(
         alias="minDisk",
@@ -66,6 +68,7 @@ class Image(BaseModel, frozen=True):
     )
     progress: int = Field(description="保存進捗率")
     created: datetime = Field(alias="created", description="作成日時")
+    sizeGB: int = Field(alias="OS-EXT-IMG-SIZE:size")  # noqa: N815
 
     @field_validator("created")
     def validate_created(cls, v: datetime) -> datetime:  # noqa: N805
@@ -78,6 +81,11 @@ class Image(BaseModel, frozen=True):
         if not (v.is_windows() or v.is_linux()):
             raise NeitherWindowsNorLinuxError
         return v
+
+    @field_serializer("sizeGB")
+    def _serialize(self, v: int) -> float:
+        """B to GB."""
+        return v / pow(1024, 3)
 
     @cached_property
     def fs(self) -> FileSystem:

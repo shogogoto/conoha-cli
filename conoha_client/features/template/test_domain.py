@@ -1,6 +1,7 @@
 """template test."""
 
 
+import os
 from pathlib import Path
 
 import click
@@ -23,11 +24,14 @@ def test_template_read(monkeypatch: MonkeyPatch) -> None:
     """Test case."""
     p = Path(__file__).parent / "fixture_template.txt"
     monkeypatch.setenv("OS_TEMPLATE_READ", str(p))
+    write_env = "OS_TEMPLATE_WRITE"
+    if write_env in os.environ:
+        monkeypatch.delenv(write_env)
 
     y = "aaaaaaaaaa"
     extra = "oooooooohhhhhhhhhh"
     runner = CliRunner()
-    result = runner.invoke(cli, ["-m", "y", y, "-m", "extra", extra])
+    result = runner.invoke(cli, ["-map", "y", y, "-map", "extra", extra])
     assert "xxx" in result.stdout
     assert y in result.stdout
     assert extra not in result.stdout

@@ -23,12 +23,7 @@ if TYPE_CHECKING:
     )
 
 
-@click.group(name="bill")
-def billing_cli() -> None:
-    """課金関連."""
-
-
-@billing_cli.command(name="order")
+@click.command(name="lsorder")
 @click.option(
     "--vps/--all",
     is_flag=True,
@@ -37,7 +32,7 @@ def billing_cli() -> None:
     help="VPS契約のみ/全契約",
 )
 @view_options
-def _list(vps: bool) -> list:
+def order_cli(vps: bool) -> list:
     """契約一覧."""
     if vps:
         return list_vps_orders()
@@ -45,14 +40,14 @@ def _list(vps: bool) -> list:
     return list_orders().root
 
 
-@billing_cli.command(name="paid")
+@click.command(name="lspaid")
 @view_options
-def _history() -> list[Deposit]:
+def paid_cli() -> list[Deposit]:
     """入金履歴."""
     return list_payment()
 
 
-@billing_cli.command(name="invoice")
+@click.command(name="lsinvoice")
 @click.option(
     "--detail",
     "-d",
@@ -79,7 +74,7 @@ def _history() -> list[Deposit]:
     show_default=True,
 )
 @view_options
-def _invoices(
+def invoice_cli(
     detail: bool,
     offset: int,
     months: int,
