@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "conoha-client"
-version = "0.0.0"
+version = "0.0.0" # git tagの値で置換される
 description = ""
 authors = ["Shogo Goto <gotoadmn0605@gmail.com>"]
 readme = "README.md"
@@ -33,8 +33,7 @@ pre-commit = "^3.4.0"
 requests-mock = "^1.11.0"
 
 [tool.poetry.scripts]
-# conoha-client = "conoha_client.cli:main"
-ccli          = "conoha_client.cli:main" # alias
+ccli = "conoha_client.cli:main"
 
 [build-system]
 requires = ["poetry-core", "poetry-dynamic-versioning"]
