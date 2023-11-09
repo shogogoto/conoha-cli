@@ -1,10 +1,13 @@
 """VM resize cli."""
 
+from uuid import UUID
+
 import click
 
+from conoha_client.features._shared.command_option import each_args
 from conoha_client.features.plan.domain import Memory
 from conoha_client.features.plan.repo import find_vmplan
-from conoha_client.features.vm.repo.query import complete_vm
+from conoha_client.features.vm.repo.query import complete_vm, complete_vm_id
 from conoha_client.features.vm_actions.repo import VMActionCommands
 
 
@@ -25,20 +28,18 @@ def resize(vm_id: str, memory: Memory) -> None:
 
 
 @vm_resize_cli.command(name="resize-confirm")
-@click.argument("vm_id", nargs=1, type=click.STRING)
-def confirm(vm_id: str) -> None:
+@each_args("vm_ids", converter=complete_vm_id)
+def confirm(vm_id: UUID) -> None:
     """VMののリサイズ確定."""
-    vm = complete_vm(vm_id)
-    cmd = VMActionCommands(vm_id=vm.vm_id)
+    cmd = VMActionCommands(vm_id=vm_id)
     cmd.confirm_resize()
-    click.echo(f"{vm.vm_id} was resized")
+    click.echo(f"{vm_id} was resized")
 
 
 @vm_resize_cli.command(name="resize-revert")
-@click.argument("vm_id", nargs=1, type=click.STRING)
-def revert(vm_id: str) -> None:
+@each_args("vm_ids", converter=complete_vm_id)
+def revert(vm_id: UUID) -> None:
     """VMののリサイズ取り消し."""
-    vm = complete_vm(vm_id)
-    cmd = VMActionCommands(vm_id=vm.vm_id)
+    cmd = VMActionCommands(vm_id=vm_id)
     cmd.revert_resize()
-    click.echo(f"{vm.vm_id} reverted to previous size")
+    click.echo(f"{vm_id} reverted to previous size")
