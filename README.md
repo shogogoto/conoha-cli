@@ -1,8 +1,12 @@
 # conoha-client
 
-[ConoHa API](https://www.conoha.jp/docs/?btn_id=docs-image-get_quota--sidebar_docs)
-をいい感じに組み合わせて叩く「ConoHa VPS」用 CLI です。  
-開発用 Linux サーバーを安価に利用するために作りました。
+conoha-client は [ConoHa API](https://www.conoha.jp/docs/?btn_id=docs-image-get_quota--sidebar_docs)
+をいい感じに組み合わせて叩く「ConoHa VPS」用 CLI です。
+Linux サーバー(=VM)の作成・保存・削除・経過時間の確認などが簡単に実行できます。  
+開発環境に VPS を利用する場合、睡眠時間分の費用も請求される月額課金は無駄が多い一方、
+利用時間分のみ請求される[時間課金](https://www.conoha.jp/vps/pricing/?btn_id=vps-hourly--vpsHeader_vps-pricing)
+は効率的です。  
+時間課金での利用には頻繁な VM 操作が必要であり、そのために conoha-client を作成しました。
 
 ## 主な機能
 
@@ -15,8 +19,11 @@
    0  xxx.x.xxx.xxx  ACTIVE    75 days, 19:07:47        1024        2          100  key-2023-08-24-23-09  27c3379a-6510-4757-8b1c-069981be3b35
   ```
 
-- VM(=サーバー)のライフサイクルの操作 e.g. 作成・削除・停止・再起動 etc  
-   vm_id や image_id を前方一致で検索するため、値全てを入力しなくてもよい
+- VM(=サーバー)のライフサイクルの操作 e.g. 作成・削除・停止・再起動 etc
+
+  - vm_id や image_id を前方一致で検索・補完するため、値全てを入力しなくてもよい
+  - conoha-client では`ccli vm add -m 0.5 -d ubuntu -v 20.04`のように分かりやすく簡単で指定できる。
+    他の CLI ツール では VM 作成に使用するイメージやスペックを指定するために image_id や flavor_id を調査・入力する必要があり面倒
 
   ```bash
   # 512MB = 0.5GBのメモリ、ubuntuのバージョン20.04でVMを新規追加
@@ -154,20 +161,19 @@
 
 ### インストール
 
-PyPI からインストール
+[PyPI](https://pypi.org/project/conoha-client/) からインストール
 
 ```bash
 pip3 intall conoha-client
 ```
 
-すると、bin に ccli が追加される  
-対応バージョンは Python3.10
+すると、python3 のエンドポイントに ccli が追加され、実行可能になります。
 
 ### help オプション
 
-本ツールは python の[click](https://click.palletsprojects.com/en/8.1.x/)を利用しています。
-使い方は help オプションで逐次確認できます。
-コマンドやサブコマンドに対しても help オプションを使用可能です。
+本ツールは python の CLI 用ライブラリ[click](https://click.palletsprojects.com/en/8.1.x/)を利用しています。
+使用可能なコマンドやオプションは help オプションで随時確認できます。
+サブコマンドに対しても help オプションは使用可能です。
 
 ```bash
 // 例
@@ -194,7 +200,7 @@ Commands:
 ### 環境変数の設定
 
 [API を使用するためのトークンを取得する](https://support.conoha.jp/v/apitokens/)
-を参考に ConoHa のダッシュボードから環境変数を設定する
+を参考に ConoHa のダッシュボードを参照して環境変数を設定する
 
 ```bash
 # ConoHa VPSのダッシュボード由来の情報 must
@@ -212,10 +218,6 @@ export OS_TEMPLATE_WRITE=~/.ssh/... # 適用したテンプレートの出力先
 
 ### テンプレートの例
 
-${ipv4}の部分が作成した VM の値で置き換わり
-OS_TEMPLATE_WRITE に出力される  
-${key}の key には`ccli lsvm`のカラム名が使用できる
-
 ```
 # ~/.ssh/conf.d/dev/template
 
@@ -223,11 +225,31 @@ Host dev
   HostName ${ipv4}
   Port 22
   User gotoh
-  IdentityFile ~/.ssh/conf.d/dev/id_ed25519
+  IdentityFile ~/.ssh/conf.d/dev/id_rsa
   ServerAliveInterval 60 #sshの自動切断を防ぐために記述
   ForwardX11 yes
   ForwardAgent yes
 ```
+
+`${ipv4}`の部分が作成した VM の値で置き換わった内容が
+`OS_TEMPLATE_WRITE`で指定したパスに出力される  
+${key}の key には`ccli lsvm`のカラム名が使用できる
+
+### シェル補完機能
+
+conoha-client は CLI 用ライブラリ[click](https://click.palletsprojects.com/en/8.1.x/)
+を使用しています。  
+click は[シェル補完機能](https://click.palletsprojects.com/en/8.1.x/shell-completion/)
+が利用できます。`~/.bashrc`に以下を追記してください。
+
+```bashrc
+# ~/.bashrc
+. <(curl -s https://raw.githubusercontent.com/shogogoto/conoha-client/main/conoha-client.bash)
+```
+
+ただし、ネットワーク経由で取得したコードを直接実行するこの方法は重大なセキュリティリスクのようです。  
+不安な方は本リポジトリのルートディレクトリの`conoha-client.bash`
+の内容をコピペして`~/.bashrc`に追記してください。
 
 ## 開発動機
 
@@ -244,7 +266,10 @@ PC くらい買えって？時代はシェアリングエコノミー。
 いろんな VPS がある中で ConoHa VPS を選んだ理由は以下です。
 
 - １時間毎の時間課金で VPS が利用可能  
-  多くの VPS は月額課金であり、寝ている間にも課金されるのはいただけない
+  多くの VPS は月額課金であり、寝ている間にも課金されるのはいただけない  
+  ※ [WebArena Indigo](https://web.arena.ne.jp/indigo/price/)も時間課金プランを提供しているようだ
+- スナップショットを 50GB まで無料で使用できる
+  時間課金では、削除する VM の状態を無料で保存できることは重要
 - GMO(9449)の株主優待が使える(年間 1 万円分)
 
 ### なぜ既存ツールを使わなかったのか
