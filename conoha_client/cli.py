@@ -11,6 +11,7 @@ from conoha_client.features import (
     vm_plan_cli,
 )
 from conoha_client.features.billing.cli import invoice_cli, order_cli, paid_cli
+from conoha_client.resize.cli import resize_cli
 
 from .add_vm import add_vm_cli
 from .snapshot import snapshot_cli
@@ -31,6 +32,7 @@ def main() -> None:
     """CLI設定用."""
     vm_cli.add_command(list_vm_cli)
     vm_cli.add_command(add_vm_cli)
+    vm_cli.add_command(resize_cli)
     vm_merged = click.CommandCollection(
         name="vm",
         sources=[

@@ -9,6 +9,10 @@ class VMActionTargetNotFoundError(Exception):
     """VM操作対象が見つからなかったときの共通エラー."""
 
 
+class VMActionConflictingError(Exception):
+    """VM操作が競合した."""
+
+
 class VMShutdownError(Exception):
     """VMをシャットダウンできなかった."""
 
@@ -23,3 +27,7 @@ class VMRebootError(Exception):
 
 class VMSnapshotError(Exception):
     """VMをイメージとして保存できなかった."""
+
+
+class VMResizeError(Exception):
+    """VMのサイズを変更できなかった."""
