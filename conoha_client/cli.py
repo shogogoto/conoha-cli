@@ -11,7 +11,7 @@ from conoha_client.features import (
     vm_plan_cli,
 )
 from conoha_client.features.billing.cli import invoice_cli, order_cli, paid_cli
-from conoha_client.resize.cli import vm_resize_cli
+from conoha_client.resize import vm_resize_cli
 
 from .add_vm import add_vm_cli
 from .snapshot import snapshot_cli
