@@ -107,5 +107,21 @@ class VMActionCommands(BaseModel, frozen=True):
                 msg = "変更前と異なるメモリを指定してください"
             raise VMResizeError(msg)
         if res.status_code != HTTPStatus.ACCEPTED:
-            msg = f"{self.vm_id}をリサイズできませんでした"
+            msg = f"{self.vm_id}をプラン変更できませんでした"
             VMResizeError(msg)
+
+    def confirm_resize(self) -> None:
+        """memory変更を確定."""
+        params = {"confirmResize": None}
+        res = self.dep(self.vm_id, params)
+        if res.status_code != HTTPStatus.NO_CONTENT:
+            msg = f"{self.vm_id}のプラン変更確定に失敗しました"
+            raise VMResizeError(msg)
+
+    def revert_resize(self) -> None:
+        """memory変更を取り消し."""
+        params = {"revertResize": None}
+        res = self.dep(self.vm_id, params)
+        if res.status_code != HTTPStatus.ACCEPTED:
+            msg = f"{self.vm_id}のプラン変更取消に失敗しました"
+            raise VMResizeError(msg)
