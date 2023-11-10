@@ -18,6 +18,9 @@ class VMStatus(Enum):
     SHUTOFF = "SHUTOFF"
     REBOOT = "REBOOT"
     BUILD = "BUILD"
+    RESIZE = "RESIZE"  # プラン変更中
+    VERIFY_RESIZE = "VERIFY_RESIZE"  # プラン変更確定処理待ち
+    REVERT_RESIZE = "REVERT_RESIZE"
 
     def is_shutoff(self) -> bool:
         """シャットダウン済みか否か."""

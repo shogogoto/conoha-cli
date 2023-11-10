@@ -2,12 +2,12 @@
 from http import HTTPStatus
 from uuid import UUID
 
-from requests import Request
+from requests import Response
 
 from .errors import VMSnapshotError
 
 
-def check_snapshot(vm_id: UUID, res: Request) -> None:
+def check_snapshot(vm_id: UUID, res: Response) -> None:
     """Check snapshot response."""
     if res.status_code == HTTPStatus.CONFLICT:
         d = res.json().get("conflictingRequest")

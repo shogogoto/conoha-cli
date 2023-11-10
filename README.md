@@ -325,6 +325,6 @@ git tag を PyPI のバージョンとして動的に設定・リリースする
 
 ```bash
 git tag vx.x.x
-poetry build
-git tag push origin
+
+poetry publish --build
 ```
