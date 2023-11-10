@@ -29,6 +29,14 @@ def complete_snapshot(
     return dep().find_one_by(startswith("image_id", pre_uid))
 
 
+def complete_snapshot_by_name(
+    pre_name: str,
+    dep: Dependency = list_snapshots,
+) -> Image:
+    """Search snapshot by name prefix match."""
+    return dep().find_one_by(startswith("name", pre_name))
+
+
 Dependency = Callable[[], ImageList]
 
 
@@ -48,14 +56,14 @@ def save_snapshot(
 
 
 def restore_snapshot(
-    pre_image_id: str,
+    pre_name: str,
     memory: Memory,
     admin_password: str,
     keypair_name: str,
     dep: Dependency = list_snapshots,
 ) -> tuple[AddedVM, Image]:
     """スナップショットからVMを復元する."""
-    img = complete_snapshot(pre_image_id, dep)
+    img = complete_snapshot_by_name(pre_name, dep)
     cmd = AddVMCommand(
         flavor_id=find_vmplan(memory).flavor_id,
         image_id=img.image_id,
