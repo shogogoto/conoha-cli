@@ -17,7 +17,7 @@ from conoha_client.features.template.domain import template_io
 from conoha_client.features.vm.repo.query import complete_vm
 
 from .repo import (
-    complete_snapshot,
+    complete_snapshot_by_name,
     list_snapshots,
     restore_snapshot,
     save_snapshot,
@@ -53,19 +53,19 @@ def save(vm_id: str, name: str) -> None:
 
 
 @snapshot_cli.command(name="restore", help="スナップショットからVM起動")
-@click.argument("image_id", nargs=1, type=click.STRING)
+@click.argument("name", nargs=1, type=click.STRING)
 @click.argument("memory", nargs=1, type=click.Choice(Memory))
 @template_io
 @add_vm_options
 def restore(
     admin_password: str,
     keypair_name: str,
-    image_id: str,
+    name: str,
     memory: Memory,
 ) -> ReinforcedVM:
     """スナップショットからVM起動."""
     added, img = restore_snapshot(
-        image_id,
+        name,
         memory,
         admin_password,
         keypair_name,
@@ -75,7 +75,7 @@ def restore(
 
 
 @snapshot_cli.command("rm")
-@each_args("image_ids", converter=complete_snapshot)
+@each_args("names", converter=complete_snapshot_by_name)
 def remove(image: Image) -> None:
     """スナップショットを削除."""
     remove_image(image)
