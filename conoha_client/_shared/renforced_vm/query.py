@@ -39,7 +39,9 @@ def find_image_name(image_id: UUID) -> str:
     """Find image by id."""
     image = list_images().find_one_or_none_by(by("image_id", image_id))
     if image is None:
-        return "deleted"
+        # 所与のimageは削除されないと思う
+        # つまり検索に失敗したimageはsnapshot
+        return "deleted or saved snapshot"
     return image.name
 
 
