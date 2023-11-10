@@ -1,7 +1,6 @@
 """query VM with detail info."""
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
 from uuid import UUID
 
 from conoha_client.features._shared.model_list.domain import ModelList, by
@@ -12,9 +11,6 @@ from conoha_client.features.vm.repo.query import list_vms
 
 from .domain import ReinforcedVM
 
-if TYPE_CHECKING:
-    from conoha_client.features.image.domain.image import Image
-
 
 def list_reinforced_vms() -> list[ReinforcedVM]:
     """List vm."""
@@ -23,9 +19,10 @@ def list_reinforced_vms() -> list[ReinforcedVM]:
     for vm in reversed(vms):
         d = (
             vm.model_dump()
-            | find_image(vm.image_id).model_dump()
             | find_vmplan(vm.flavor_id).model_dump()
+            | {"image_name": find_image_name(vm.image_id)}
         )
+
         d["ipv4"] = vm.ipv4
         d["elapsed"] = vm.elapsed_from_created()
         ls.append(ReinforcedVM.model_validate(d))
@@ -38,9 +35,12 @@ def find_reinforced_vm_by_id(vm_id: UUID) -> ReinforcedVM:
     )
 
 
-def find_image(image_id: UUID) -> Image:
+def find_image_name(image_id: UUID) -> str:
     """Find image by id."""
-    return list_images().find_one_by(by("image_id", image_id))
+    image = list_images().find_one_or_none_by(by("image_id", image_id))
+    if image is None:
+        return "deleted"
+    return image.name
 
 
 def find_vmplan(flavor_id: UUID) -> VMPlan:

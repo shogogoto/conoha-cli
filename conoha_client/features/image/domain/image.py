@@ -97,6 +97,10 @@ class Image(BaseModel, frozen=True):
         """Not primitive."""
         return Application.parse(self.app)
 
+    def is_snapshot(self) -> bool:
+        """Is snapshot image."""
+        return self.image_type == ImageType.SNAPSHOT
+
 
 class ImageList(ModelList):
     """イメージコンテナ."""
@@ -104,13 +108,13 @@ class ImageList(ModelList):
     @cached_property
     def priors(self) -> ImageList:
         """所与のイメージを返す."""
-        ls = [img for img in self.root if img.image_type == ImageType.PRIOR]
+        ls = [img for img in self.root if not img.is_snapshot()]
         return ImageList(ls)
 
     @cached_property
     def snapshots(self) -> ImageList:
         """スナップショットを返す."""
-        ls = [img for img in self.root if img.image_type == ImageType.SNAPSHOT]
+        ls = [img for img in self.root if img.is_snapshot()]
         return ImageList(ls)
 
     @cached_property

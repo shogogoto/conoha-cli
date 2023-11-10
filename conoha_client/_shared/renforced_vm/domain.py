@@ -15,7 +15,8 @@ class ReinforcedVM(BaseModel, frozen=True):
 
     ipv4: IPv4Address
     status: VMStatus
-    elapsed: timedelta = Field()
+    elapsed: timedelta
+    image_name: str
     memoryMB: int = Field(alias="mem_mb")  # noqa: N815
     n_cpu: int = Field(alias="n_core")
     storageGB: int = Field(alias="disk_gb")  # noqa: N815
