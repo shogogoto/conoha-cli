@@ -8,6 +8,8 @@ from uuid import uuid4
 
 import pytest
 
+from conoha_client.features._shared.util import now_jst
+
 from .distribution import (
     Distribution,
     DistVersion,
@@ -21,6 +23,7 @@ def fixture_models() -> ImageList:
     """fixture."""
     p = Path(__file__).resolve().parent / "fixture20231014.json"
 
+    dummy = now_jst()
     ls = [
         Image.model_validate(
             {
@@ -33,6 +36,7 @@ def fixture_models() -> ImageList:
                     "image_type": j.get("image_type"),
                 },
                 "created": j["created"],
+                "updated": dummy,
                 "minDisk": j["minDisk"],
                 "progress": 100,
                 "OS-EXT-IMG-SIZE:size": 999,

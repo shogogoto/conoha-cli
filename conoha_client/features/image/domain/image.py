@@ -4,6 +4,7 @@ from __future__ import annotations
 from datetime import datetime
 from enum import Enum
 from functools import cached_property
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 from pydantic import (
@@ -29,6 +30,9 @@ from .operating_system import (
     FileSystem,
     OperatingSystem,
 )
+
+if TYPE_CHECKING:
+    from typing_extensions import Self
 
 
 class ImageType(Enum):
@@ -68,10 +72,16 @@ class Image(BaseModel, frozen=True):
     )
     progress: int = Field(description="保存進捗率")
     created: datetime = Field(alias="created", description="作成日時")
+    updated: datetime = Field(alias="updated", description="更新日時", exclude=True)
     sizeGB: int = Field(alias="OS-EXT-IMG-SIZE:size")  # noqa: N815
 
     @field_validator("created")
     def validate_created(cls, v: datetime) -> datetime:  # noqa: N805
+        """Validate created datetime."""
+        return v.astimezone(TOKYO_TZ)
+
+    @field_validator("updated")
+    def validate_updated(cls, v: datetime) -> datetime:  # noqa: N805
         """Validate created datetime."""
         return v.astimezone(TOKYO_TZ)
 
@@ -106,19 +116,19 @@ class ImageList(ModelList):
     """イメージコンテナ."""
 
     @cached_property
-    def priors(self) -> ImageList:
+    def priors(self) -> Self:
         """所与のイメージを返す."""
         ls = [img for img in self.root if not img.is_snapshot()]
         return ImageList(ls)
 
     @cached_property
-    def snapshots(self) -> ImageList:
+    def snapshots(self) -> Self:
         """スナップショットを返す."""
         ls = [img for img in self.root if img.is_snapshot()]
         return ImageList(ls)
 
     @cached_property
-    def windows(self) -> ImageList:
+    def windows(self) -> Self:
         """Filter windows os."""
         ls = [img for img in self.root if img.os.is_windows()]
         return ImageList(ls)
@@ -130,12 +140,12 @@ class ImageList(ModelList):
         return LinuxImageList(ls)
 
 
-class LinuxImageList(ModelList):
+class LinuxImageList(ModelList, frozen=True):
     """linux image container."""
 
     root: list[Image]
 
-    def filter_by_dist(self, dist: Distribution) -> LinuxImageList:
+    def filter_by_dist(self, dist: Distribution) -> Self:
         """Filter by dist."""
         ls = [img for img in self.root if Distribution.create(img) == dist]
         return LinuxImageList(ls)
