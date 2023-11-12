@@ -1,4 +1,4 @@
-"""おためしCLI."""
+"""CLI definition."""
 
 import click
 from click_shell import shell
@@ -30,6 +30,7 @@ def vm_cli() -> None:
 
 def main() -> None:
     """CLI設定用."""
+    vm_cli.add_command(list_vm_cli)
     vm_cli.add_command(add_vm_cli)
     vm_merged = click.CommandCollection(
         name="vm",
@@ -51,5 +52,4 @@ def main() -> None:
 
     cli.add_command(snapshot_cli)
     cli.add_command(reinforced_vm_cli)
-    vm_cli.add_command(list_vm_cli)
     cli()
