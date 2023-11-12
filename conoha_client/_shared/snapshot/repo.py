@@ -31,7 +31,7 @@ def save_snapshot(
     vm_id: UUID,
     name: str,
     dep: Dependency = list_snapshots,
-) -> bool:
+) -> UUID | None:
     """同一名の既存スナップショットがあった場合上書き."""
     old = dep().find_one_or_none_by(by("name", name))
     cmd = VMActionCommands(vm_id=vm_id)
@@ -39,4 +39,5 @@ def save_snapshot(
     exists_old = old is not None
     if exists_old:
         remove_image(old)
-    return exists_old
+        return old.image_id
+    return None

@@ -45,9 +45,9 @@ def list_() -> list[Image]:
 def save(vm_id: str, name: str) -> None:
     """VMをイメージとして保存."""
     vm = complete_vm(vm_id)
-    overridden = save_snapshot(vm.vm_id, name)
-    if overridden:
-        click.echo("old snapshot was deleted.")
+    old_id = save_snapshot(vm.vm_id, name)
+    if old_id is not None:
+        click.echo(f"old snapshot({old_id}) was deleted.")
     click.echo(f"{vm.vm_id} was snapshot as {name}.")
 
 
