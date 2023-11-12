@@ -3,12 +3,10 @@
 
 from typing import Generic, TypeVar
 
-import pytest
 from pydantic import BaseModel
 
 from conoha_client.features.vm.domain import VMStatus
-from conoha_client.watch.domain.errors import UnexpectedInitError
-from conoha_client.watch.repo.repo import ChangeWatcher
+from conoha_client.watch.repo.repo import Watcher
 
 T = TypeVar("T")
 
@@ -32,21 +30,18 @@ class Dep(BaseModel, Generic[T]):
 
 
 def test_active2shutoff() -> None:
-    """Valid case."""
+    """case."""
     dep = Dep(pre=VMStatus.ACTIVE, post=VMStatus.SHUTOFF)
-    w = ChangeWatcher[VMStatus](
-        init=VMStatus.ACTIVE,
-        post=VMStatus.SHUTOFF,
-        dep=dep,
-    )
-    assert w.initial == dep.pre
-    assert not w.is_changed()
+    w = Watcher(expected=VMStatus.SHUTOFF, dep=dep)
+    assert not w.is_ok()
     dep.switch()
-    assert w.is_changed()
+    assert w.is_ok()
 
 
-def test_invalid_active2shutoff() -> None:
-    """Invalid case."""
-    dep = Dep(pre=VMStatus.BUILD, post=VMStatus.SHUTOFF)
-    with pytest.raises(UnexpectedInitError):
-        ChangeWatcher(init=VMStatus.ACTIVE, post=VMStatus.SHUTOFF, dep=dep)
+def test_shutoff2active() -> None:
+    """case."""
+    dep = Dep(pre=VMStatus.SHUTOFF, post=VMStatus.ACTIVE)
+    w = Watcher(expected=VMStatus.SHUTOFF, dep=dep)
+    assert w.is_ok()
+    dep.switch()
+    assert not w.is_ok()
