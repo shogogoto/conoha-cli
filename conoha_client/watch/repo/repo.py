@@ -5,6 +5,7 @@ import time
 from typing import Any, Callable, Generic, TypeVar
 from uuid import UUID
 
+import click
 from pydantic import BaseModel
 
 from conoha_client._shared.snapshot.repo import save_snapshot
@@ -25,10 +26,14 @@ class Watcher(BaseModel, Generic[T], frozen=True):
 
     expected: T
     dep: Callable[[], T]
+    view: Callable[[T], Any] | None = None
 
     def is_ok(self) -> bool:
         """Is satisfied as expected."""
-        return self.dep() == self.expected
+        v = self.dep()
+        if self.view is not None:
+            self.view(v)
+        return v == self.expected
 
     def wait_for(
         self,
@@ -58,6 +63,7 @@ def saved_vm(vm_id: UUID, name: str) -> EventType:
     Watcher(
         expected=100,
         dep=snapshot_progress_finder(name),
+        view=lambda x: click.echo(f"save progress is {x}%"),
     ).wait_for(
         callback=lambda: save_snapshot(vm_id, name),
         interval_sec=10,
@@ -66,7 +72,7 @@ def saved_vm(vm_id: UUID, name: str) -> EventType:
 
 
 def removed_vm(vm_id: UUID) -> EventType:
-    """Remove VM."""
+    """VM Removed."""
     Watcher(
         expected=False,
         dep=exists_vm(vm_id),
