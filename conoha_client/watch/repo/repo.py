@@ -1,6 +1,7 @@
 """watch repo."""
 from __future__ import annotations
 
+import operator
 import time
 from typing import Any, Callable, Generic, TypeVar
 from uuid import UUID
@@ -11,7 +12,6 @@ from pydantic import BaseModel
 from conoha_client._shared.snapshot.repo import save_snapshot
 from conoha_client.features.vm.domain import VMStatus
 from conoha_client.features.vm_actions.repo import VMActionCommands, remove_vm
-from conoha_client.watch.domain.event import EventType
 from conoha_client.watch.repo.memo import (
     exists_vm,
     snapshot_progress_finder,
@@ -27,13 +27,14 @@ class Watcher(BaseModel, Generic[T], frozen=True):
     expected: T
     dep: Callable[[], T]
     view: Callable[[T], Any] | None = None
+    ok: Callable[[T, T], bool] = operator.eq
 
     def is_ok(self) -> bool:
         """Is satisfied as expected."""
         v = self.dep()
         if self.view is not None:
             self.view(v)
-        return v == self.expected
+        return self.ok(v, self.expected)
 
     def wait_for(
         self,
@@ -46,7 +47,7 @@ class Watcher(BaseModel, Generic[T], frozen=True):
             time.sleep(interval_sec)
 
 
-def stopped_vm(vm_id: UUID) -> EventType:
+def stopped_vm(vm_id: UUID) -> None:
     """VM stop."""
     Watcher(
         expected=VMStatus.SHUTOFF,
@@ -55,10 +56,9 @@ def stopped_vm(vm_id: UUID) -> EventType:
         callback=lambda: VMActionCommands(vm_id=vm_id).shutdown(),
         interval_sec=1,
     )
-    return EventType.STOPPED
 
 
-def saved_vm(vm_id: UUID, name: str) -> EventType:
+def saved_vm(vm_id: UUID, name: str) -> None:
     """VM saved."""
     Watcher(
         expected=100,
@@ -68,10 +68,9 @@ def saved_vm(vm_id: UUID, name: str) -> EventType:
         callback=lambda: save_snapshot(vm_id, name),
         interval_sec=10,
     )
-    return EventType.SAVED
 
 
-def removed_vm(vm_id: UUID) -> EventType:
+def removed_vm(vm_id: UUID) -> None:
     """VM Removed."""
     Watcher(
         expected=False,
@@ -80,4 +79,3 @@ def removed_vm(vm_id: UUID) -> EventType:
         callback=lambda: remove_vm(vm_id),
         interval_sec=1,
     )
-    return EventType.REMOVED
