@@ -3,9 +3,11 @@
 
 from typing import Generic, TypeVar
 
+import pytest
 from pydantic import BaseModel
 
 from conoha_client.features.vm.domain import VMStatus
+from conoha_client.watch.domain.errors import UnexpectedInitError
 from conoha_client.watch.repo.repo import ChangeWatcher
 
 T = TypeVar("T")
@@ -30,10 +32,21 @@ class Dep(BaseModel, Generic[T]):
 
 
 def test_active2shutoff() -> None:
-    """Test case."""
+    """Valid case."""
     dep = Dep(pre=VMStatus.ACTIVE, post=VMStatus.SHUTOFF)
-    w = ChangeWatcher[VMStatus](expected=VMStatus.SHUTOFF, dep=dep)
-    assert w.init == dep.pre
-    assert not w()
+    w = ChangeWatcher[VMStatus](
+        init=VMStatus.ACTIVE,
+        post=VMStatus.SHUTOFF,
+        dep=dep,
+    )
+    assert w.initial == dep.pre
+    assert not w.is_changed()
     dep.switch()
-    assert w()
+    assert w.is_changed()
+
+
+def test_invalid_active2shutoff() -> None:
+    """Invalid case."""
+    dep = Dep(pre=VMStatus.BUILD, post=VMStatus.SHUTOFF)
+    with pytest.raises(UnexpectedInitError):
+        ChangeWatcher(init=VMStatus.ACTIVE, post=VMStatus.SHUTOFF, dep=dep)
