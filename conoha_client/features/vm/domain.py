@@ -38,9 +38,11 @@ class VM(BaseModel, frozen=True):
     flavor_id: UUID = Field(alias=AliasPath("flavor", "id"))
     sshkey: str | None = Field(alias="key_name")
 
-    def elapsed_from_created(self) -> timedelta:
+    def elapsed_from_created(self, now: datetime | None = None) -> timedelta:
         """作成時からの経過時間を秒以下を省いて計算する."""
-        return now_jst() - self.created
+        if now is None:
+            now = now_jst()
+        return now - self.created
 
     @property
     def ipv4(self) -> IPv4Address:

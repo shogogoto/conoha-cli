@@ -1,7 +1,6 @@
 """VM Image API."""
 from __future__ import annotations
 
-from functools import cache
 from http import HTTPStatus
 
 from conoha_client.features import Endpoints
@@ -13,7 +12,6 @@ from conoha_client.features.image.domain.errors import (
 from .domain import Image, ImageList
 
 
-@cache
 def list_images() -> ImageList:
     """イメージ一覧を取得する."""
     res = Endpoints.COMPUTE.get("images/detail").json()
