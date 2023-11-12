@@ -6,7 +6,8 @@ from typing import Generic, TypeVar
 from pydantic import BaseModel
 
 from conoha_client.features.vm.domain import VMStatus
-from conoha_client.watch.repo.repo import Watcher
+
+from .domain import Watcher
 
 T = TypeVar("T")
 
