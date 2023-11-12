@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import operator
 import time
+from datetime import timedelta
 from typing import Any, Callable, Generic, TypeVar
 
 from pydantic import BaseModel
@@ -34,3 +35,8 @@ class Watcher(BaseModel, Generic[T], frozen=True):
         callback()
         while not self.is_ok():
             time.sleep(interval_sec)
+
+
+def is_close(x: timedelta, y: timedelta, eps_min: int) -> bool:
+    """差がeps以内か."""
+    return abs(x - y) < timedelta(minutes=eps_min)
