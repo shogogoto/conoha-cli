@@ -2,15 +2,15 @@
 from __future__ import annotations
 
 import time
-from typing import Callable, Generic, TypeVar
+from typing import Any, Callable, Generic, TypeVar
 from uuid import UUID
 
 from pydantic import BaseModel
 
-from conoha_client._shared.snapshot.repo import complete_snapshot_by_name, save_snapshot
+from conoha_client._shared.snapshot.repo import save_snapshot
 from conoha_client.features.vm.domain import VMStatus
 from conoha_client.features.vm_actions.repo import VMActionCommands, remove_vm
-from conoha_client.watch.domain.event import VMRemoved, VMSaved, VMStopped
+from conoha_client.watch.domain.event import EventType
 from conoha_client.watch.repo.memo import (
     exists_vm,
     snapshot_progress_finder,
@@ -30,43 +30,48 @@ class Watcher(BaseModel, Generic[T], frozen=True):
         """Is satisfied as expected."""
         return self.dep() == self.expected
 
+    def wait_for(
+        self,
+        callback: Callable[[], Any],
+        interval_sec: int,
+    ) -> None:
+        """Wait for reflecting the callback."""
+        callback()
+        while not self.is_ok():
+            time.sleep(interval_sec)
 
-def stopped_vm(vm_id: UUID) -> VMStopped:
+
+def stopped_vm(vm_id: UUID) -> EventType:
     """VM stop."""
-    w = Watcher(
+    Watcher(
         expected=VMStatus.SHUTOFF,
         dep=vm_status_finder(vm_id),
+    ).wait_for(
+        callback=lambda: VMActionCommands(vm_id=vm_id).shutdown(),
+        interval_sec=1,
     )
-    if not w.is_ok():
-        cmd = VMActionCommands(vm_id=vm_id)
-        cmd.shutdown()
-
-    while not w.is_ok():
-        time.sleep(10)
-    return VMStopped(vm_id=vm_id)
+    return EventType.STOPPED
 
 
-def saved_vm(vm_id: UUID, name: str) -> VMSaved:
+def saved_vm(vm_id: UUID, name: str) -> EventType:
     """VM saved."""
-    save_snapshot(vm_id, name)
-    w = Watcher(
+    Watcher(
         expected=100,
         dep=snapshot_progress_finder(name),
+    ).wait_for(
+        callback=lambda: save_snapshot(vm_id, name),
+        interval_sec=10,
     )
-
-    while not w.is_ok():
-        time.sleep(10)
-    image = complete_snapshot_by_name(name)
-    return VMSaved(vm_id=vm_id, snapshot_id=image.image_id)
+    return EventType.SAVED
 
 
-def removed_vm(vm_id: UUID) -> VMRemoved:
+def removed_vm(vm_id: UUID) -> EventType:
     """Remove VM."""
-    w = Watcher(
+    Watcher(
         expected=False,
         dep=exists_vm(vm_id),
+    ).wait_for(
+        callback=lambda: remove_vm(vm_id),
+        interval_sec=1,
     )
-    remove_vm(vm_id=vm_id)
-    while not w.is_ok():
-        time.sleep(10)
-    return VMRemoved(vm_id=vm_id)
+    return EventType.REMOVED
