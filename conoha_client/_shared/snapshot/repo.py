@@ -36,8 +36,7 @@ def save_snapshot(
     old = dep().find_one_or_none_by(by("name", name))
     cmd = VMActionCommands(vm_id=vm_id)
     cmd.snapshot(name)
-    exists_old = old is not None
-    if exists_old:
+    if old is not None:
         remove_image(old)
         return old.image_id
     return None
