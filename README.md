@@ -1,7 +1,7 @@
 # conoha-client
 
 conoha-client は [ConoHa API](https://www.conoha.jp/docs/?btn_id=docs-image-get_quota--sidebar_docs)
-をいい感じに組み合わせて叩く「ConoHa VPS」用 CLI です。
+をいい感じに組み合わせて叩く「ConoHa VPS」用 Command Line Interface (CLI) です。
 Linux サーバー(=VM)の作成・保存・削除・経過時間の確認などが簡単に実行できます。  
 開発環境に VPS を利用する場合、睡眠時間分の費用も請求される月額課金は無駄が多い一方、
 利用時間分のみ請求される[時間課金](https://www.conoha.jp/vps/pricing/?btn_id=vps-hourly--vpsHeader_vps-pricing)
@@ -9,6 +9,52 @@ Linux サーバー(=VM)の作成・保存・削除・経過時間の確認など
 時間課金での利用には頻繁な VM 操作が必要であり、そのために conoha-client を作成しました。
 
 ## 主な機能
+
+<details>
+<summary>←詳細を開く/閉じる
+
+- VM の不本意な追加課金が発生しないように待ってから VM を保存・削除する Graceful Remove
+- 見やすく強化された VM 一覧 e.g. 作成からの経過時間が確認できる
+- VM(=サーバー)のライフサイクルの操作 e.g. 作成・削除・停止・再起動 etc
+- スナップショット(VM 由来の docker image)の保存
+- スナップショットから VM を復元
+- リスト系コマンドの表示形式指定 e.g. json or table
+</summary>
+
+---
+
+詳細
+
+- VM の不本意な追加課金が発生しないように待ってから VM を保存・削除する Graceful Remove
+
+  ログイン中の全ユーザーにブロードキャストメッセージを通知しつつ VM の停止・スナップショット・削除する
+
+  ```bash
+  $ ccli lsvm
+      ipv4           status    elapsed            image_name                                           memoryMB    n_cpu    storageGB  sshkey                          vm_id
+  --  -------------  --------  -----------------  -------------------------------------------------  ----------  -------  -----------  ------------------------------  ------------------------------------
+   0  xxx.x.xxx.xxx  ACTIVE    80 days, 15:54:24  vmi-kusanagimanager8-0.4.0-centos-7.9-amd64-100gb        1024        2          100  key-2023-08-24-23-09            27c3379a-6510-4757-8b1c-069981be3b35
+   1  yyy.y.yyy.yy   ACTIVE    0:02:53            vmi-ubuntu-20.04-amd64-30gb                               512        1           30  conoha-client-2023-11-07-15-45  ead20a7d-db9d-493c-8297-8581ba8b56b4
+
+  # 本来は1時間後に削除する設定を6分後に変更して実行している例
+  $ ccli vm rm-gracefully ea debug-snapshot -h 0.1
+  elapsed from created VM(ead20a7d-db9d-493c-8297-8581ba8b56b4): 0:03:56
+
+  Broadcast message from user@hostname (pts/10) (Mon Nov 13 14:17:41 2023
+
+  VM(ead20a7d-db9d-493c-8297-8581ba8b56b4) makes additional charge when it takes 6 minutes. So it will save and remove this VM right now.
+
+  It took 0:00:02 to stop VM(ead20a7d-db9d-493c-8297-8581ba8b56b4)
+  save progress is 25%
+  save progress is 50%
+  save progress is 50%
+  save progress is 50%
+  save progress is 50%
+  save progress is 100%
+  It took 0:00:55 to save VM(ead20a7d-db9d-493c-8297-8581ba8b56b4)
+  VM(ead20a7d-db9d-493c-8297-8581ba8b56b4) was removed
+  Duration time of VM(ead20a7d-db9d-493c-8297-8581ba8b56b4) was 0:04:55
+  ```
 
 - 見やすく強化された VM 一覧 e.g. 作成からの経過時間が確認できる
 
@@ -109,7 +155,7 @@ Linux サーバー(=VM)の作成・保存・削除・経過時間の確認など
    1  yyy.y.yyy.yy   ACTIVE    0:00:44                   512        1           30  conoha-client-2023-11-07-15-45  f73538f7-cc42-427b-aae8-e9222f7b76e7
   ```
 
-- リスト系コマンドの様々な表示形式  
+- リスト系コマンドの表示形式指定 e.g. json or table  
    grep や jq コマンドなどのパイプ処理に便利
 
   ```bash
@@ -156,6 +202,8 @@ Linux サーバー(=VM)の作成・保存・削除・経過時間の確認など
   --  ------------  --------  ---------  ----------  -------  -----------  ------------------------------  ------------------------------------
    0  yyy.y.yyy.yy  ACTIVE    0:13:44           512        1           30  conoha-client-2023-11-07-15-45  f73538f7-cc42-427b-aae8-e9222f7b76e7
   ```
+
+  </details>
 
 ## 使い方
 
