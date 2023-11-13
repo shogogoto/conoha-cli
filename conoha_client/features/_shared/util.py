@@ -13,8 +13,8 @@ def utc2jst(utc_str: str) -> datetime:
 
 
 def now_jst() -> datetime:
-    """JSTの現在時刻を取得(秒以下はゼロ埋め)."""
-    return datetime.now(TOKYO_TZ).replace(second=0, microsecond=0)
+    """JSTの現在時刻を取得(マイクロ秒以下はゼロ埋め)."""
+    return datetime.now(TOKYO_TZ).replace(microsecond=0)
 
 
 __all__ = ["utc2jst", "now_jst"]
