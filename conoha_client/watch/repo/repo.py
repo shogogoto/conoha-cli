@@ -18,9 +18,9 @@ from conoha_client.watch.repo.memo import (
 )
 
 
-def stopped_vm(vm_id: UUID) -> None:
+def stopped_vm(vm_id: UUID) -> timedelta:
     """VM stop."""
-    Watcher(
+    return Watcher(
         expected=VMStatus.SHUTOFF,
         dep=vm_status_finder(vm_id),
     ).wait_for(
@@ -29,9 +29,9 @@ def stopped_vm(vm_id: UUID) -> None:
     )
 
 
-def saved_vm(vm_id: UUID, name: str) -> None:
+def saved_vm(vm_id: UUID, name: str) -> timedelta:
     """VM saved."""
-    Watcher(
+    return Watcher(
         expected=100,
         dep=snapshot_progress_finder(name),
         view=lambda x: click.echo(f"save progress is {x}%"),
@@ -52,18 +52,22 @@ def removed_vm(vm_id: UUID) -> None:
     )
 
 
-def wait_plus_charge(vm_id: UUID) -> None:
+def wait_plus_charge(
+    vm_id: UUID,
+    within_min: int,
+    deadline_min: int = 60,
+) -> None:
     """次の時間課金が迫ってきた.
 
     VMは作成後の経過時間に対して1時間単位で課金される.
     追加課金される5分前まで待つ
     """
     Watcher(
-        expected=timedelta(hours=1),
+        expected=timedelta(minutes=deadline_min),
         dep=elapsed_from_created(vm_id),
-        view=lambda x: click.echo(f"elapsed: {x}"),
-        ok=lambda x, y: is_close(x, y, eps_min=5),
+        view=lambda x: click.echo(f"elapsed from created VM({vm_id}): {x}"),
+        ok=lambda x, y: is_close(x, y, eps_min=within_min),
     ).wait_for(
         callback=lambda: ...,
-        interval_sec=60,  # 60secごとしか更新されない
+        interval_sec=60,  # 60secごとしかqueryが更新されない
     )

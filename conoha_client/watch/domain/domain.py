@@ -8,6 +8,8 @@ from typing import Any, Callable, Generic, TypeVar
 
 from pydantic import BaseModel
 
+from conoha_client.features._shared.util import now_jst
+
 T = TypeVar("T")
 
 
@@ -30,11 +32,13 @@ class Watcher(BaseModel, Generic[T], frozen=True):
         self,
         callback: Callable[[], Any],
         interval_sec: int,
-    ) -> None:
+    ) -> timedelta:
         """Wait for reflecting the callback."""
         callback()
+        started = now_jst()
         while not self.is_ok():
             time.sleep(interval_sec)
+        return now_jst() - started
 
 
 def is_close(x: timedelta, y: timedelta, eps_min: int) -> bool:
