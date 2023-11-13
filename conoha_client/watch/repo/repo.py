@@ -8,11 +8,10 @@ import click
 
 from conoha_client._shared.snapshot.repo import save_snapshot
 from conoha_client.features.vm.domain import VMStatus
-from conoha_client.features.vm_actions.repo import VMActionCommands, remove_vm
+from conoha_client.features.vm_actions.repo import VMActionCommands
 from conoha_client.watch.domain.domain import Watcher, is_close
 from conoha_client.watch.repo.curry import (
     elapsed_from_created,
-    exists_vm,
     snapshot_progress_finder,
     vm_status_finder,
 )
@@ -38,17 +37,6 @@ def saved_vm(vm_id: UUID, name: str) -> timedelta:
     ).wait_for(
         callback=lambda: save_snapshot(vm_id, name),
         interval_sec=10,
-    )
-
-
-def removed_vm(vm_id: UUID) -> None:
-    """VM Removed."""
-    Watcher(
-        expected=False,
-        dep=exists_vm(vm_id),
-    ).wait_for(
-        callback=lambda: remove_vm(vm_id),
-        interval_sec=1,
     )
 
 
