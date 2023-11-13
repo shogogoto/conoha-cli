@@ -4,9 +4,10 @@ import click
 
 from conoha_client.features.vm.repo.query import complete_vm
 from conoha_client.features.vm_actions.repo import remove_vm
-from conoha_client.watch.repo.broadcast_msg import broadcast_message
-from conoha_client.watch.repo.curry import elapsed_from_created
-from conoha_client.watch.repo.repo import (
+
+from .repo import (
+    broadcast_message,
+    elapsed_from_created,
     saved_vm,
     stopped_vm,
     wait_plus_charge,

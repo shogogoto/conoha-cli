@@ -9,8 +9,9 @@ import click
 from conoha_client._shared.snapshot.repo import save_snapshot
 from conoha_client.features.vm.domain import VMStatus
 from conoha_client.features.vm_actions.repo import VMActionCommands
-from conoha_client.watch.domain.domain import Watcher, is_close_or_exceed
-from conoha_client.watch.repo.curry import (
+from conoha_client.graceful_remove.domain import Watcher, is_close_or_exceed
+
+from .curry import (
     elapsed_from_created,
     snapshot_progress_finder,
     vm_status_finder,
