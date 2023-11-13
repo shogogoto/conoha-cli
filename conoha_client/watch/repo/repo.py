@@ -10,7 +10,7 @@ from conoha_client._shared.snapshot.repo import save_snapshot
 from conoha_client.features.vm.domain import VMStatus
 from conoha_client.features.vm_actions.repo import VMActionCommands, remove_vm
 from conoha_client.watch.domain.domain import Watcher, is_close
-from conoha_client.watch.repo.memo import (
+from conoha_client.watch.repo.curry import (
     elapsed_from_created,
     exists_vm,
     snapshot_progress_finder,
