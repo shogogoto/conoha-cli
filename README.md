@@ -297,7 +297,40 @@ click は[シェル補完機能](https://click.palletsprojects.com/en/8.1.x/shel
 
 ただし、ネットワーク経由で取得したコードを直接実行するこの方法は重大なセキュリティリスクのようです。  
 不安な方は本リポジトリのルートディレクトリの`conoha-client.bash`
-の内容をコピペして`~/.bashrc`に追記してください。
+の内容をコピペして`~/.bashrc`に追記してください。以下に転記しておきます.
+
+```bash
+# conoha-client.bash
+
+_ccli_completion() {
+    local IFS=$'\n'
+    local response
+
+    response=$(env COMP_WORDS="${COMP_WORDS[*]}" COMP_CWORD=$COMP_CWORD _CCLI_COMPLETE=bash_complete $1)
+
+    for completion in $response; do
+        IFS=',' read type value <<< "$completion"
+
+        if [[ $type == 'dir' ]]; then
+            COMPREPLY=()
+            compopt -o dirnames
+        elif [[ $type == 'file' ]]; then
+            COMPREPLY=()
+            compopt -o default
+        elif [[ $type == 'plain' ]]; then
+            COMPREPLY+=($value)
+        fi
+    done
+
+    return 0
+}
+
+_ccli_completion_setup() {
+    complete -o nosort -F _ccli_completion ccli
+}
+
+_ccli_completion_setup;
+```
 
 ## 開発動機
 
@@ -316,7 +349,7 @@ PC くらい買えって？時代はシェアリングエコノミー。
 - １時間毎の時間課金で VPS が利用可能  
   多くの VPS は月額課金であり、寝ている間にも課金されるのはいただけない  
   ※ [WebArena Indigo](https://web.arena.ne.jp/indigo/price/)も時間課金プランを提供しているようだ
-- スナップショットを 50GB まで無料で使用できる
+- スナップショットを 50GB まで無料で使用できる  
   時間課金では、削除する VM の状態を無料で保存できることは重要
 - GMO(9449)の株主優待が使える(年間 1 万円分)
 
@@ -331,7 +364,7 @@ PC くらい買えって？時代はシェアリングエコノミー。
 - 次の 1 時間に突入して追加で課金される前にサーバー削除を予約したい
 - サーバーの状態を保存・復元を簡単したい
 
-などの要求は頻繁にサーバーを削除する時間課金では重要です。
+などの機能は頻繁にサーバーを削除する時間課金では重要です。
 
 ## 開発環境構築
 
