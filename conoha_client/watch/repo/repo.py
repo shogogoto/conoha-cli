@@ -19,11 +19,22 @@ from conoha_client.watch.repo.curry import (
 
 def stopped_vm(vm_id: UUID) -> timedelta:
     """VM stop."""
+    watch = vm_status_finder(vm_id)
+
+    if watch() == VMStatus.SHUTOFF:
+
+        def callback() -> None:
+            pass
+    else:
+
+        def callback() -> None:
+            return VMActionCommands(vm_id=vm_id).shutdown()
+
     return Watcher(
         expected=VMStatus.SHUTOFF,
-        dep=vm_status_finder(vm_id),
+        dep=watch,
     ).wait_for(
-        callback=lambda: VMActionCommands(vm_id=vm_id).shutdown(),
+        callback=callback,
         interval_sec=1,
     )
 
