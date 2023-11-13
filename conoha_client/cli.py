@@ -1,4 +1,4 @@
-"""おためしCLI."""
+"""CLI definition."""
 
 import click
 from click_shell import shell
@@ -12,6 +12,7 @@ from conoha_client.features import (
 )
 from conoha_client.features.billing.cli import invoice_cli, order_cli, paid_cli
 from conoha_client.resize import vm_resize_cli
+from conoha_client.watch import graceful_rm_cli
 
 from .add_vm import add_vm_cli
 from .snapshot import snapshot_cli
@@ -30,7 +31,9 @@ def vm_cli() -> None:
 
 def main() -> None:
     """CLI設定用."""
+    vm_cli.add_command(list_vm_cli)
     vm_cli.add_command(add_vm_cli)
+    vm_cli.add_command(graceful_rm_cli)
     vm_merged = click.CommandCollection(
         name="vm",
         sources=[
@@ -38,7 +41,7 @@ def main() -> None:
             vm_actions_cli,
             vm_resize_cli,
         ],
-        help="VM追加・削除など",
+        help="VM操作関連",
     )
     cli.add_command(vm_merged)
     cli.add_command(vm_plan_cli)
@@ -51,5 +54,4 @@ def main() -> None:
 
     cli.add_command(snapshot_cli)
     cli.add_command(reinforced_vm_cli)
-    vm_cli.add_command(list_vm_cli)
     cli()

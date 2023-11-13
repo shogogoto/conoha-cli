@@ -10,7 +10,6 @@ from requests import Response
 
 from conoha_client.features._shared.endpoints.endpoints import Endpoints
 from conoha_client.features.vm.repo.query import complete_vm
-from conoha_client.features.vm_actions.domain.checking import check_snapshot
 from conoha_client.features.vm_actions.domain.errors import (
     VMActionConflictingError,
     VMActionTargetNotFoundError,
@@ -19,6 +18,7 @@ from conoha_client.features.vm_actions.domain.errors import (
     VMRebootError,
     VMResizeError,
     VMShutdownError,
+    VMSnapshotError,
 )
 
 
@@ -94,7 +94,10 @@ class VMActionCommands(BaseModel, frozen=True):
         """VMの状態をイメージとして保存."""
         params = {"createImage": {"name": name}}
         res = self.dep(self.vm_id, params)
-        check_snapshot(self.vm_id, res)
+        if res.status_code != HTTPStatus.ACCEPTED:
+            rmsg = res.json()["message"]
+            msg = f"{self.vm_id}をスナップショットできませんでした.{rmsg}"
+            raise VMSnapshotError(msg)
 
     def resize(self, flavor_id: UUID) -> None:
         """VMのmemoryを変更."""

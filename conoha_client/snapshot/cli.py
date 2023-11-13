@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 import click
 
-from conoha_client._shared.renforced_vm.query import find_reinforced_vm_by_id
+from conoha_client._shared import find_reinforced_vm_by_id, save_snapshot
 from conoha_client.features._shared import (
     add_vm_options,
     view_options,
@@ -20,7 +20,6 @@ from .repo import (
     complete_snapshot_by_name,
     list_snapshots,
     restore_snapshot,
-    save_snapshot,
 )
 
 if TYPE_CHECKING:
@@ -46,9 +45,9 @@ def list_() -> list[Image]:
 def save(vm_id: str, name: str) -> None:
     """VMをイメージとして保存."""
     vm = complete_vm(vm_id)
-    overridden = save_snapshot(vm.vm_id, name)
-    if overridden:
-        click.echo("old snapshot was deleted.")
+    old_id = save_snapshot(vm.vm_id, name)
+    if old_id is not None:
+        click.echo(f"old snapshot({old_id}) was deleted.")
     click.echo(f"{vm.vm_id} was snapshot as {name}.")
 
 
@@ -76,7 +75,7 @@ def restore(
 
 @snapshot_cli.command("rm")
 @each_args("names", converter=complete_snapshot_by_name)
-def remove(image: Image) -> None:
+def remove(snapshot: Image) -> None:
     """スナップショットを削除."""
-    remove_image(image)
-    click.echo(f"{image.name} snapshot was deleted.")
+    remove_image(snapshot)
+    click.echo(f"{snapshot.name} snapshot was deleted.")
