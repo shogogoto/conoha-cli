@@ -8,7 +8,7 @@ from pydantic import BaseModel
 
 from conoha_client.features.vm.domain import VMStatus
 
-from .domain import Watcher, is_close
+from .domain import Watcher, is_close_or_exceed
 
 T = TypeVar("T")
 
@@ -53,8 +53,5 @@ def test_is_close() -> None:
     """Practice."""
     elapsed = timedelta(minutes=55)
     plus_charge = timedelta(hours=1)
-    assert is_close(elapsed, plus_charge, eps_min=10)
-    assert is_close(plus_charge, elapsed, eps_min=10)
-
-    assert not is_close(elapsed, plus_charge, eps_min=1)
-    assert not is_close(plus_charge, elapsed, eps_min=1)
+    assert is_close_or_exceed(elapsed, plus_charge, eps_min=10)
+    assert not is_close_or_exceed(elapsed, plus_charge, eps_min=1)

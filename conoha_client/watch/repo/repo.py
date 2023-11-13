@@ -9,7 +9,7 @@ import click
 from conoha_client._shared.snapshot.repo import save_snapshot
 from conoha_client.features.vm.domain import VMStatus
 from conoha_client.features.vm_actions.repo import VMActionCommands
-from conoha_client.watch.domain.domain import Watcher, is_close
+from conoha_client.watch.domain.domain import Watcher, is_close_or_exceed
 from conoha_client.watch.repo.curry import (
     elapsed_from_created,
     snapshot_progress_finder,
@@ -54,7 +54,7 @@ def wait_plus_charge(
         expected=timedelta(minutes=deadline_min),
         dep=elapsed_from_created(vm_id),
         view=lambda x: click.echo(f"elapsed from created VM({vm_id}): {x}"),
-        ok=lambda x, y: is_close(x, y, eps_min=within_min),
+        ok=lambda x, y: is_close_or_exceed(x, y, eps_min=within_min),
     ).wait_for(
         callback=lambda: ...,
         interval_sec=60,  # 60secごとしかqueryが更新されない

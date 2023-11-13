@@ -41,6 +41,13 @@ class Watcher(BaseModel, Generic[T], frozen=True):
         return now_jst() - started
 
 
-def is_close(x: timedelta, y: timedelta, eps_min: int) -> bool:
-    """差がeps以内か."""
-    return abs(x - y) < timedelta(minutes=eps_min)
+def is_close_or_exceed(
+    x: timedelta,
+    deadline: timedelta,
+    eps_min: int,
+) -> bool:
+    """差がeps以内か超えるか."""
+    if x > deadline:
+        return True
+
+    return abs(x - deadline) < timedelta(minutes=eps_min)
