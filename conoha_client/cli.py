@@ -4,6 +4,7 @@ import click
 from click_shell import shell
 
 from conoha_client._shared.renforced_vm import list_vm_cli, reinforced_vm_cli
+from conoha_client._shared.renforced_vm.cli import shortcut_vm_cli
 from conoha_client.features import (
     sshkey_cli,
     vm_actions_cli,
@@ -54,4 +55,5 @@ def main() -> None:
 
     cli.add_command(snapshot_cli)
     cli.add_command(reinforced_vm_cli)
+    cli.add_command(shortcut_vm_cli)
     cli()

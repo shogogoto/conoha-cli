@@ -28,3 +28,9 @@ def list_vm_cli(reinforce: bool) -> list:
     if reinforce:
         return list_reinforced_vms()
     return list_vms()
+
+
+@click.command(name="ls", help=_help)
+@view_options
+def shortcut_vm_cli() -> list[ReinforcedVM]:
+    return list_reinforced_vms()
