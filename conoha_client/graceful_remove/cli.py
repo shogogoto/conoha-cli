@@ -45,15 +45,23 @@ def graceful_rm_cli(
     try:
         wait_plus_charge(
             id_,
-            buffer_min,
+            buffer_min - 2,
             deadline_min,
         )
         bmsg = (
             f"VM({id_}) makes additional charge "
             f"when it takes {deadline_min} minutes. "
-            f"So it will save and remove this VM right now."
+            f"So this VM will be saved and removed after 2 minutes."
         )
         broadcast_message(bmsg)
+
+        wait_plus_charge(
+            id_,
+            buffer_min,
+            deadline_min,
+        )
+        msg = "VM is going to be saved and removed right now."
+        broadcast_message(msg)
 
         elp_stop = stopped_vm(id_)
         click.echo(f"It took {elp_stop} to stop VM({id_})")
