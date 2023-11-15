@@ -45,6 +45,7 @@ class AddVMCommand(BaseModel, frozen=True):
                 "security_groups": [
                     {"name": "default"},
                     {"name": "gncs-ipv4-ssh"},
+                    {"name": "gncs-ipv4-all"},
                 ],
             },
         }
