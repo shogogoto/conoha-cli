@@ -45,8 +45,8 @@ def graceful_rm_cli(
     try:
         wait_plus_charge(
             id_,
-            buffer_min - 2,
-            deadline_min,
+            buffer_min,
+            deadline_min - 2,
         )
         bmsg = (
             f"VM({id_}) makes additional charge "
