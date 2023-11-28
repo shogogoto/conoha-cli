@@ -7,11 +7,12 @@ from typing import TYPE_CHECKING, Callable
 
 from pydantic import BaseModel
 
-from conoha_client.add_vm.domain.domain import filter_memory, select_uniq
 from conoha_client.features.image.domain.image import LinuxImageList
 from conoha_client.features.image.repo import list_images
 from conoha_client.features.plan.repo import find_vmplan
 from conoha_client.features.vm.repo.command import AddVMCommand
+
+from .domain import filter_memory, select_uniq
 
 if TYPE_CHECKING:
     from conoha_client.features.image.domain import (

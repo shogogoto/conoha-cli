@@ -3,6 +3,7 @@
 import click
 from click_shell import shell
 
+from conoha_client._shared.add_vm.cli import add_vm_cli
 from conoha_client._shared.renforced_vm import list_vm_cli, reinforced_vm_cli
 from conoha_client._shared.renforced_vm.cli import shortcut_vm_cli
 from conoha_client.features import (
@@ -15,7 +16,6 @@ from conoha_client.features.billing.cli import invoice_cli, order_cli, paid_cli
 from conoha_client.graceful_remove import graceful_rm_cli
 from conoha_client.resize import vm_resize_cli
 
-from .add_vm import add_vm_cli
 from .snapshot import snapshot_cli
 
 

@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING
 import click
 
 from conoha_client._shared.renforced_vm.query import find_reinforced_vm_by_id
-from conoha_client.add_vm.repo import DistQuery, add_vm_command
 from conoha_client.features._shared.command_option import add_vm_options
 from conoha_client.features._shared.view.domain import view_options
 from conoha_client.features.image.domain import (
@@ -17,6 +16,8 @@ from conoha_client.features.image.domain import (
 )
 from conoha_client.features.plan.domain import Memory
 from conoha_client.features.template.domain import template_io
+
+from .repo import DistQuery, add_vm_command
 
 if TYPE_CHECKING:
     from conoha_client._shared.renforced_vm.domain import ReinforcedVM
