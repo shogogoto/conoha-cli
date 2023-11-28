@@ -3,8 +3,10 @@ from __future__ import annotations
 
 from functools import cache
 from typing import Callable
+from uuid import UUID
 
 from conoha_client.features import Endpoints
+from conoha_client.features._shared.model_list.domain import ModelList, by
 from conoha_client.features._shared.view.domain import model_filter
 
 from .domain import Memory, VMPlan
@@ -28,3 +30,14 @@ def find_vmplan(
         msg = f"{mem.value}GBのプランを特定できませんでした"
         raise FlavorIdentificationError(msg)
     return plans[0]
+
+
+def find_memory(flavor_id: UUID) -> Memory:
+    """memoryをflavor_idから逆引き."""
+    return (
+        ModelList[VMPlan](root=list_vmplans())
+        .find_one_by(
+            by("flavor_id", flavor_id),
+        )
+        .memory
+    )

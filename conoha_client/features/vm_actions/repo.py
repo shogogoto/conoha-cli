@@ -1,5 +1,5 @@
 """VM操作 repository."""
-
+from __future__ import annotations
 
 from http import HTTPStatus
 from typing import Callable
@@ -16,6 +16,7 @@ from conoha_client.features.vm_actions.domain.errors import (
     VMBootError,
     VMDeleteError,
     VMRebootError,
+    VMRebuildError,
     VMResizeError,
     VMShutdownError,
     VMSnapshotError,
@@ -128,3 +129,23 @@ class VMActionCommands(BaseModel, frozen=True):
         if res.status_code != HTTPStatus.ACCEPTED:
             msg = f"{self.vm_id}のプラン変更取消に失敗しました"
             raise VMResizeError(msg)
+
+    def rebuild(
+        self,
+        image_id: UUID,
+        admin_pass: str,
+        sshkey_name: str | None = None,
+    ) -> None:
+        """imageを既存VMへ再インストール."""
+        params = {
+            "rebuild": {
+                "imageRef": str(image_id),
+                "adminPass": admin_pass,
+            },
+        }
+        if sshkey_name is not None:
+            params["rebuild"]["key_name"] = sshkey_name
+        res = self.dep(self.vm_id, params)
+        if res.status_code != HTTPStatus.ACCEPTED:
+            msg = f"f{self.vm_id}へのOS再インストールに失敗しました"
+            raise VMRebuildError(msg)

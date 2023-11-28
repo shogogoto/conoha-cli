@@ -5,9 +5,9 @@ from typing import TYPE_CHECKING
 
 import click
 
-from conoha_client._shared import find_reinforced_vm_by_id, save_snapshot
+from conoha_client._shared import save_snapshot
 from conoha_client.features._shared import (
-    add_vm_options,
+    build_vm_options,
     view_options,
 )
 from conoha_client.features._shared.command_option import each_args
@@ -15,6 +15,7 @@ from conoha_client.features.image.repo import remove_image
 from conoha_client.features.plan.domain import Memory
 from conoha_client.features.template.domain import template_io
 from conoha_client.features.vm.repo.query import complete_vm
+from conoha_client.features.vm_actions.repo import VMActionCommands
 
 from .repo import (
     complete_snapshot_by_name,
@@ -23,7 +24,6 @@ from .repo import (
 )
 
 if TYPE_CHECKING:
-    from conoha_client._shared.renforced_vm.domain import ReinforcedVM
     from conoha_client.features.image.domain.image import Image
 
 
@@ -55,13 +55,13 @@ def save(vm_id: str, name: str) -> None:
 @click.argument("name", nargs=1, type=click.STRING)
 @click.argument("memory", nargs=1, type=click.Choice(Memory))
 @template_io
-@add_vm_options
+@build_vm_options
 def restore(
     admin_password: str,
     keypair_name: str,
     name: str,
     memory: Memory,
-) -> ReinforcedVM:
+) -> None:
     """スナップショットからVM起動."""
     added, img = restore_snapshot(
         name,
@@ -70,7 +70,29 @@ def restore(
         keypair_name,
     )
     click.echo(f"VM(uuid={added.vm_id}) was restored from {img.name} snapshot")
-    return find_reinforced_vm_by_id(added.vm_id)
+
+
+@snapshot_cli.command(name="rebuild", help="スナップショットからVMを再構築")
+@click.argument("vm_id", nargs=1, type=click.STRING)
+@click.argument("name", nargs=1, type=click.STRING)
+@template_io
+@build_vm_options
+def rebuild(
+    admin_password: str,
+    keypair_name: str,
+    vm_id: str,
+    name: str,
+) -> None:
+    """スナップショットからVM起動."""
+    vm = complete_vm(vm_id)
+    img = complete_snapshot_by_name(name)
+    cmd = VMActionCommands(vm_id=vm.vm_id)
+    cmd.rebuild(
+        image_id=img.image_id,
+        admin_pass=admin_password,
+        sshkey_name=keypair_name,
+    )
+    click.echo(f"VM(uuid={vm.vm_id}) was rebuild from {img.name} snapshot")
 
 
 @snapshot_cli.command("rm")

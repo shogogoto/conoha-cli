@@ -7,11 +7,12 @@ from typing import TYPE_CHECKING, Callable
 
 from pydantic import BaseModel
 
-from conoha_client.add_vm.domain.domain import filter_memory, select_uniq
 from conoha_client.features.image.domain.image import LinuxImageList
 from conoha_client.features.image.repo import list_images
 from conoha_client.features.plan.repo import find_vmplan
 from conoha_client.features.vm.repo.command import AddVMCommand
+
+from .domain import filter_memory, select_uniq
 
 if TYPE_CHECKING:
     from conoha_client.features.image.domain import (
@@ -83,6 +84,9 @@ class DistQuery(BaseModel, frozen=True):
         app: Application,
     ) -> Image:
         """Linux Imageを一意に検索する."""
+        if dist_ver.is_latest():
+            dist_ver = self.latest_ver()
+
         return select_uniq(
             self.dep(),
             self.memory,
@@ -101,9 +105,6 @@ def add_vm_command(
 ) -> AddVMCommand:
     """Add VM Command with identified Image."""
     q = DistQuery(memory=memory, dist=dist)
-    if ver.is_latest():
-        ver = q.latest_ver()
-
     img = q.identify(ver, app)
     return AddVMCommand(
         flavor_id=find_vmplan(memory).flavor_id,

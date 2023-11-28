@@ -31,3 +31,7 @@ class VMSnapshotError(Exception):
 
 class VMResizeError(Exception):
     """VMのサイズを変更できなかった."""
+
+
+class VMRebuildError(Exception):
+    """既存VMへのOS再インストールに失敗した."""

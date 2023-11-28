@@ -3,9 +3,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from conoha_client.add_vm.domain.errors import (
-    ImageIdentifyError,
-)
 from conoha_client.features.image.domain import (
     Application,
     Distribution,
@@ -13,6 +10,10 @@ from conoha_client.features.image.domain import (
     FileSystem,
 )
 from conoha_client.features.image.domain.image import Image, LinuxImageList
+
+from .errors import (
+    ImageIdentifyError,
+)
 
 if TYPE_CHECKING:
     from conoha_client.features.image.domain.image import MinDisk

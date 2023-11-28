@@ -3,8 +3,11 @@
 import click
 from click_shell import shell
 
-from conoha_client._shared.renforced_vm import list_vm_cli, reinforced_vm_cli
-from conoha_client._shared.renforced_vm.cli import shortcut_vm_cli
+from conoha_client._shared.renforced_vm import (
+    list_vm_cli,
+    reinforced_vm_cli,
+    shortcut_vm_cli,
+)
 from conoha_client.features import (
     sshkey_cli,
     vm_actions_cli,
@@ -13,9 +16,9 @@ from conoha_client.features import (
 )
 from conoha_client.features.billing.cli import invoice_cli, order_cli, paid_cli
 from conoha_client.graceful_remove import graceful_rm_cli
-from conoha_client.resize import vm_resize_cli
+from conoha_client.vm import vm_add_cli, vm_resize_cli
+from conoha_client.vm.rebuild import vm_rebuild_cli
 
-from .add_vm import add_vm_cli
 from .snapshot import snapshot_cli
 
 
@@ -33,8 +36,9 @@ def vm_cli() -> None:
 def main() -> None:
     """CLI設定用."""
     vm_cli.add_command(list_vm_cli)
-    vm_cli.add_command(add_vm_cli)
+    vm_cli.add_command(vm_add_cli)
     vm_cli.add_command(graceful_rm_cli)
+    vm_cli.add_command(vm_rebuild_cli)
     vm_merged = click.CommandCollection(
         name="vm",
         sources=[

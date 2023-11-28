@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import functools
 import os
 from typing import Callable, Concatenate, ParamSpec, TypeVar
 
@@ -11,7 +12,7 @@ P = ParamSpec("P")
 T = TypeVar("T")
 
 
-def add_vm_options(
+def build_vm_options(
     func: Callable[Concatenate[str, str, P], T],
 ) -> Callable[Concatenate[str, str, P], T]:
     """Add VM共通オプション."""
@@ -30,6 +31,7 @@ def add_vm_options(
         help="sshkeyのペア名:OS_SSHKEY_NAME環境変数の値が設定される",
         show_default=True,
     )
+    @functools.wraps(func)
     def wrapper(
         admin_password: str | None,
         keypair_name: str | None,
@@ -37,9 +39,9 @@ def add_vm_options(
         **kwargs: P.kwargs,
     ) -> T:
         return func(
-            admin_password or pw_prompt(),
-            keypair_name or sshkey_prompt(),
             *args,
+            admin_password=admin_password or pw_prompt(),
+            keypair_name=keypair_name or sshkey_prompt(),
             **kwargs,
         )
 
