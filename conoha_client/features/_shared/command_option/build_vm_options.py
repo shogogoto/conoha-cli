@@ -13,7 +13,10 @@ T = TypeVar("T")
 Wrapped = Callable[Concatenate[str, str, P], T]
 
 
-def build_vm_options_factory(pw_envvar: str, kw_envvar: str) -> Callable:
+def build_vm_options_factory(
+    pw_envvar: str,
+    kw_envvar: str,
+) -> Callable[[Wrapped], Wrapped]:
     def f(func: Wrapped) -> Wrapped:
         """Add VM共通オプション."""
 
