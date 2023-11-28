@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 import click
 
+from conoha_client._shared.add_vm.repo import DistQuery, add_vm_command
 from conoha_client._shared.renforced_vm.query import find_reinforced_vm_by_id
 from conoha_client.features._shared.command_option import add_vm_options
 from conoha_client.features._shared.view.domain import view_options
@@ -16,8 +17,6 @@ from conoha_client.features.image.domain import (
 )
 from conoha_client.features.plan.domain import Memory
 from conoha_client.features.template.domain import template_io
-
-from .repo import DistQuery, add_vm_command
 
 if TYPE_CHECKING:
     from conoha_client._shared.renforced_vm.domain import ReinforcedVM
@@ -57,7 +56,7 @@ if TYPE_CHECKING:
 @template_io
 @add_vm_options
 @click.pass_context
-def add_vm_cli(  # noqa: PLR0913
+def vm_add_cli(  # noqa: PLR0913
     ctx: click.Context,
     admin_password: str,
     keypair_name: str,
@@ -87,7 +86,7 @@ def add_vm_cli(  # noqa: PLR0913
     return None
 
 
-@add_vm_cli.command(name="vers")
+@vm_add_cli.command(name="vers")
 @view_options
 @click.pass_obj
 def list_os_versions(obj: object) -> list[DistVersion]:
@@ -96,7 +95,7 @@ def list_os_versions(obj: object) -> list[DistVersion]:
     return sorted(vers, key=attrgetter("value"))
 
 
-@add_vm_cli.command(name="apps")
+@vm_add_cli.command(name="apps")
 @view_options
 @click.pass_obj
 def find_apps(obj: object) -> list[Application]:
