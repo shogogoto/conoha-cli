@@ -6,20 +6,21 @@ from typing import TYPE_CHECKING
 
 import click
 
+from conoha_client._shared.add_vm.options import identify_prior_image_options
 from conoha_client._shared.add_vm.repo import DistQuery, add_vm_command
 from conoha_client._shared.renforced_vm.query import find_reinforced_vm_by_id
-from conoha_client.features._shared.command_option import add_vm_options
+from conoha_client.features._shared.command_option import build_vm_options
 from conoha_client.features._shared.view.domain import view_options
-from conoha_client.features.image.domain import (
-    Application,
-    Distribution,
-    DistVersion,
-)
 from conoha_client.features.plan.domain import Memory
 from conoha_client.features.template.domain import template_io
 
 if TYPE_CHECKING:
     from conoha_client._shared.renforced_vm.domain import ReinforcedVM
+    from conoha_client.features.image.domain import (
+        Application,
+        Distribution,
+        DistVersion,
+    )
 
 
 @click.group("add", invoke_without_command=True, help="VM新規追加")
@@ -30,31 +31,9 @@ if TYPE_CHECKING:
     required=True,
     help="VMのRAM容量[GB]",
 )
-@click.option(
-    "--dist",
-    "-d",
-    type=click.Choice(Distribution),
-    default=Distribution.UBUNTU,
-    show_default=True,
-)
-@click.option(
-    "--version",
-    "-v",
-    default="latest",
-    help="latestの場合最新バージョンが指定される",
-    show_default=True,
-    type=DistVersion.parse,
-)
-@click.option(
-    "--app",
-    "-a",
-    default="null",
-    help="アプリ名.NONEは指定なし",
-    show_default=True,
-    type=Application.parse,
-)
+@identify_prior_image_options
 @template_io
-@add_vm_options
+@build_vm_options
 @click.pass_context
 def vm_add_cli(  # noqa: PLR0913
     ctx: click.Context,
