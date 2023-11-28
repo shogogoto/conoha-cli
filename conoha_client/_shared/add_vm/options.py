@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import functools
+from operator import attrgetter
 from typing import Callable, Concatenate, ParamSpec, TypeAlias, TypeVar
 
 import click
 
+from conoha_client.features._shared.view.domain import view_options
 from conoha_client.features.image.domain.distribution import (
     Application,
     Distribution,
@@ -68,3 +70,22 @@ def identify_prior_image_options(func: Wrapped) -> Wrapped:
         )
 
     return wrapper
+
+
+def add_subcommands(cli_group: click.Group) -> None:
+    @cli_group.command(name="vers")
+    @view_options
+    @click.pass_obj
+    def list_os_versions(obj: object) -> list[DistVersion]:
+        """利用可能なOSバージョンを検索する."""
+        vers = obj["q"].available_vers()
+        return sorted(vers, key=attrgetter("value"))
+
+    @cli_group.command(name="apps")
+    @view_options
+    @click.pass_obj
+    def find_apps(obj: object) -> list[Application]:
+        """利用可能なアプリケーションを検索する."""
+        v = obj["version"]
+        apps = obj["q"].apps(v)
+        return sorted(apps, key=attrgetter("value"))
