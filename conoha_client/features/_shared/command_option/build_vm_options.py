@@ -11,7 +11,7 @@ P = ParamSpec("P")
 T = TypeVar("T")
 
 
-def add_vm_options(
+def build_vm_options(
     func: Callable[Concatenate[str, str, P], T],
 ) -> Callable[Concatenate[str, str, P], T]:
     """Add VM共通オプション."""

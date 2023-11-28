@@ -7,7 +7,7 @@ import click
 
 from conoha_client._shared import find_reinforced_vm_by_id, save_snapshot
 from conoha_client.features._shared import (
-    add_vm_options,
+    build_vm_options,
     view_options,
 )
 from conoha_client.features._shared.command_option import each_args
@@ -55,7 +55,7 @@ def save(vm_id: str, name: str) -> None:
 @click.argument("name", nargs=1, type=click.STRING)
 @click.argument("memory", nargs=1, type=click.Choice(Memory))
 @template_io
-@add_vm_options
+@build_vm_options
 def restore(
     admin_password: str,
     keypair_name: str,
