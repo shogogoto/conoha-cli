@@ -14,7 +14,7 @@ from conoha_client.features import (
 )
 from conoha_client.features.billing.cli import invoice_cli, order_cli, paid_cli
 from conoha_client.graceful_remove import graceful_rm_cli
-from conoha_client.resize import vm_resize_cli
+from conoha_client.vm import vm_resize_cli
 
 from .snapshot import snapshot_cli
 
