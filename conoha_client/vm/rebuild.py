@@ -11,9 +11,8 @@ from conoha_client._shared.add_vm.options import (
 )
 from conoha_client._shared.add_vm.repo import DistQuery
 from conoha_client._shared.renforced_vm.query import find_reinforced_vm_by_id
-from conoha_client.features._shared.command_option import build_vm_options
+from conoha_client._shared.ssh_template import ssh_template_options
 from conoha_client.features.plan.repo import find_memory
-from conoha_client.features.template.domain import template_io
 from conoha_client.features.vm.repo.query import complete_vm
 from conoha_client.features.vm_actions.repo import VMActionCommands
 
@@ -29,8 +28,7 @@ if TYPE_CHECKING:
 @click.group(name="rebuild", invoke_without_command=True, help="VM再構築")
 @click.option("--vm-id", "-i", type=click.STRING, required=True)
 @identify_prior_image_options
-@template_io
-@build_vm_options
+@ssh_template_options
 @click.pass_context
 def vm_rebuild_cli(  # noqa: PLR0913
     ctx: click.Context,

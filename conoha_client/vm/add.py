@@ -11,7 +11,7 @@ from conoha_client._shared.add_vm.options import (
 )
 from conoha_client._shared.add_vm.repo import DistQuery, add_vm_command
 from conoha_client._shared.renforced_vm.query import find_reinforced_vm_by_id
-from conoha_client._shared.ssh_template import SshTemplateOption
+from conoha_client._shared.ssh_template import ssh_template_options
 from conoha_client.features.plan.domain import Memory
 
 if TYPE_CHECKING:
@@ -32,7 +32,7 @@ if TYPE_CHECKING:
     help="VMのRAM容量[GB]",
 )
 @identify_prior_image_options
-@SshTemplateOption().wraps
+@ssh_template_options
 @click.pass_context
 def vm_add_cli(  # noqa: PLR0913
     ctx: click.Context,

@@ -7,6 +7,7 @@ import click
 
 from conoha_client._shared import save_snapshot
 from conoha_client._shared.renforced_vm.query import find_reinforced_vm_by_id
+from conoha_client._shared.ssh_template import ssh_template_options
 from conoha_client.features._shared import (
     build_vm_options,
     view_options,
@@ -79,8 +80,7 @@ def restore(
 @snapshot_cli.command(name="rebuild", help="スナップショットからVMを再構築")
 @click.argument("vm_id", nargs=1, type=click.STRING)
 @click.argument("name", nargs=1, type=click.STRING)
-@template_io
-@build_vm_options
+@ssh_template_options
 def rebuild(
     admin_password: str,
     keypair_name: str,
