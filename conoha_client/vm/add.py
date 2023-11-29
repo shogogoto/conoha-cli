@@ -10,11 +10,12 @@ from conoha_client._shared.add_vm.options import (
     identify_prior_image_options,
 )
 from conoha_client._shared.add_vm.repo import DistQuery, add_vm_command
-from conoha_client.features._shared.command_option import build_vm_options
+from conoha_client._shared.renforced_vm.query import find_reinforced_vm_by_id
+from conoha_client._shared.ssh_template import SshTemplateOption
 from conoha_client.features.plan.domain import Memory
-from conoha_client.features.template.domain import template_io
 
 if TYPE_CHECKING:
+    from conoha_client._shared.renforced_vm.domain import ReinforcedVM
     from conoha_client.features.image.domain import (
         Application,
         Distribution,
@@ -31,8 +32,7 @@ if TYPE_CHECKING:
     help="VMのRAM容量[GB]",
 )
 @identify_prior_image_options
-@template_io
-@build_vm_options
+@SshTemplateOption().wraps
 @click.pass_context
 def vm_add_cli(  # noqa: PLR0913
     ctx: click.Context,
@@ -42,7 +42,7 @@ def vm_add_cli(  # noqa: PLR0913
     dist: Distribution,
     version: DistVersion,
     app: Application,
-) -> None:
+) -> ReinforcedVM | None:
     """Add VM CLI."""
     ctx.ensure_object(dict)
     query = DistQuery(memory=memory, dist=dist)
@@ -58,7 +58,10 @@ def vm_add_cli(  # noqa: PLR0913
             admin_pass=admin_password,
         )
         added = cmd(keypair_name)
-        click.echo(f"VM(uuid={added.vm_id}) was added newly")
+        vm = find_reinforced_vm_by_id(added.vm_id)
+        click.echo(f"VM(uuid={vm.vm_id}) was added newly")
+        return vm
+    return None
 
 
 add_subcommands(vm_add_cli)

@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 import click
 
 from conoha_client._shared import save_snapshot
+from conoha_client._shared.renforced_vm.query import find_reinforced_vm_by_id
 from conoha_client.features._shared import (
     build_vm_options,
     view_options,
@@ -24,6 +25,7 @@ from .repo import (
 )
 
 if TYPE_CHECKING:
+    from conoha_client._shared.renforced_vm.domain import ReinforcedVM
     from conoha_client.features.image.domain.image import Image
 
 
@@ -61,7 +63,7 @@ def restore(
     keypair_name: str,
     name: str,
     memory: Memory,
-) -> None:
+) -> ReinforcedVM:
     """スナップショットからVM起動."""
     added, img = restore_snapshot(
         name,
@@ -69,7 +71,9 @@ def restore(
         admin_password,
         keypair_name,
     )
+    vm = find_reinforced_vm_by_id(added.vm_id)
     click.echo(f"VM(uuid={added.vm_id}) was restored from {img.name} snapshot")
+    return vm
 
 
 @snapshot_cli.command(name="rebuild", help="スナップショットからVMを再構築")
@@ -82,7 +86,7 @@ def rebuild(
     keypair_name: str,
     vm_id: str,
     name: str,
-) -> None:
+) -> ReinforcedVM:
     """スナップショットからVM起動."""
     vm = complete_vm(vm_id)
     img = complete_snapshot_by_name(name)
@@ -92,7 +96,9 @@ def rebuild(
         admin_pass=admin_password,
         sshkey_name=keypair_name,
     )
+    vm = find_reinforced_vm_by_id(vm.vm_id)
     click.echo(f"VM(uuid={vm.vm_id}) was rebuild from {img.name} snapshot")
+    return vm
 
 
 @snapshot_cli.command("rm")

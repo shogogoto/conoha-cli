@@ -10,6 +10,7 @@ from conoha_client._shared.add_vm.options import (
     identify_prior_image_options,
 )
 from conoha_client._shared.add_vm.repo import DistQuery
+from conoha_client._shared.renforced_vm.query import find_reinforced_vm_by_id
 from conoha_client.features._shared.command_option import build_vm_options
 from conoha_client.features.plan.repo import find_memory
 from conoha_client.features.template.domain import template_io
@@ -17,6 +18,7 @@ from conoha_client.features.vm.repo.query import complete_vm
 from conoha_client.features.vm_actions.repo import VMActionCommands
 
 if TYPE_CHECKING:
+    from conoha_client._shared.renforced_vm.domain import ReinforcedVM
     from conoha_client.features.image.domain.distribution import (
         Application,
         Distribution,
@@ -38,7 +40,7 @@ def vm_rebuild_cli(  # noqa: PLR0913
     dist: Distribution,
     version: DistVersion,
     app: Application,
-) -> None:
+) -> ReinforcedVM | None:
     """VM再起動."""
     ctx.ensure_object(dict)
 
@@ -58,6 +60,8 @@ def vm_rebuild_cli(  # noqa: PLR0913
             sshkey_name=keypair_name,
         )
         click.echo(f"{vm.vm_id} was rebuilt.")
+        return find_reinforced_vm_by_id(vm.vm_id)
+    return None
 
 
 add_subcommands(vm_rebuild_cli)
