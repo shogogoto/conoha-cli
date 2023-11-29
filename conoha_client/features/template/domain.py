@@ -3,12 +3,20 @@ from __future__ import annotations
 
 import functools
 from pathlib import Path
-from typing import Callable, ParamSpec, TypeAlias, TypeVar
+from typing import TYPE_CHECKING, Callable, ParamSpec, TypeAlias, TypeVar
 
 import click
 from pydantic import BaseModel
 
+from conoha_client.features._shared.command_option import (
+    default_callback,
+)
 from conoha_client.features.template.repo import TemplateRepo
+
+if TYPE_CHECKING:
+    from conoha_client.features._shared.command_option import (
+        ClickCallback,
+    )
 
 P = ParamSpec("P")
 T = TypeVar("T", bound=BaseModel)
@@ -19,6 +27,8 @@ Wrapped: TypeAlias = Callable[P, T | None]
 def template_io_factory(
     r_envvar: str,
     w_envvar: str,
+    r_callback: ClickCallback = default_callback,
+    w_callback: ClickCallback = default_callback,
 ) -> Callable[[Wrapped], Callable]:
     """Create template io options."""
 
@@ -37,6 +47,7 @@ def template_io_factory(
             envvar=r_envvar,
             show_envvar=True,
             help="テンプレートパス",
+            callback=r_callback,
         )
         @click.option(
             "--write-template",
@@ -50,6 +61,7 @@ def template_io_factory(
             envvar=w_envvar,
             show_envvar=True,
             help="書き出し先[default: OS_TEMPLATE_WRITE]",
+            callback=w_callback,
         )
         @click.option(
             "--mapping",

@@ -1,11 +1,17 @@
 from __future__ import annotations
 
 import functools
-from typing import Callable, Concatenate, ParamSpec, TypeVar
+from typing import TYPE_CHECKING, Callable, Concatenate, ParamSpec, TypeVar
 
 import click
 
+from conoha_client.features._shared.command_option import default_callback
 from conoha_client.features._shared.prompt import pw_prompt, sshkey_prompt
+
+if TYPE_CHECKING:
+    from conoha_client.features._shared.command_option import (
+        ClickCallback,
+    )
 
 P = ParamSpec("P")
 T = TypeVar("T")
@@ -16,6 +22,8 @@ Wrapped = Callable[Concatenate[str, str, P], T]
 def build_vm_options_factory(
     pw_envvar: str,
     kw_envvar: str,
+    pw_callback: ClickCallback = default_callback,
+    kw_callback: ClickCallback = default_callback,
 ) -> Callable[[Wrapped], Wrapped]:
     def f(func: Wrapped) -> Wrapped:
         """Add VM共通オプション."""
@@ -26,6 +34,7 @@ def build_vm_options_factory(
             envvar=pw_envvar,
             show_envvar=True,
             help="VMのrootユーザーのパスワード",
+            callback=pw_callback,
         )
         @click.option(
             "--keypair-name",
@@ -34,6 +43,7 @@ def build_vm_options_factory(
             show_envvar=True,
             help="sshkeyのペア名",
             show_default=True,
+            callback=kw_callback,
         )
         @functools.wraps(func)
         def wrapper(
