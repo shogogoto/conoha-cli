@@ -58,3 +58,6 @@ test-watch = "pytest-watch -- -v -s --durations=0 --ff"
 lint       = "ruff check ."
 lintfix    = "ruff . --fix"
 pre-commit = "pre-commit install"
+
+[tool.poetry-dynamic-versioning.substitution]
+files = ["conoha_client/cli.py"]

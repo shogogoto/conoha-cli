@@ -21,11 +21,19 @@ from conoha_client.vm.rebuild import vm_rebuild_cli
 
 from .snapshot import snapshot_cli
 
+__version__ = "0.0.0"
+
 
 # @click.group()
 @shell(prompt="(conoha-client) ")
 def cli() -> None:
     """root."""
+
+
+@cli.command()
+def version() -> None:
+    """Show self version."""
+    click.echo(f"conoha-client {__version__}")
 
 
 @click.group()
