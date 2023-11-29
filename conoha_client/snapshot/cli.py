@@ -9,13 +9,11 @@ from conoha_client._shared import save_snapshot
 from conoha_client._shared.renforced_vm.query import find_reinforced_vm_by_id
 from conoha_client._shared.ssh_template import ssh_template_options
 from conoha_client.features._shared import (
-    build_vm_options,
     view_options,
 )
 from conoha_client.features._shared.command_option import each_args
 from conoha_client.features.image.repo import remove_image
 from conoha_client.features.plan.domain import Memory
-from conoha_client.features.template.domain import template_io
 from conoha_client.features.vm.repo.query import complete_vm
 from conoha_client.features.vm_actions.repo import VMActionCommands
 
@@ -57,8 +55,7 @@ def save(vm_id: str, name: str) -> None:
 @snapshot_cli.command(name="restore", help="スナップショットからVM起動")
 @click.argument("name", nargs=1, type=click.STRING)
 @click.argument("memory", nargs=1, type=click.Choice(Memory))
-@template_io
-@build_vm_options
+@ssh_template_options
 def restore(
     admin_password: str,
     keypair_name: str,
