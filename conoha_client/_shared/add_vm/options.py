@@ -31,7 +31,7 @@ def identify_prior_image_options(func: Wrapped) -> Wrapped:
     """Add VM共通オプション."""
 
     @click.option(
-        "--dist",
+        "--distro",
         "-d",
         type=click.Choice(Distribution),
         default=Distribution.UBUNTU,
